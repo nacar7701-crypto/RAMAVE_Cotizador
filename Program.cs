@@ -13,6 +13,11 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 // 2. AGREGAR SERVICIOS
 builder.Services.AddControllersWithViews(); // Para tus páginas HTML
+
+// 1️⃣ SERVICIOS
+builder.Services.AddControllersWithViews();
+
+// Swagger (solo desarrollo)
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(); // Para probar la API
 
@@ -26,7 +31,7 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-// 3. CONFIGURAR EL PIPELINE (CÓMO RESPONDE EL SERVIDOR)
+// 2️⃣ PIPELINE
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -48,8 +53,17 @@ app.UseAuthorization();
 app.MapControllers(); 
 
 // Ruta para tus vistas normales (Home/Index)
+// HTTPS comentado para Docker / LAN
+// app.UseHttpsRedirection();
+
+app.UseStaticFiles();
+app.UseRouting();
+
+app.UseAuthorization();
+
+// 3️⃣ RUTA INICIAL → LOGIN
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Auth}/{action=Login}/{id?}");
 
 app.Run();
