@@ -1,0 +1,172 @@
+@model Cotizador.Web.Models.LoginViewModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <title>Login | Cotizador de Persianas</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        body {
+            margin: 0;
+            height: 100vh;
+            background: url('/images/background.jpg') no-repeat center center / cover;
+        }
+
+        .overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(255,255,255,.85);
+        }
+
+        .logo {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            z-index: 2;
+        }
+
+        .logo img {
+            height: 50px;
+        }
+
+        .login-container {
+            position: relative;
+            z-index: 3;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .login-card {
+            width: 380px;
+            background: white;
+            padding: 2.5rem;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,.15);
+        }
+
+        .login-card h2 {
+            margin-bottom: 1.5rem;
+            color: #c62828;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+
+        label {
+            font-size: .9rem;
+            color: #555;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+
+        input:focus {
+            border-color: #c62828;
+            outline: none;
+        }
+
+        .password-wrapper {
+            position: relative;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #c62828;
+            font-size: .9rem;
+        }
+
+        .error {
+            color: #c62828;
+            font-size: .8rem;
+            margin-top: 4px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #c62828;
+            border: none;
+            color: white;
+            font-size: 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 1rem;
+        }
+
+        button:hover {
+            background: #a81f1f;
+        }
+    </style>
+</head>
+<body>
+
+<div class="overlay"></div>
+
+<div class="logo">
+    <img src="/images/logo.jpg" alt="Logo empresa" />
+</div>
+
+<div class="login-container">
+    <div class="login-card">
+        <h2>Cotizador de Persianas</h2>
+
+        <form asp-action="Login" method="post" novalidate>
+
+            <div class="form-group">
+                <label asp-for="Email"></label>
+                <input asp-for="Email" />
+                <span class="error" asp-validation-for="Email"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Password"></label>
+                <div class="password-wrapper">
+                    <input asp-for="Password" id="password" />
+                    <span class="toggle-password" onclick="togglePassword()">👁</span>
+                </div>
+                <span class="error" asp-validation-for="Password"></span>
+            </div>
+
+            <!-- 🔴 Error general -->
+            <div class="error" asp-validation-summary="ModelOnly"></div>
+
+            <button type="submit">Iniciar sesión</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    function togglePassword() {
+        const input = document.getElementById("password");
+        input.type = input.type === "password" ? "text" : "password";
+    }
+</script>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+
+</body>
+</html>
