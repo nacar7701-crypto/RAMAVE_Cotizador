@@ -16,64 +16,88 @@ namespace RAMAVE_Cotizador.Controllers
             _context = context;
         }
 
-        // --- ENDPOINT DE LOGIN ---
+        // 1. LOGIN 
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest pedido)
         {
-            // Buscamos usando el nuevo nombre de la columna: correo_electronico
             var usuario = await _context.Usuarios
                 .FirstOrDefaultAsync(u => u.correo_electronico == pedido.Correo);
 
-            if (usuario == null)
+            if (usuario == null || !BCrypt.Net.BCrypt.Verify(pedido.Password, usuario.password))
             {
                 return Unauthorized(new { mensaje = "Correo o contraseña incorrectos" });
             }
 
-            bool esValida = BCrypt.Net.BCrypt.Verify(pedido.Password, usuario.password);
-
-            if (!esValida)
-            {
-                return Unauthorized(new { mensaje = "Correo o contraseña incorrectos" });
-            }
-
-            return Ok(new { 
-                mensaje = "¡Bienvenido!", 
-                usuario = usuario.nombre, 
-                rol = usuario.rol 
-            });
+            return Ok(new { mensaje = "¡Bienvenido!", usuario = usuario.nombre, rol = usuario.rol });
         }
 
-        // --- ENDPOINT DE REGISTRO ---
+        // 2. REGISTRAR 
         [HttpPost("registrar")]
         public async Task<IActionResult> Registrar([FromBody] Usuario nuevoUsuario)
         {
             try
             {
-                // Encriptar la clave antes de guardarla en la DB
                 nuevoUsuario.password = BCrypt.Net.BCrypt.HashPassword(nuevoUsuario.password);
-
                 _context.Usuarios.Add(nuevoUsuario);
                 await _context.SaveChangesAsync();
-                
-                return Ok(new { 
-                    mensaje = "Usuario registrado con éxito", 
-                    usuario = nuevoUsuario.nombre 
-                });
+                return Ok(new { mensaje = "Usuario registrado con éxito" });
             }
             catch (Exception ex)
             {
-                return BadRequest(new { 
-                    mensaje = "Error al registrar", 
-                    detalle = ex.Message 
-                });
+                var mensajeReal = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                return BadRequest(new { mensaje = "Error al registrar", detalle = mensajeReal });
             }
         }
-    }
 
-    // Clase auxiliar para recibir los datos del Login
-    public class LoginRequest
-    {
-        public string Correo { get; set; } = null!;
-        public string Password { get; set; } = null!;
+        // 3. READ ALL (Traer todos)
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Usuario>>> GetUsuarios()
+        {
+            return await _context.Usuarios.ToListAsync();
+        }
+
+        // 4. Actualizar datos
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Actualizar(int id, [FromBody] Usuario usuarioActualizado)
+        {
+            if (id != usuarioActualizado.id) return BadRequest(new { mensaje = "El ID no coincide" });
+
+            var usuarioDb = await _context.Usuarios.FindAsync(id);
+            if (usuarioDb == null) return NotFound(new { mensaje = "Usuario no encontrado" });
+
+            // Actualizamos campos básicos
+            usuarioDb.nombre = usuarioActualizado.nombre;
+            usuarioDb.correo_electronico = usuarioActualizado.correo_electronico;
+            usuarioDb.rol = usuarioActualizado.rol;
+
+            // Solo encriptamos y cambiamos la clave si viene una nueva en el request
+            if (!string.IsNullOrEmpty(usuarioActualizado.password) && usuarioActualizado.password != usuarioDb.password)
+            {
+                usuarioDb.password = BCrypt.Net.BCrypt.HashPassword(usuarioActualizado.password);
+            }
+
+            try
+            {
+                await _context.SaveChangesAsync();
+                return Ok(new { mensaje = "Usuario actualizado correctamente" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { mensaje = "Error al actualizar", detalle = ex.Message });
+            }
+        }
+
+        // 5. Eliminar
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Eliminar(int id)
+        {
+            var usuario = await _context.Usuarios.FindAsync(id);
+            if (usuario == null) return NotFound(new { mensaje = "Usuario no encontrado" });
+
+            _context.Usuarios.Remove(usuario);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { mensaje = "Usuario eliminado correctamente" });
+        }
     }
 }
