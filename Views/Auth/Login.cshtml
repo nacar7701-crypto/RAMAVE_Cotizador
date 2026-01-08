@@ -1,4 +1,4 @@
-@model Cotizador.Web.Models.LoginViewModel
+@model RAMAVE_Cotizador.Models.LoginViewModel
 @{
     Layout = null;
 }
@@ -135,22 +135,25 @@
         <form asp-action="Login" method="post" novalidate>
 
             <div class="form-group">
-                <label asp-for="Email"></label>
-                <input asp-for="Email" />
-                <span class="error" asp-validation-for="Email"></span>
+                <label asp-for="Correo"></label>
+                <input asp-for="Correo" />
+                <span class="error" asp-validation-for="Correo"></span>
             </div>
 
             <div class="form-group">
                 <label asp-for="Password"></label>
                 <div class="password-wrapper">
-                    <input asp-for="Password" id="password" />
+                    <input asp-for="Password" id="password" type="password" />
                     <span class="toggle-password" onclick="togglePassword()">👁</span>
                 </div>
                 <span class="error" asp-validation-for="Password"></span>
             </div>
 
             <!-- 🔴 Error general -->
-            <div class="error" asp-validation-summary="ModelOnly"></div>
+            @if (ViewBag.Error != null)
+            {
+                <div class="error">@ViewBag.Error</div>
+            }
 
             <button type="submit">Iniciar sesión</button>
         </form>
