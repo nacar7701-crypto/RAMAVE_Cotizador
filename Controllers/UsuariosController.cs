@@ -20,17 +20,15 @@ namespace RAMAVE_Cotizador.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest pedido)
         {
-            // 1. Buscar al usuario por correo
+            // Buscamos usando el nuevo nombre de la columna: correo_electronico
             var usuario = await _context.Usuarios
-                .FirstOrDefaultAsync(u => u.correo == pedido.Correo);
+                .FirstOrDefaultAsync(u => u.correo_electronico == pedido.Correo);
 
-            // 2. Si no existe, error de seguridad genérico
             if (usuario == null)
             {
                 return Unauthorized(new { mensaje = "Correo o contraseña incorrectos" });
             }
 
-            // 3. Verificar si la contraseña coincide usando BCrypt
             bool esValida = BCrypt.Net.BCrypt.Verify(pedido.Password, usuario.password);
 
             if (!esValida)
@@ -38,12 +36,10 @@ namespace RAMAVE_Cotizador.Controllers
                 return Unauthorized(new { mensaje = "Correo o contraseña incorrectos" });
             }
 
-            // 4. Éxito: Devolvemos datos básicos
-            return Ok(new
-            {
-                mensaje = "¡Bienvenido al sistema!",
-                usuario = usuario.nombre,
-                rol = usuario.rol
+            return Ok(new { 
+                mensaje = "¡Bienvenido!", 
+                usuario = usuario.nombre, 
+                rol = usuario.rol 
             });
         }
 
