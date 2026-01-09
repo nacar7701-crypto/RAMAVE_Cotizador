@@ -1,24 +1,43 @@
-using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using Cotizador.Web.Models;
 
-namespace Cotizador.Web.Controllers;
-
-public class HomeController : Controller
+namespace RAMAVE_Cotizador.Controllers
 {
-    public IActionResult Index()
+    public class HomeController : Controller
     {
-        return View();
-    }
+        // Obtenemos el rol desde sesión
+        private string? Rol => HttpContext.Session.GetString("UsuarioRol");
 
-    public IActionResult Privacy()
-    {
-        return View();
-    }
+        // Redirección si no tiene acceso
+        private IActionResult SinAcceso()
+        {
+            return RedirectToAction("Login", "Auth");
+        }
 
-    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-    public IActionResult Error()
-    {
-        return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        // 🔴 HOME ADMINISTRADOR
+        public IActionResult Administrador()
+        {
+            if (Rol != "Administrador")
+                return SinAcceso();
+
+            return View();
+        }
+
+        // 🔵 HOME TIENDA
+        public IActionResult Tienda()
+        {
+            if (Rol != "Tienda")
+                return SinAcceso();
+
+            return View();
+        }
+
+        // 🟢 HOME DISTRIBUIDOR
+        public IActionResult Distribuidor()
+        {
+            if (Rol != "Distribuidor")
+                return SinAcceso();
+
+            return View();
+        }
     }
 }

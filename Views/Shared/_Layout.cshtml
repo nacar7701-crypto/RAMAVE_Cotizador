@@ -1,13 +1,16 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="utf-8" />
-    <title>@ViewData["Title"] - Cotizador</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-</head>
-<body>
+@{
+    var rol = Context.Session.GetString("UsuarioRol");
+}
 
-    @RenderBody()
-
-</body>
-</html>
+@if (rol == "Administrador")
+{
+    <a asp-action="Admin" asp-controller="Home">Admin</a>
+}
+@if (rol == "Ventas")
+{
+    <a asp-action="Ventas" asp-controller="Home">Ventas</a>
+}
+@if (rol == "Distribuidor")
+{
+    <a asp-action="Distribuidor" asp-controller="Home">Distribuidor</a>
+}

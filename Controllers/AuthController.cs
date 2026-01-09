@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using RAMAVE_Cotizador.Data;
 using RAMAVE_Cotizador.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace RAMAVE_Cotizador.Controllers
 {
@@ -26,30 +26,35 @@ namespace RAMAVE_Cotizador.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            string email = model.Correo.Trim();
-            string password = model.Password;
-
             var usuario = await _context.Usuarios
-                .FirstOrDefaultAsync(u => u.correo_electronico == email);
+                .FirstOrDefaultAsync(u => u.correo_electronico == model.Correo);
 
             if (usuario == null)
             {
-                ViewBag.Error = "Usuario o contraseña incorrectos";
+                ModelState.AddModelError(nameof(model.Correo), "Correo incorrecto");
                 return View(model);
             }
 
-            // ✅ COMPARACIÓN CORRECTA CON BCRYPT
-            bool passwordValido = BCrypt.Net.BCrypt.Verify(password, usuario.password);
-
-            if (!passwordValido)
+            if (!BCrypt.Net.BCrypt.Verify(model.Password, usuario.password))
             {
-                ViewBag.Error = "Usuario o contraseña incorrectos";
+                ModelState.AddModelError(nameof(model.Password), "Contraseña incorrecta");
                 return View(model);
             }
 
-            // 🔐 LOGIN EXITOSO
-            // (más adelante aquí va sesión / cookies)
-            return RedirectToAction("Index", "Home");
+            // 🔥 CLAVE: GUARDAR ROL EN SESIÓN
+            var rol = usuario.rol.Trim();
+            HttpContext.Session.SetString("UsuarioRol", rol);
+
+            Console.WriteLine($"ROL LOGUEADO = '{rol}'");
+
+            // 🔥 CLAVE: NOMBRES CORRECTOS
+            return rol switch
+            {
+                "Administrador" => RedirectToAction("Administrador", "Home"),
+                "Tienda" => RedirectToAction("Tienda", "Home"),
+                "Distribuidor" => RedirectToAction("Distribuidor", "Home"),
+                _ => RedirectToAction("Login")
+            };
         }
     }
 }

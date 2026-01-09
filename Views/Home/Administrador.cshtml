@@ -1,0 +1,177 @@
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Panel Administrador | RAMAVE</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        body {
+            margin: 0;
+            background: #f4f6f9;
+        }
+
+        /* HEADER */
+        header {
+            background: #c62828;
+            color: white;
+            padding: 18px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 1.3rem;
+        }
+
+        header img {
+            height: 42px;
+        }
+
+        /* CONTENEDOR */
+        .container {
+            padding: 40px;
+        }
+
+        /* GRID */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 25px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 14px;
+            padding: 26px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: .25s ease;
+            box-shadow: 0 10px 25px rgba(0,0,0,.08);
+        }
+
+        .card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 16px 35px rgba(0,0,0,.15);
+        }
+
+        .card img {
+            height: 68px;
+            margin-bottom: 14px;
+        }
+
+        .card h3 {
+            margin: 0;
+            color: #c62828;
+            font-size: 1.05rem;
+        }
+
+        .card p {
+            font-size: .85rem;
+            color: #555;
+            margin-top: 6px;
+        }
+
+        /* 📱 CELULAR */
+        @@media (max-width: 480px) {
+            header {
+                padding: 16px 20px;
+                text-align: center;
+                justify-content: center;
+                gap: 10px;
+            }
+
+            header h1 {
+                font-size: 1.1rem;
+            }
+
+            header img {
+                height: 36px;
+            }
+
+            .container {
+                padding: 20px;
+            }
+
+            .card img {
+                height: 55px;
+            }
+
+            .card h3 {
+                font-size: 1rem;
+            }
+        }
+
+        /* 📱 TABLET */
+        @@media (min-width: 481px) and (max-width: 1024px) {
+            .container {
+                padding: 30px;
+            }
+
+            header h1 {
+                font-size: 1.2rem;
+            }
+
+            .card img {
+                height: 62px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Panel de Administración</h1>
+    <img src="/images/logo.jpg" alt="Logo RAMAVE" />
+</header>
+
+<div class="container">
+    <div class="grid">
+
+        <div class="card" onclick="location.href='/Usuarios'">
+            <img src="/images/logo.jpg" alt="Usuarios" />
+            <h3>Usuarios</h3>
+            <p>Administrar usuarios del sistema</p>
+        </div>
+
+        <div class="card">
+            <img src="/images/logo.jpg" alt="Ventas" />
+            <h3>Ventas</h3>
+            <p>Control y seguimiento de ventas</p>
+        </div>
+        
+        <div class="card">
+            <img src="/images/logo.jpg" alt="Productos" />
+            <h3>Productos</h3>
+            <p>Catálogo de persianas</p>
+        </div>
+
+        <div class="card">
+            <img src="/images/logo.jpg" alt="Reportes" />
+            <h3>Reportes</h3>
+            <p>Reportes y estadísticas</p>
+        </div>
+
+        <div class="card">
+            <img src="/images/logo.jpg" alt="Configuración" />
+            <h3>Configuración</h3>
+            <p>Parámetros del sistema</p>
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>
