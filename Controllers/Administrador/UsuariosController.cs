@@ -51,9 +51,18 @@ namespace RAMAVE_Cotizador.Controllers
 
         // 3. READ ALL (Traer todos)
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Usuario>>> GetUsuarios()
+        public async Task<ActionResult<IEnumerable<Usuario>>> GetUsuarios([FromQuery] string? buscar)
         {
-            return await _context.Usuarios.ToListAsync();
+            var consulta = _context.Usuarios.AsQueryable();
+
+            if (!string.IsNullOrEmpty(buscar))
+            {
+                // Busca coincidencias en nombre O en correo
+                consulta = consulta.Where(u => u.nombre.Contains(buscar) 
+                                            || u.correo_electronico.Contains(buscar));
+            }
+
+            return await consulta.ToListAsync();
         }
 
         // 4. Actualizar datos

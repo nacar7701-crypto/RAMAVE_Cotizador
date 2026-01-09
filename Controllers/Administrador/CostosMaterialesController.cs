@@ -18,10 +18,19 @@ namespace RAMAVE_Cotizador.Controllers
 
         // 1. OBTENER TODO (Traer la lista de precios)
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<CostoMaterial>>> GetMateriales()
+        public async Task<ActionResult<IEnumerable<CostoMaterial>>> GetMateriales([FromQuery] string? filtro)
         {
-            // .ToListAsync() requiere 'using Microsoft.EntityFrameworkCore;'
-            return await _context.CostosMateriales.ToListAsync();
+            var consulta = _context.CostosMateriales.AsQueryable();
+
+            if (!string.IsNullOrEmpty(filtro))
+            {
+                // Busca en sistema, tipo o concepto
+                consulta = consulta.Where(m => m.sistema.Contains(filtro) 
+                                            || m.tipo.Contains(filtro) 
+                                            || m.concepto.Contains(filtro));
+            }
+
+            return await consulta.ToListAsync();
         }
 
         // 2. OBTENER UNO SOLO (Por ID)
