@@ -60,6 +60,8 @@ app.UseSession();
 app.UseCors("PermitirTodo");
 app.UseAuthorization();
 
+app.MapControllers();
+
 // 🔹 RUTAS
 app.MapControllerRoute(
     name: "default",

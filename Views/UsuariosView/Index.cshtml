@@ -1,0 +1,102 @@
+@{
+    ViewData["Title"] = "Usuarios";
+}
+
+<style>
+.container {
+    padding: 1rem;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.btn {
+    background: #c62828;
+    color: white;
+    border: none;
+    padding: .6rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.btn:hover { background: #a81f1f; }
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+th, td {
+    padding: .7rem;
+    border-bottom: 1px solid #ddd;
+}
+
+.actions button {
+    margin-right: .3rem;
+}
+
+@@media (max-width: 768px) {
+    table, thead, tbody, tr, td, th {
+        display: block;
+    }
+
+    tr {
+        margin-bottom: 1rem;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        padding: .5rem;
+    }
+
+    th { display: none; }
+}
+</style>
+
+<div class="container">
+    <div class="header">
+        <h2>Usuarios</h2>
+        <button class="btn" onclick="location.href='/UsuariosView/Create'">➕ Nuevo</button>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Correo</th>
+                <th>Rol</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody id="tablaUsuarios"></tbody>
+    </table>
+</div>
+
+<script>
+fetch('/api/usuarios')
+    .then(r => r.json())
+    .then(data => {
+        const tbody = document.getElementById('tablaUsuarios');
+        data.forEach(u => {
+            tbody.innerHTML += `
+            <tr>
+                <td>${u.nombre}</td>
+                <td>${u.correo_electronico}</td>
+                <td>${u.rol}</td>
+                <td class="actions">
+                    <button class="btn" onclick="location.href='/UsuariosView/Edit/${u.id}'">✏️</button>
+                    <button class="btn" onclick="eliminar(${u.id})">❌</button>
+                </td>
+            </tr>`;
+        });
+    });
+
+function eliminar(id) {
+    if (!confirm('¿Eliminar usuario?')) return;
+    fetch('/api/usuarios/' + id, { method: 'DELETE' })
+        .then(() => location.reload());
+}
+</script>

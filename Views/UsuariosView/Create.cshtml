@@ -1,0 +1,34 @@
+<h2>Nuevo Usuario</h2>
+
+<form id="formCrear">
+    <input placeholder="Nombre" required />
+    <input placeholder="Correo" type="email" required />
+    <input placeholder="Contraseña" type="password" required />
+    <select required>
+        <option value="">Rol</option>
+        <option>Administrador</option>
+        <option>Tienda</option>
+        <option>Distribuidor</option>
+    </select>
+
+    <button class="btn">Guardar</button>
+    <button type="button" class="btn" onclick="history.back()">Cancelar</button>
+</form>
+
+<script>
+document.getElementById('formCrear').onsubmit = e => {
+    e.preventDefault();
+    const f = e.target;
+
+    fetch('/api/usuarios/registrar', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            nombre: f[0].value,
+            correo_electronico: f[1].value,
+            password: f[2].value,
+            rol: f[3].value
+        })
+    }).then(() => location.href = '/UsuariosView/Index');
+};
+</script>

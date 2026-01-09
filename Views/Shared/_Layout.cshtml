@@ -1,16 +1,17 @@
-@{
-    var rol = Context.Session.GetString("UsuarioRol");
-}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewData["Title"] - RAMAVE</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-@if (rol == "Administrador")
-{
-    <a asp-action="Admin" asp-controller="Home">Admin</a>
-}
-@if (rol == "Ventas")
-{
-    <a asp-action="Ventas" asp-controller="Home">Ventas</a>
-}
-@if (rol == "Distribuidor")
-{
-    <a asp-action="Distribuidor" asp-controller="Home">Distribuidor</a>
-}
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+
+    <!-- AQUÍ SE RENDERIZA LA VISTA -->
+    @RenderBody()
+
+    @RenderSection("Scripts", required: false)
+</body>
+</html>
