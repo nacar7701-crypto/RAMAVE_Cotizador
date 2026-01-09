@@ -19,7 +19,7 @@ namespace RAMAVE_Cotizador.Controllers
             if (Rol != "Administrador")
                 return SinAcceso();
 
-            return View();
+            return View("/Views/Administrador/Administrador.cshtml");
         }
 
         // 🔵 HOME TIENDA
@@ -28,7 +28,7 @@ namespace RAMAVE_Cotizador.Controllers
             if (Rol != "Tienda")
                 return SinAcceso();
 
-            return View();
+            return View("/Views/Distribuidor_Tienda/Home.cshtml");
         }
 
         // 🟢 HOME DISTRIBUIDOR
@@ -37,7 +37,7 @@ namespace RAMAVE_Cotizador.Controllers
             if (Rol != "Distribuidor")
                 return SinAcceso();
 
-            return View();
+            return View("/Views/Distribuidor_Tienda/Home.cshtml");
         }
     }
 }
