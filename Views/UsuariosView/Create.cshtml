@@ -1,34 +1,148 @@
-<h2>Nuevo Usuario</h2>
+@model RAMAVE_Cotizador.Models.UsuarioCreateViewModel
+@{
+    ViewData["Title"] = "Crear Usuario";
+}
 
-<form id="formCrear">
-    <input placeholder="Nombre" required />
-    <input placeholder="Correo" type="email" required />
-    <input placeholder="Contraseña" type="password" required />
-    <select required>
-        <option value="">Rol</option>
-        <option>Administrador</option>
-        <option>Tienda</option>
-        <option>Distribuidor</option>
-    </select>
+<style>
+body {
+    background: #f4f6f9;
+}
 
-    <button class="btn">Guardar</button>
-    <button type="button" class="btn" onclick="history.back()">Cancelar</button>
-</form>
+.page {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+}
 
-<script>
-document.getElementById('formCrear').onsubmit = e => {
-    e.preventDefault();
-    const f = e.target;
+.card {
+    background: white;
+    width: 100%;
+    max-width: 500px;
+    padding: 2rem;
+    border-radius: 14px;
+    box-shadow: 0 15px 35px rgba(0,0,0,.12);
+}
 
-    fetch('/api/usuarios/registrar', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            nombre: f[0].value,
-            correo_electronico: f[1].value,
-            password: f[2].value,
-            rol: f[3].value
-        })
-    }).then(() => location.href = '/UsuariosView/Index');
-};
-</script>
+h2 {
+    text-align: center;
+    color: #c62828;
+    margin-bottom: 1.5rem;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+label {
+    font-size: .9rem;
+    color: #555;
+}
+
+input, select {
+    width: 100%;
+    padding: .6rem;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    margin-top: .3rem;
+}
+
+input:focus, select:focus {
+    border-color: #c62828;
+    outline: none;
+}
+
+.error {
+    color: #c62828;
+    font-size: .8rem;
+}
+
+.buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1.5rem;
+}
+
+.btn {
+    padding: .6rem 1.2rem;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-save {
+    background: #c62828;
+    color: white;
+}
+
+.btn-save:hover {
+    background: #a81f1f;
+}
+
+.btn-back {
+    background: #ccc;
+}
+
+@@media (max-width: 480px) {
+    .buttons {
+        flex-direction: column;
+        gap: .6rem;
+    }
+}
+</style>
+
+<div class="page">
+    <div class="card">
+
+        <h2>Nuevo Usuario</h2>
+
+        <form asp-action="Create" method="post" novalidate>
+
+            <div asp-validation-summary="ModelOnly" class="error"></div>
+
+            <div class="form-group">
+                <label asp-for="Nombre"></label>
+                <input asp-for="Nombre" />
+                <span asp-validation-for="Nombre" class="error"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Correo"></label>
+                <input asp-for="Correo" />
+                <span asp-validation-for="Correo" class="error"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Password"></label>
+                <input asp-for="Password" type="password" />
+                <span asp-validation-for="Password" class="error"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Rol"></label>
+                <select asp-for="Rol">
+                    <option value="">-- Selecciona --</option>
+                    <option>Administrador</option>
+                    <option>Tienda</option>
+                    <option>Distribuidor</option>
+                </select>
+                <span asp-validation-for="Rol" class="error"></span>
+            </div>
+
+            <div class="buttons">
+                <button type="button" class="btn btn-back"
+                        onclick="location.href='@Url.Action("Index","UsuariosView")'">
+                    Cancelar
+                </button>
+
+                <button type="submit" class="btn btn-save">
+                    Guardar
+                </button>
+            </div>
+
+        </form>
+
+    </div>
+</div>
+

@@ -1,43 +1,100 @@
-<h2>Editar Usuario</h2>
+@model RAMAVE_Cotizador.Models.UsuarioCreateViewModel
+@{
+    ViewData["Title"] = "Editar Usuario";
+}
 
-<form id="formEdit">
-    <input id="nombre" required />
-    <input id="correo" type="email" required />
-    <input id="password" type="password" placeholder="Nueva contraseña (opcional)" />
-    <select id="rol">
-        <option>Administrador</option>
-        <option>Tienda</option>
-        <option>Distribuidor</option>
-    </select>
+<style>
+    body { background: #f4f6f9; font-family: sans-serif; }
+    .page { min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 1rem; }
+    .card { background: white; width: 100%; max-width: 500px; padding: 2rem; border-radius: 14px; box-shadow: 0 15px 35px rgba(0,0,0,.12); }
+    h2 { text-align: center; color: #c62828; margin-bottom: 1.5rem; }
+    .form-group { margin-bottom: 1rem; }
+    label { font-size: .9rem; color: #555; display: block; margin-bottom: 4px; }
+    input, select { width: 100%; padding: .6rem; border-radius: 6px; border: 1px solid #ccc; box-sizing: border-box; }
+    input:focus, select:focus { border-color: #c62828; outline: none; }
+    .buttons { display: flex; justify-content: space-between; margin-top: 1.5rem; gap: 10px; }
+    .btn { padding: .6rem 1.2rem; border-radius: 6px; border: none; cursor: pointer; flex: 1; font-weight: bold; }
+    .btn-save { background: #c62828; color: white; }
+    .btn-save:hover { background: #a81f1f; }
+    .btn-back { background: #ccc; color: black; text-align: center; text-decoration: none; }
+    @@media (max-width: 480px) { .buttons { flex-direction: column; } }
+</style>
 
-    <button class="btn">Guardar</button>
-    <button type="button" class="btn" onclick="history.back()">Cancelar</button>
-</form>
+<div class="page">
+    <div class="card">
+        <h2>Editar Usuario</h2>
+
+        <form id="formEdit">
+            <div class="form-group">
+                <label>Nombre Completo</label>
+                <input id="nombre" required />
+            </div>
+
+            <div class="form-group">
+                <label>Correo Electrónico</label>
+                <input id="correo" type="email" required />
+            </div>
+
+            <div class="form-group">
+                <label>Contraseña</label>
+                <input id="password" type="password" placeholder="Nueva contraseña (opcional)" />
+            </div>
+
+            <div class="form-group">
+                <label>Rol del Sistema</label>
+                <select id="rol">
+                    <option>Administrador</option>
+                    <option>Tienda</option>
+                    <option>Distribuidor</option>
+                </select>
+            </div>
+
+            <div class="buttons">
+                <button type="button" class="btn btn-back" onclick="history.back()">Cancelar</button>
+                <button type="submit" class="btn btn-save">Guardar Cambios</button>
+            </div>
+        </form>
+    </div>
+</div>
 
 <script>
 const id = @ViewBag.Id;
+
+// Referencias a los elementos
+const inputNombre = document.getElementById('nombre');
+const inputCorreo = document.getElementById('correo');
+const inputRol = document.getElementById('rol');
+const inputPassword = document.getElementById('password');
 
 fetch('/api/usuarios')
     .then(r => r.json())
     .then(data => {
         const u = data.find(x => x.id === id);
-        nombre.value = u.nombre;
-        correo.value = u.correo_electronico;
-        rol.value = u.rol;
+        if (u) {
+            inputNombre.value = u.nombre;
+            inputCorreo.value = u.correo_electronico;
+            inputRol.value = u.rol;
+        }
     });
 
-formEdit.onsubmit = e => {
+document.getElementById('formEdit').onsubmit = e => {
     e.preventDefault();
     fetch('/api/usuarios/' + id, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-            id,
-            nombre: nombre.value,
-            correo_electronico: correo.value,
-            password: password.value,
-            rol: rol.value
+            id: id,
+            nombre: inputNombre.value,
+            correo_electronico: inputCorreo.value,
+            password: inputPassword.value,
+            rol: inputRol.value
         })
-    }).then(() => location.href = '/UsuariosView/Index');
+    }).then(res => {
+        if (res.ok) {
+            location.href = '/UsuariosView/Index';
+        } else {
+            alert("Error al actualizar el usuario");
+        }
+    });
 };
 </script>

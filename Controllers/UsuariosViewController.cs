@@ -1,32 +1,91 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using RAMAVE_Cotizador.Data;
+using RAMAVE_Cotizador.Models;
 
 namespace RAMAVE_Cotizador.Controllers
 {
     public class UsuariosViewController : Controller
     {
-        private bool EsAdmin =>
-            HttpContext.Session.GetString("UsuarioRol") == "Administrador";
+        private readonly ApplicationDbContext _context;
 
-        private IActionResult SinAcceso() =>
-            RedirectToAction("Login", "Auth");
-
-        public IActionResult Index()
+        public UsuariosViewController(ApplicationDbContext context)
         {
-            if (!EsAdmin) return SinAcceso();
-            return View();
+            _context = context;
         }
 
+        // LISTADO
+        public async Task<IActionResult> Index()
+        {
+            var usuarios = await _context.Usuarios.ToListAsync();
+            return View(usuarios);
+        }
+
+        // CREATE (GET)
+        [HttpGet]
         public IActionResult Create()
         {
-            if (!EsAdmin) return SinAcceso();
+            return View(new UsuarioCreateViewModel());
+        }
+
+        // CREATE (POST)
+        [HttpPost]
+        public async Task<IActionResult> Create(UsuarioCreateViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var usuario = new Usuario
+            {
+                nombre = model.Nombre,
+                correo_electronico = model.Correo,
+                rol = model.Rol,
+                password = BCrypt.Net.BCrypt.HashPassword(model.Password)
+            };
+
+            _context.Usuarios.Add(usuario);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        // EDIT (GET)
+        [HttpGet]
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null) return NotFound();
+
+            var usuario = await _context.Usuarios.FindAsync(id);
+            if (usuario == null) return NotFound();
+
+            ViewBag.Id = id;
             return View();
         }
 
-        public IActionResult Edit(int id)
+        // DELETE (GET) - Opcional: Para mostrar una pantalla de "u00bfEstu00e1 seguro?"
+        [HttpGet]
+        public async Task<IActionResult> Delete(int? id)
         {
-            if (!EsAdmin) return SinAcceso();
-            ViewBag.Id = id;
-            return View();
+            if (id == null) return NotFound();
+
+            var usuario = await _context.Usuarios.FindAsync(id);
+            if (usuario == null) return NotFound();
+
+            return View(usuario);
+        }
+
+        // DELETE (POST) - La acciu00f3n real de eliminar
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken] // Seguridad contra ataques CSRF
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var usuario = await _context.Usuarios.FindAsync(id);
+            if (usuario != null)
+            {
+                _context.Usuarios.Remove(usuario);
+                await _context.SaveChangesAsync();
+            }
+            return RedirectToAction(nameof(Index));
         }
     }
 }
