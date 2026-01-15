@@ -1,0 +1,203 @@
+@model RAMAVE_Cotizador.Models.CostoMaterial
+@{
+    ViewData["Title"] = "Nuevo Material";
+}
+
+<style>
+    body { background: #f4f6f9; font-family: 'Segoe UI', sans-serif; }
+
+    .page-container {
+        min-height: 90vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 2rem;
+    }
+
+    .card-form {
+        background: white;
+        width: 100%;
+        max-width: 600px;
+        padding: 2.5rem;
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        border-top: 5px solid #c62828;
+    }
+
+    h2 {
+        text-align: center;
+        color: #333;
+        margin-bottom: 0.5rem;
+    }
+
+    p.subtitle {
+        text-align: center;
+        color: #777;
+        margin-bottom: 2rem;
+        font-size: 0.9rem;
+    }
+
+    .form-group { margin-bottom: 1.2rem; }
+
+    label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 0.4rem;
+        color: #444;
+        font-size: 0.9rem;
+    }
+
+    input, select {
+        width: 100%;
+        padding: 0.8rem;
+        border-radius: 8px;
+        border: 1px solid #ddd;
+        outline: none;
+        transition: 0.3s;
+    }
+
+    input:focus {
+        border-color: #c62828;
+        box-shadow: 0 0 0 3px rgba(198, 40, 40, 0.1);
+    }
+
+    /* Estilo para campos de precio */
+    .price-input-wrapper { position: relative; }
+    .price-input-wrapper::before {
+        content: "$";
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #555;
+        font-weight: bold;
+    }
+    .price-input-wrapper input { padding-left: 25px; }
+
+    .iva-highlight {
+        background-color: #fff5f5;
+        border: 1px dashed #c62828;
+        color: #c62828;
+        font-weight: bold;
+    }
+
+    .buttons-container {
+        display: flex;
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+
+    .btn {
+        flex: 1;
+        padding: 0.9rem;
+        border-radius: 8px;
+        border: none;
+        font-weight: bold;
+        cursor: pointer;
+        transition: 0.2s;
+        text-align: center;
+        text-decoration: none;
+    }
+
+    .btn-save { background: #c62828; color: white; }
+    .btn-save:hover { background: #a81f1f; transform: translateY(-2px); }
+
+    .btn-back { background: #eee; color: #555; }
+    .btn-back:hover { background: #ddd; }
+</style>
+
+<div class="page-container">
+    <div class="card-form">
+        <h2>Nuevo Material</h2>
+        <p class="subtitle">Ingrese los detalles del sistema y costos</p>
+
+        <form id="formMaterial">
+            <div class="form-group">
+                <label>Sistema</label>
+                <input type="text" id="sistema" placeholder="Ej: Enrollable, PVC, etc." required />
+            </div>
+
+            <div class="form-group">
+                <label>Tipo</label>
+                <input type="text" id="tipo" placeholder="Ej: Blackout, Traslúcida" required />
+            </div>
+
+            <div class="form-group">
+                <label>Concepto / Material</label>
+                <input type="text" id="concepto" placeholder="Ej: Tela Americana Premium" required />
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div class="form-group">
+                    <label>Unidad de Medida (U.M.)</label>
+                    <select id="um">
+                        <option value="M2">M2 (Metro cuadrado)</option>
+                        <option value="ML">ML (Metro lineal)</option>
+                        <option value="PZA">PZA (Pieza)</option>
+                        <option value="KIT">KIT</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Precio Unitario (Base)</label>
+                    <div class="price-input-wrapper">
+                        <input type="number" id="precio_unitario" step="0.01" placeholder="0.00" required oninput="calcularIva()" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Precio Final (con IVA 16%)</label>
+                <div class="price-input-wrapper">
+                    <input type="text" id="precio_con_iva" class="iva-highlight" readonly placeholder="0.00" />
+                </div>
+            </div>
+
+            <div class="buttons-container">
+                <a href="/MaterialesView/Index" class="btn btn-back">Cancelar</a>
+                <button type="submit" class="btn btn-save">Guardar Material</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    // 1. Función para calcular el IVA en tiempo real
+    function calcularIva() {
+        const precioUnitario = parseFloat(document.getElementById('precio_unitario').value) || 0;
+        const precioIva = precioUnitario * 1.16;
+        document.getElementById('precio_con_iva').value = precioIva.toFixed(2);
+    }
+
+    // 2. Función para guardar los datos mediante el API
+    document.getElementById('formMaterial').addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const material = {
+            sistema: document.getElementById('sistema').value,
+            tipo: document.getElementById('tipo').value,
+            concepto: document.getElementById('concepto').value,
+            um: document.getElementById('um').value,
+            precio_unitario: parseFloat(document.getElementById('precio_unitario').value),
+            precio_con_iva: parseFloat(document.getElementById('precio_con_iva').value)
+        };
+
+        try {
+            const response = await fetch('/api/CostosMateriales', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(material)
+            });
+
+            if (response.ok) {
+                alert("✅ Material guardado exitosamente");
+                window.location.href = '/MaterialesView/Index';
+            } else {
+                const errorData = await response.json();
+                alert("❌ Error: " + (errorData.mensaje || "No se pudo guardar"));
+            }
+        } catch (error) {
+            console.error("Error:", error);
+            alert("❌ Hubo un problema al conectar con el servidor");
+        }
+    });
+</script>

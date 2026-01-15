@@ -1,0 +1,205 @@
+@model RAMAVE_Cotizador.Models.CostoMaterial
+@{
+    ViewData["Title"] = "Editar Material";
+}
+
+<style>
+    body { background: #f4f6f9; font-family: 'Segoe UI', sans-serif; }
+
+    .page-container {
+        min-height: 90vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 2rem;
+    }
+
+    .card-form {
+        background: white;
+        width: 100%;
+        max-width: 600px;
+        padding: 2.5rem;
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        border-top: 5px solid #ffa000; /* Color naranja para diferenciar de "Crear" */
+    }
+
+    h2 { text-align: center; color: #333; margin-bottom: 2rem; }
+
+    .form-group { margin-bottom: 1.2rem; }
+
+    label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 0.4rem;
+        color: #444;
+    }
+
+    input, select {
+        width: 100%;
+        padding: 0.8rem;
+        border-radius: 8px;
+        border: 1px solid #ddd;
+        outline: none;
+    }
+
+    input:focus { border-color: #ffa000; box-shadow: 0 0 0 3px rgba(255, 160, 0, 0.1); }
+
+    .price-input-wrapper { position: relative; }
+    .price-input-wrapper::before {
+        content: "$";
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #555;
+    }
+    .price-input-wrapper input { padding-left: 25px; }
+
+    .iva-highlight {
+        background-color: #fff9f0;
+        border: 1px dashed #ffa000;
+        color: #e65100;
+        font-weight: bold;
+    }
+
+    .buttons-container {
+        display: flex;
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+
+    .btn {
+        flex: 1;
+        padding: 0.9rem;
+        border-radius: 8px;
+        border: none;
+        font-weight: bold;
+        cursor: pointer;
+        text-align: center;
+        text-decoration: none;
+    }
+
+    .btn-save { background: #c62828; color: white; }
+    .btn-back { background: #eee; color: #555; }
+</style>
+
+<div class="page-container">
+    <div class="card-form">
+        <h2>Editar Material</h2>
+
+        <form id="formEditarMaterial">
+            <input type="hidden" id="materialId" value="@ViewContext.RouteData.Values["id"]" />
+
+            <div class="form-group">
+                <label>Sistema</label>
+                <input type="text" id="sistema" required />
+            </div>
+
+            <div class="form-group">
+                <label>Tipo</label>
+                <input type="text" id="tipo" required />
+            </div>
+
+            <div class="form-group">
+                <label>Concepto / Material</label>
+                <input type="text" id="concepto" required />
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div class="form-group">
+                    <label>U.M.</label>
+                    <select id="um">
+                        <option value="M2">M2</option>
+                        <option value="ML">ML</option>
+                        <option value="PZA">PZA</option>
+                        <option value="KIT">KIT</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Precio Unitario</label>
+                    <div class="price-input-wrapper">
+                        <input type="number" id="precio_unitario" step="0.01" required oninput="calcularIva()" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Precio con IVA (16%)</label>
+                <div class="price-input-wrapper">
+                    <input type="text" id="precio_con_iva" class="iva-highlight" readonly />
+                </div>
+            </div>
+
+            <div class="buttons-container">
+                <a href="/MaterialesView/Index" class="btn btn-back">Volver</a>
+                <button type="submit" class="btn btn-save">Actualizar Cambios</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    const id = document.getElementById('materialId').value;
+
+    // 1. Cargar datos actuales del material
+    async function cargarDatos() {
+        try {
+            const res = await fetch(`/api/CostosMateriales/${id}`);
+            if (!res.ok) throw new Error("No se encontró el material");
+            
+            const m = await res.json();
+            
+            // Llenar campos
+            document.getElementById('sistema').value = m.sistema;
+            document.getElementById('tipo').value = m.tipo;
+            document.getElementById('concepto').value = m.concepto;
+            document.getElementById('um').value = m.um;
+            document.getElementById('precio_unitario').value = m.precio_unitario;
+            
+            calcularIva(); // Calcular IVA inicial
+        } catch (error) {
+            alert("Error al cargar datos");
+            window.location.href = '/MaterialesView/Index';
+        }
+    }
+
+    function calcularIva() {
+        const base = parseFloat(document.getElementById('precio_unitario').value) || 0;
+        document.getElementById('precio_con_iva').value = (base * 1.16).toFixed(2);
+    }
+
+    // 2. Enviar actualización (PUT)
+    document.getElementById('formEditarMaterial').addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const data = {
+            id: parseInt(id),
+            sistema: document.getElementById('sistema').value,
+            tipo: document.getElementById('tipo').value,
+            concepto: document.getElementById('concepto').value,
+            um: document.getElementById('um').value,
+            precio_unitario: parseFloat(document.getElementById('precio_unitario').value),
+            precio_con_iva: parseFloat(document.getElementById('precio_con_iva').value)
+        };
+
+        try {
+            const res = await fetch(`/api/CostosMateriales/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+
+            if (res.ok) {
+                alert("✅ Material actualizado correctamente");
+                window.location.href = '/MaterialesView/Index';
+            } else {
+                alert("❌ Error al actualizar");
+            }
+        } catch (error) {
+            alert("❌ Error de conexión");
+        }
+    });
+
+    cargarDatos();
+</script>

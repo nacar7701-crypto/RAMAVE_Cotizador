@@ -17,15 +17,15 @@ namespace RAMAVE_Cotizador.Controllers
         // LISTADO
         public async Task<IActionResult> Index()
         {
-            var usuarios = await _context.Usuarios.ToListAsync();
-            return View(usuarios);
+
+            return View("~/Views/Administrador/Usuarios/Mostrar.cshtml");
         }
 
         // CREATE (GET)
         [HttpGet]
         public IActionResult Create()
         {
-            return View(new UsuarioCreateViewModel());
+            return View("~/Views/Administrador/Usuarios/Crear.cshtml");
         }
 
         // CREATE (POST)
@@ -59,7 +59,7 @@ namespace RAMAVE_Cotizador.Controllers
             if (usuario == null) return NotFound();
 
             ViewBag.Id = id;
-            return View();
+            return View("~/Views/Administrador/Usuarios/Editar.cshtml");
         }
 
         // DELETE (GET) - Opcional: Para mostrar una pantalla de "u00bfEstu00e1 seguro?"

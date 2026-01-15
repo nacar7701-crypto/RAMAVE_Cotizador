@@ -4,6 +4,7 @@
 
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -59,12 +60,12 @@
             text-align: center;
             cursor: pointer;
             transition: .25s ease;
-            box-shadow: 0 10px 25px rgba(0,0,0,.08);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, .08);
         }
 
         .card:hover {
             transform: translateY(-6px);
-            box-shadow: 0 16px 35px rgba(0,0,0,.15);
+            box-shadow: 0 16px 35px rgba(0, 0, 0, .15);
         }
 
         .card img {
@@ -130,48 +131,52 @@
         }
     </style>
 </head>
+
 <body>
 
-<header>
-    <h1>Panel de Administración</h1>
-    <img src="/images/logo.jpg" alt="Logo RAMAVE" />
-</header>
+    <header>
+        <h1>Panel de Administración</h1>
+        <img src="/images/logo.jpg" alt="Logo RAMAVE" />
+    </header>
 
-<div class="container">
-    <div class="grid">
-        
-            <div class="card" onclick="location.href='@Url.Action("Index","UsuariosView")'">
-            <img src="/images/logo.jpg" alt="Usuarios" />
-            <h3>Usuarios</h3>
-            <p>Administrar usuarios del sistema</p>
-        </div>
+    <div class="container">
+        <div class="grid">
 
-        <div class="card">
-            <img src="/images/logo.jpg" alt="Ventas" />
-            <h3>Ventas</h3>
-            <p>Control y seguimiento de ventas</p>
-        </div>
-        
-        <div class="card">
-            <img src="/images/logo.jpg" alt="Productos" />
-            <h3>Productos</h3>
-            <p>Catálogo de persianas</p>
-        </div>
+            <div class="card" onclick="location.href='@Url.Action("Index", "UsuariosView")'">
+                <img src="/images/logo.jpg" alt="Usuarios" />
+                <h3>Usuarios</h3>
+                <p>Administrar usuarios del sistema</p>
+            </div>
 
-        <div class="card">
-            <img src="/images/logo.jpg" alt="Reportes" />
-            <h3>Reportes</h3>
-            <p>Reportes y estadísticas</p>
-        </div>
+            <div class="card card-action" onclick="location.href='@Url.Action("Index", "MaterialesView")'">
+                <div class="img-container">
+                    <img src="/images/logo.jpg" alt="Materiales" />
+                </div>
+                <h3>Materiales y Costos</h3>
+                <p>Administrar precios, sistemas y especificaciones</p>
+            </div>
 
-        <div class="card">
-            <img src="/images/logo.jpg" alt="Configuración" />
-            <h3>Configuración</h3>
-            <p>Parámetros del sistema</p>
-        </div>
+            <div class="card">
+                <img src="/images/logo.jpg" alt="Productos" />
+                <h3>Productos</h3>
+                <p>Catálogo de persianas</p>
+            </div>
 
+            <div class="card">
+                <img src="/images/logo.jpg" alt="Reportes" />
+                <h3>Reportes</h3>
+                <p>Reportes y estadísticas</p>
+            </div>
+
+            <div class="card">
+                <img src="/images/logo.jpg" alt="Configuración" />
+                <h3>Configuración</h3>
+                <p>Parámetros del sistema</p>
+            </div>
+
+        </div>
     </div>
-</div>
 
 </body>
+
 </html>
