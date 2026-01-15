@@ -121,9 +121,16 @@
                    placeholder="Buscar por sistema, tipo o concepto..." onkeyup="filtrarMateriales()">
         </div>
 
-        <button class="btn btn-main" onclick="location.href='/MaterialesView/Crear'">
-            <span>➕</span> Agregar Material
-        </button>
+        <div style="display: flex; gap: 10px;">
+            <button class="btn" style="background: #ccc; color: #333;" 
+                    onclick="location.href='@Url.Action("Administrador", "Home")'">
+                <span>🏠</span> Menú
+            </button>
+
+            <button class="btn btn-main" onclick="location.href='/MaterialesView/Crear'">
+                <span>➕</span> Agregar Material
+            </button>
+        </div>
     </div>
 
     <div class="table-card">

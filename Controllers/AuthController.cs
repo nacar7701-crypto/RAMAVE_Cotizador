@@ -56,5 +56,15 @@ namespace RAMAVE_Cotizador.Controllers
                 _ => RedirectToAction("Login")
             };
         }
+
+        [HttpGet]
+        public IActionResult Logout()
+        {
+            // Limpia todos los datos almacenados en la sesión del usuario
+            HttpContext.Session.Clear();
+
+            // Redirige a la pantalla de Login
+            return RedirectToAction("Login", "Auth");
+        }
     }
 }

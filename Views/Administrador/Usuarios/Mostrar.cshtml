@@ -50,7 +50,8 @@
         margin-top: 1rem;
     }
 
-    th, td {
+    th,
+    td {
         padding: .7rem;
         border-bottom: 1px solid #ddd;
         text-align: left;
@@ -61,10 +62,21 @@
     }
 
     @@media (max-width: 768px) {
-        .header { flex-direction: column; align-items: stretch; }
-        .search-box { max-width: 100%; }
-        
-        table, thead, tbody, tr, td, th {
+        .header {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .search-box {
+            max-width: 100%;
+        }
+
+        table,
+        thead,
+        tbody,
+        tr,
+        td,
+        th {
             display: block;
         }
 
@@ -76,8 +88,10 @@
             background: white;
         }
 
-        th { display: none; }
-        
+        th {
+            display: none;
+        }
+
         td::before {
             content: attr(data-label);
             font-weight: bold;
@@ -92,41 +106,47 @@
 <div class="container">
     <div class="header">
         <h2>Usuarios</h2>
-        <input type="text" id="txtBuscar" class="search-box" placeholder="🔍 Buscar por nombre o correo..." onkeyup="filtrarTabla()">
-        <button class="btn" onclick="location.href='/UsuariosView/Create'">➕ Nuevo</button>
+        <input type="text" id="txtBuscar" class="search-box" placeholder="🔍 Buscar por nombre o correo..."
+            onkeyup="filtrarTabla()">
+        <div style="display: flex; gap: 10px;">
+            <button class="btn" style="background: #ccc; color: #333;"
+                onclick="location.href='@Url.Action("Administrador", "Home")'">
+                Menú
+            </button>
+            <button class="btn" onclick="location.href='/UsuariosView/Create'">➕ Nuevo</button>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Correo</th>
+                    <th>Rol</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="tablaUsuarios"></tbody>
+        </table>
     </div>
 
-    <table>
-        <thead>
-            <tr>
-                <th>Nombre</th>
-                <th>Correo</th>
-                <th>Rol</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody id="tablaUsuarios"></tbody>
-    </table>
-</div>
+    <script>
+        let listaUsuarios = []; // Variable global para almacenar los datos originales
 
-<script>
-    let listaUsuarios = []; // Variable global para almacenar los datos originales
+        // Carga inicial de datos
+        fetch('/api/usuarios')
+            .then(r => r.json())
+            .then(data => {
+                listaUsuarios = data;
+                mostrarUsuarios(listaUsuarios);
+            });
 
-    // Carga inicial de datos
-    fetch('/api/usuarios')
-        .then(r => r.json())
-        .then(data => {
-            listaUsuarios = data;
-            mostrarUsuarios(listaUsuarios);
-        });
+        // Función para renderizar la tabla
+        function mostrarUsuarios(usuarios) {
+            const tbody = document.getElementById('tablaUsuarios');
+            tbody.innerHTML = '';
 
-    // Función para renderizar la tabla
-    function mostrarUsuarios(usuarios) {
-        const tbody = document.getElementById('tablaUsuarios');
-        tbody.innerHTML = ''; 
-
-        usuarios.forEach(u => {
-            tbody.innerHTML += `
+            usuarios.forEach(u => {
+                tbody.innerHTML += `
             <tr>
                 <td data-label="Nombre">${u.nombre}</td>
                 <td data-label="Correo">${u.correo_electronico}</td>
@@ -136,32 +156,32 @@
                     <button class="btn" onclick="eliminar(${u.id})" title="Eliminar">❌</button>
                 </td>
             </tr>`;
-        });
-    }
-
-    // Función de búsqueda/filtrado
-    function filtrarTabla() {
-        const busqueda = document.getElementById('txtBuscar').value.toLowerCase();
-        
-        const usuariosFiltrados = listaUsuarios.filter(u => 
-            u.nombre.toLowerCase().includes(busqueda) || 
-            u.correo_electronico.toLowerCase().includes(busqueda)
-        );
-
-        mostrarUsuarios(usuariosFiltrados);
-    }
-
-    function eliminar(id) {
-        if (!confirm('¿Eliminar usuario?')) return;
-        fetch('/api/usuarios/' + id, { method: 'DELETE' })
-            .then(res => {
-                if (res.ok) {
-                    // Actualizar lista local sin recargar toda la página (opcional pero más rápido)
-                    listaUsuarios = listaUsuarios.filter(u => u.id !== id);
-                    filtrarTabla(); 
-                } else {
-                    alert("Error al eliminar el usuario");
-                }
             });
-    }
-</script>
+        }
+
+        // Función de búsqueda/filtrado
+        function filtrarTabla() {
+            const busqueda = document.getElementById('txtBuscar').value.toLowerCase();
+
+            const usuariosFiltrados = listaUsuarios.filter(u =>
+                u.nombre.toLowerCase().includes(busqueda) ||
+                u.correo_electronico.toLowerCase().includes(busqueda)
+            );
+
+            mostrarUsuarios(usuariosFiltrados);
+        }
+
+        function eliminar(id) {
+            if (!confirm('¿Eliminar usuario?')) return;
+            fetch('/api/usuarios/' + id, { method: 'DELETE' })
+                .then(res => {
+                    if (res.ok) {
+                        // Actualizar lista local sin recargar toda la página (opcional pero más rápido)
+                        listaUsuarios = listaUsuarios.filter(u => u.id !== id);
+                        filtrarTabla();
+                    } else {
+                        alert("Error al eliminar el usuario");
+                    }
+                });
+        }
+    </script>

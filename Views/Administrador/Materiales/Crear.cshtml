@@ -189,7 +189,6 @@
             });
 
             if (response.ok) {
-                alert("✅ Material guardado exitosamente");
                 window.location.href = '/MaterialesView/Index';
             } else {
                 const errorData = await response.json();

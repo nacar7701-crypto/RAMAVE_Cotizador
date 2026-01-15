@@ -29,6 +29,26 @@
         z-index: 1000;
     }
 
+    .btn-logout {
+        background: transparent;
+        color: var(--ramave-red);
+        border: 2px solid var(--ramave-red);
+        padding: 0.6rem 1.2rem;
+        border-radius: 8px;
+        font-weight: 700;
+        text-decoration: none;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .btn-logout:hover {
+        background: var(--ramave-red);
+        color: white;
+    }
+
     .logo-img {
         height: 50px;
         width: auto;
@@ -165,6 +185,9 @@
 
 <header class="header-nav">
     <img src="~/images/logo_ramave.png" alt="RAMAVE Logo" class="logo-img">
+    <a href="@Url.Action("Logout", "Auth")" class="btn-logout">
+        <span>🚪</span> Cerrar Sesión
+    </a>
 </header>
 
 <div class="container">
