@@ -33,7 +33,7 @@ namespace RAMAVE_Cotizador.Controllers
         public async Task<IActionResult> Create(UsuarioCreateViewModel model)
         {
             if (!ModelState.IsValid)
-                return View(model);
+                return View("~/Views/Administrador/Usuarios/Crear.cshtml", model);
 
             var usuario = new Usuario
             {
