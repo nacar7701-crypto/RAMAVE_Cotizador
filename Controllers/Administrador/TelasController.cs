@@ -156,20 +156,40 @@ namespace RAMAVE_Cotizador.Controllers
         {
             if (id != telaActualizada.id) return BadRequest(new { mensaje = "El ID no coincide" });
 
+            // Validar que el modelo exista (para evitar el error de Foreign Key que te salió)
+            var modeloExiste = await _context.Modelos.AnyAsync(m => m.id == telaActualizada.id_modelo);
+            if (!modeloExiste) return BadRequest(new { mensaje = "El ID de modelo no existe." });
+
             var telaDb = await _context.Telas.FindAsync(id);
             if (telaDb == null) return NotFound(new { mensaje = "Tela no encontrada" });
 
-            // Actualizamos la información básica
+            // --- LÓGICA DE COLORES UNIFICADA ---
+            // Si el usuario editó el texto de colores (ej: quitó uno o agregó otro con comas)
+            if (!string.IsNullOrEmpty(telaActualizada.color_nombre))
+            {
+                // Limpiamos el texto: quitamos espacios extra y evitamos entradas vacías
+                var listaLimpia = telaActualizada.color_nombre
+                    .Split(',')
+                    .Select(c => c.Trim())
+                    .Where(c => !string.IsNullOrEmpty(c));
+                    
+                telaDb.color_nombre = string.Join(", ", listaLimpia);
+            }
+            else 
+            {
+                telaDb.color_nombre = null;
+            }
+
+            // Actualizamos el resto de la información básica
             telaDb.id_modelo = telaActualizada.id_modelo;
             telaDb.catalogo = telaActualizada.catalogo;
-            telaDb.color_nombre = telaActualizada.color_nombre;
             telaDb.tipo = telaActualizada.tipo;
             telaDb.ancho = telaActualizada.ancho;
             telaDb.existencia = telaActualizada.existencia;
             telaDb.precio_ml_corte = telaActualizada.precio_ml_corte;
             telaDb.precio_ml_rollo = telaActualizada.precio_ml_rollo;
 
-            // Actualizamos los campos de cuidados (los que estaban en NULL)
+            // Campos de cuidados
             telaDb.lavar = telaActualizada.lavar;
             telaDb.temp_agua = telaActualizada.temp_agua;
             telaDb.exprimir = telaActualizada.exprimir;
@@ -178,7 +198,7 @@ namespace RAMAVE_Cotizador.Controllers
             telaDb.jabon = telaActualizada.jabon;
 
             await _context.SaveChangesAsync();
-            return Ok(new { mensaje = "Registro de tela actualizado con éxito" });
+            return Ok(new { mensaje = "Registro y colores actualizados con éxito", colores = telaDb.color_nombre });
         }
 
         // ==========================================
@@ -220,47 +240,5 @@ namespace RAMAVE_Cotizador.Controllers
             public string color { get; set; } = string.Empty;
         }
 
-        // Cambia el método POST en TelasController por este:
-        [HttpPost("{id}/colores")]
-        public async Task<IActionResult> AgregarColor(int id, [FromBody] ColorRequest request)
-        {
-            var tela = await _context.Telas.FindAsync(id);
-            if (tela == null) return NotFound();
-
-            // Usamos request.color en lugar de nuevoColor
-            var nuevoColor = request.color.Trim();
-            var colores = tela.color_nombre?.Split(',').Select(c => c.Trim()).Where(c => !string.IsNullOrEmpty(c)).ToList() ?? new List<string>();
-
-            if (!colores.Any(c => c.Equals(nuevoColor, StringComparison.OrdinalIgnoreCase)))
-            {
-                colores.Add(nuevoColor);
-                tela.color_nombre = string.Join(",", colores);
-                await _context.SaveChangesAsync();
-            }
-
-            return Ok(new { mensaje = "Color agregado", coloresActuales = colores });
-        }
-
-        // --- QUITAR UN COLOR DE UNA TELA ---
-        [HttpDelete("{id}/colores/{colorNombre}")]
-        public async Task<IActionResult> QuitarColor(int id, string colorNombre)
-        {
-            var tela = await _context.Telas.FindAsync(id);
-            if (tela == null) return NotFound();
-
-            var colores = tela.color_nombre?.Split(',').Select(c => c.Trim()).ToList() ?? new List<string>();
-
-            // Buscamos el color sin importar si escribió "verde" o "VERDE"
-            var colorAEliminar = colores.FirstOrDefault(c => c.Equals(colorNombre, StringComparison.OrdinalIgnoreCase));
-
-            if (colorAEliminar != null)
-            {
-                colores.Remove(colorAEliminar);
-                tela.color_nombre = string.Join(", ", colores);
-                await _context.SaveChangesAsync();
-            }
-
-            return Ok(new { mensaje = "Color eliminado", coloresRestantes = colores });
-        }
     }
 }
