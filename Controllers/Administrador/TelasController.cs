@@ -45,6 +45,7 @@ namespace RAMAVE_Cotizador.Controllers
                 t.ancho,
                 t.precio_ml_corte,
                 t.precio_ml_corte_iva,
+                t.precio_ml_rollo,
                 t.precio_ml_rollo_iva,
                 t.costo_x_m2,
                 cuidados = new { t.lavar, t.temp_agua, t.exprimir, t.planchar, t.blanqueador, t.jabon }
