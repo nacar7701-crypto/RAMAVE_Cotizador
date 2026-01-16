@@ -24,9 +24,10 @@
         width: 100%;
         padding: 20px;
         box-sizing: border-box;
-        padding-bottom: 100px; /* Espacio extra al final para los menús */
+        padding-bottom: 150px; /* Espacio para que los menús no se corten */
     }
 
+    /* Panel Superior */
     .header-panel {
         background: white;
         padding: 1.5rem;
@@ -48,16 +49,24 @@
     }
 
     .search-input {
-        width: 100%;
+        flex: 1;
+        min-width: 250px;
         padding: 12px 20px;
         border-radius: 50px;
         border: 1px solid var(--border-color);
         background: #f8f9fa;
         font-size: 0.95rem;
         outline: none;
-        box-sizing: border-box;
+        transition: 0.3s;
     }
 
+    .search-input:focus {
+        border-color: var(--ramave-red);
+        background: white;
+        box-shadow: 0 0 0 4px rgba(198, 40, 40, 0.1);
+    }
+
+    /* Botones */
     .btn-main {
         padding: 10px 18px;
         border-radius: 8px;
@@ -65,17 +74,24 @@
         cursor: pointer;
         border: none;
         font-size: 0.85rem;
+        transition: 0.2s;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
     }
 
     .btn-red { background: var(--ramave-red); color: white; }
+    .btn-red:hover { background: var(--ramave-dark); }
     .btn-gray { background: #e0e0e0; color: #333; }
+    .btn-gray:hover { background: #d0d0d0; }
 
+    /* Tabla */
     .table-card {
         background: white;
         border-radius: 12px;
         box-shadow: 0 4px 20px rgba(0,0,0,0.05);
         width: 100%;
-        /* Quitamos overflow hidden para que el menú pueda salir de la tabla */
     }
 
     table {
@@ -99,11 +115,18 @@
         font-size: 0.95rem;
     }
 
-    /* Menú Desplegable Corregido */
-    .action-menu { 
-        position: relative; 
-        text-align: right; 
+    /* Badge de Rol */
+    .badge-rol {
+        background: #f1f3f5;
+        color: #495057;
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
     }
+
+    /* Menú Desplegable */
+    .action-menu { position: relative; text-align: right; }
 
     .dot-btn {
         background: none; border: none; font-size: 1.2rem;
@@ -114,16 +137,16 @@
         display: none;
         position: absolute;
         right: 0;
-        top: 100%; /* Por defecto hacia abajo */
+        top: 100%;
         background: white;
-        min-width: 140px;
+        min-width: 150px;
         box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-        z-index: 999; /* Siempre por encima de todo */
+        z-index: 999;
         border-radius: 8px;
         border: 1px solid var(--border-color);
+        overflow: hidden;
     }
 
-    /* Clase para abrir el menú hacia arriba en el último registro */
     .dropdown-up {
         top: auto !important;
         bottom: 100% !important;
@@ -136,30 +159,34 @@
         border: none; background: none; text-align: left; cursor: pointer;
     }
 
-    .dropdown-content a:hover, .dropdown-content button:hover { background: #f8f9fa; color: var(--ramave-red); }
+    .dropdown-content a:hover, .dropdown-content button:hover { 
+        background: #fff5f5; 
+        color: var(--ramave-red); 
+    }
 
     .show { display: block; }
 
     /* RESPONSIVO */
     @@media (max-width: 768px) {
+        .header-panel { flex-direction: column; align-items: stretch; }
         table thead { display: none; }
         table, tbody, tr, td { display: block; width: 100%; }
-        tr { margin-bottom: 15px; border: 1px solid var(--border-color); border-radius: 12px; padding: 10px; background: white; }
-        td { display: flex; justify-content: space-between; border: none; padding: 8px 10px; text-align: right; }
-        td::before { content: attr(data-label); font-weight: 700; color: #888; font-size: 0.75rem; }
+        tr { margin-bottom: 15px; border: 1px solid var(--border-color); border-radius: 12px; background: white; overflow: hidden; }
+        td { display: flex; justify-content: space-between; border-bottom: 1px solid #f8f9fa; padding: 12px 15px; }
+        td::before { content: attr(data-label); font-weight: 700; color: #888; font-size: 0.75rem; text-transform: uppercase; }
     }
 </style>
 
 <div class="wrapper">
     <div class="header-panel">
-        <h2>Usuarios</h2>
-        <div class="btn-actions-top" style="display:flex; gap:10px;">
-            <button class="btn-main btn-gray" onclick="location.href='@Url.Action("Administrador", "Home")'">Menú</button>
-            <button class="btn-main btn-red" onclick="location.href='/UsuariosView/Create'">➕ Nuevo</button>
+        <div style="display:flex; align-items:center; gap:15px;">
+            <h2>Usuarios</h2>
+            <div class="btn-actions-top">
+                <button class="btn-main btn-gray" onclick="location.href='@Url.Action("Administrador", "Home")'">Menú</button>
+                <button class="btn-main btn-red" onclick="location.href='/UsuariosView/Create'">➕ Nuevo</button>
+            </div>
         </div>
-        <div style="flex:1; min-width:250px;">
-            <input type="text" id="txtBuscar" class="search-input" placeholder="🔍 Buscar..." onkeyup="filtrarTabla()">
-        </div>
+        <input type="text" id="txtBuscar" class="search-input" placeholder="🔍 Buscar por nombre o correo..." onkeyup="filtrarTabla()">
     </div>
 
     <div class="table-card">
@@ -167,12 +194,13 @@
             <thead>
                 <tr>
                     <th>Nombre</th>
-                    <th>Correo</th>
+                    <th>Correo Electrónico</th>
                     <th>Rol</th>
                     <th style="width: 50px;"></th>
                 </tr>
             </thead>
-            <tbody id="tablaUsuarios"></tbody>
+            <tbody id="tablaUsuarios">
+                </tbody>
         </table>
     </div>
 </div>
@@ -180,30 +208,38 @@
 <script>
     let listaUsuarios = [];
 
-    fetch('/api/usuarios').then(r => r.json()).then(data => {
-        listaUsuarios = data;
-        mostrarUsuarios(listaUsuarios);
-    });
+    // Cargar datos inicialmente
+    fetch('/api/usuarios')
+        .then(r => r.json())
+        .then(data => {
+            listaUsuarios = data;
+            mostrarUsuarios(listaUsuarios);
+        });
 
     function mostrarUsuarios(usuarios) {
         const tbody = document.getElementById('tablaUsuarios');
         tbody.innerHTML = '';
 
+        if (usuarios.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:30px; color:#888;">No se encontraron usuarios</td></tr>';
+            return;
+        }
+
         usuarios.forEach((u, index) => {
-            // Detectar si es uno de los últimos 2 registros para abrir el menú hacia arriba
+            // El menú abre hacia arriba si es uno de los últimos 2 registros
             const isLast = (index >= usuarios.length - 2 && usuarios.length > 3);
             
             tbody.innerHTML += `
             <tr>
                 <td data-label="Nombre"><strong>${u.nombre}</strong></td>
                 <td data-label="Correo">${u.correo_electronico}</td>
-                <td data-label="Rol"><span>${u.rol}</span></td>
+                <td data-label="Rol"><span class="badge-rol">${u.rol}</span></td>
                 <td>
                     <div class="action-menu">
-                        <button class="dot-btn" onclick="toggleMenu(event, ${u.id}, ${isLast})">⋮</button>
+                        <button class="dot-btn" onclick="toggleMenu(event, ${u.id})">⋮</button>
                         <div id="dropdown-${u.id}" class="dropdown-content ${isLast ? 'dropdown-up' : ''}">
                             <a href="/UsuariosView/Edit/${u.id}">✏️ Editar</a>
-                            <button onclick="eliminar(${u.id})">❌ Eliminar</button>
+                            <button onclick="eliminar(${u.id})" style="color: #d32f2f;">❌ Eliminar</button>
                         </div>
                     </div>
                 </td>
@@ -211,11 +247,43 @@
         });
     }
 
-    function toggleMenu(event, id, isLast) {
+    // --- FUNCIÓN PARA ELIMINAR ---
+    function eliminar(id) {
+        if (!confirm('¿Seguro que deseas eliminar permanentemente este usuario?')) return;
+
+        fetch('/api/usuarios/' + id, { 
+            method: 'DELETE' 
+        })
+        .then(res => {
+            if (res.ok) {
+                // Actualizar lista local sin recargar
+                listaUsuarios = listaUsuarios.filter(u => u.id !== id);
+                filtrarTabla(); // Mantiene el filtro si el usuario estaba buscando
+            } else {
+                alert("Error: No se pudo eliminar el registro.");
+            }
+        })
+        .catch(err => console.error("Error al eliminar:", err));
+    }
+
+    // --- FUNCIÓN PARA FILTRAR ---
+    function filtrarTabla() {
+        const busqueda = document.getElementById('txtBuscar').value.toLowerCase();
+        const filtrados = listaUsuarios.filter(u => 
+            u.nombre.toLowerCase().includes(busqueda) || 
+            u.correo_electronico.toLowerCase().includes(busqueda) ||
+            u.rol.toLowerCase().includes(busqueda)
+        );
+        mostrarUsuarios(filtrados);
+    }
+
+    // Control del Menú Desplegable
+    function toggleMenu(event, id) {
         event.stopPropagation();
         const el = document.getElementById('dropdown-' + id);
         const wasShowing = el.classList.contains('show');
         
+        // Cerrar todos los demás primero
         document.querySelectorAll('.dropdown-content').forEach(d => d.classList.remove('show'));
         
         if (!wasShowing) {
@@ -223,6 +291,7 @@
         }
     }
 
+    // Cerrar menús al hacer clic en cualquier otra parte
     window.onclick = function() {
         document.querySelectorAll('.dropdown-content').forEach(d => d.classList.remove('show'));
     }

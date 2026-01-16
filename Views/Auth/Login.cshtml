@@ -8,197 +8,239 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Login | Cotizador de Persianas</title>
+    <title>Login | RAMAVE Cotizador</title>
+    @* Importamos la misma fuente que el resto del sistema *@
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
+        :root {
+            --ramave-red: #c62828;
+            --ramave-red-dark: #a81f1f;
+            --text-main: #2d3436;
+            --border-color: #ced4da;
+        }
+
         * {
             box-sizing: border-box;
-            font-family: 'Segoe UI', sans-serif;
+            font-family: 'Inter', sans-serif;
         }
 
         body {
             margin: 0;
             min-height: 100vh;
-            background: url('/images/background.jpg') no-repeat center center / cover;
-        }
-
-        .overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(255,255,255,.85);
-        }
-
-        /* LOGO */
-        .logo {
-            position: absolute;
-            top: 20px;
-            right: 30px;
-            z-index: 3;
-        }
-
-        .logo img {
-            height: 50px;
-        }
-
-        /* CONTENEDOR */
-        .login-container {
-            position: relative;
-            z-index: 4;
-            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 1rem;
+            /* Fondo con imagen y overlay sutil */
+            background: linear-gradient(rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.8)), 
+                        url('/images/background.jpg') no-repeat center center / cover;
+            padding: 1.5rem;
         }
 
-        /* TARJETA */
+        /* LOGO SUPERIOR */
+        .logo-top {
+            position: absolute;
+            top: 30px;
+            right: 40px;
+            z-index: 10;
+        }
+
+        .logo-top img {
+            height: 60px;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+        }
+
+        /* TARJETA DE LOGIN */
         .login-card {
             width: 100%;
-            max-width: 380px;
+            max-width: 400px;
             background: white;
-            padding: 2.5rem;
-            border-radius: 10px;
-            box-shadow: 0 10px 30px rgba(0,0,0,.15);
+            padding: 3rem 2.5rem;
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            border-top: 6px solid var(--ramave-red);
+            position: relative;
         }
 
         .login-card h2 {
-            margin-bottom: 1.5rem;
-            color: #c62828;
+            margin: 0 0 0.5rem 0;
+            color: var(--ramave-red);
             text-align: center;
-            font-size: 1.4rem;
+            font-size: 1.6rem;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #636e72;
+            font-size: 0.9rem;
+            margin-bottom: 2.5rem;
         }
 
         .form-group {
-            margin-bottom: 1.2rem;
+            margin-bottom: 1.5rem;
         }
 
         label {
-            font-size: .9rem;
-            color: #555;
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 0.5rem;
         }
 
         input {
             width: 100%;
-            padding: 10px;
-            margin-top: 5px;
-            border-radius: 6px;
-            border: 1px solid #ccc;
-            font-size: .95rem;
+            padding: 12px 16px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            font-size: 1rem;
+            transition: all 0.2s;
+            background-color: #f8f9fa;
         }
 
         input:focus {
-            border-color: #c62828;
+            border-color: var(--ramave-red);
             outline: none;
+            background-color: white;
+            box-shadow: 0 0 0 4px rgba(198, 40, 40, 0.1);
         }
 
+        /* CONTENEDOR PASSWORD */
         .password-wrapper {
             position: relative;
         }
 
         .toggle-password {
             position: absolute;
-            right: 10px;
+            right: 14px;
             top: 50%;
             transform: translateY(-50%);
             cursor: pointer;
-            color: #c62828;
-            font-size: .9rem;
+            color: #b2bec3;
+            font-size: 1.2rem;
+            transition: 0.2s;
+            user-select: none;
         }
 
+        .toggle-password:hover {
+            color: var(--ramave-red);
+        }
+
+        /* ERRORES */
         .error {
-            color: #c62828;
-            font-size: .8rem;
-            margin-top: 4px;
+            color: #d63031;
+            font-size: 0.8rem;
+            margin-top: 6px;
+            font-weight: 500;
+            display: block;
         }
 
+        .validation-summary {
+            background: #fff5f5;
+            padding: 10px;
+            border-radius: 8px;
+            border-left: 4px solid #d63031;
+            margin-bottom: 1rem;
+        }
+
+        /* BOTÓN */
         button {
             width: 100%;
-            padding: 12px;
-            background: #c62828;
+            padding: 14px;
+            background: var(--ramave-red);
             border: none;
             color: white;
             font-size: 1rem;
-            border-radius: 6px;
+            font-weight: 700;
+            border-radius: 12px;
             cursor: pointer;
             margin-top: 1rem;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(198, 40, 40, 0.2);
         }
 
         button:hover {
-            background: #a81f1f;
+            background: var(--ramave-red-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(198, 40, 40, 0.3);
         }
 
-        /* 📱 CELULAR */
+        button:active {
+            transform: translateY(0);
+        }
+
+        /* RESPONSIVO */
         @@media (max-width: 480px) {
+            .logo-top {
+                position: static;
+                margin-bottom: 20px;
+                text-align: center;
+            }
+            body {
+                flex-direction: column;
+                justify-content: flex-start;
+                padding-top: 40px;
+            }
             .login-card {
-                padding: 1.8rem;
-            }
-
-            .login-card h2 {
-                font-size: 1.2rem;
-            }
-
-            .logo img {
-                height: 40px;
-            }
-        }
-
-        /* 📱 TABLET */
-        @@media (min-width: 481px) and (max-width: 1024px) {
-            .login-card {
-                max-width: 420px;
-            }
-
-            .logo img {
-                height: 45px;
+                padding: 2rem 1.5rem;
             }
         }
     </style>
 </head>
 <body>
 
-<div class="overlay"></div>
-
-<div class="logo">
-    <img src="/images/logo.jpg" alt="Logo empresa" />
+<div class="logo-top">
+    <img src="/images/logo.jpg" alt="RAMAVE Logo" />
 </div>
 
-<div class="login-container">
-    <div class="login-card">
-        <h2>Cotizador de Persianas</h2>
+<div class="login-card">
+    <h2>Cotizador RAMAVE</h2>
+    <p class="subtitle">Bienvenido, ingrese sus credenciales</p>
 
-        <form asp-action="Login" method="post" novalidate>
+    <form asp-action="Login" method="post" novalidate>
 
-            <div class="form-group">
-                <label asp-for="Correo"></label>
-                <input asp-for="Correo" />
-                <span class="error" asp-validation-for="Correo"></span>
+        @if (ViewBag.Error != null || !ViewData.ModelState.IsValid)
+        {
+            <div class="validation-summary">
+                @if (ViewBag.Error != null)
+                {
+                    <span class="error">@ViewBag.Error</span>
+                }
+                <div asp-validation-summary="ModelOnly" class="error"></div>
             </div>
+        }
 
-            <div class="form-group">
-                <label asp-for="Password"></label>
-                <div class="password-wrapper">
-                    <input asp-for="Password" id="password" type="password" />
-                    <span class="toggle-password" onclick="togglePassword()">👁</span>
-                </div>
-                <span class="error" asp-validation-for="Password"></span>
+        <div class="form-group">
+            <label asp-for="Correo">Correo Electrónico</label>
+            <input asp-for="Correo" type="email" placeholder="ejemplo@correo.com" />
+            <span class="error" asp-validation-for="Correo"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Password">Contraseña</label>
+            <div class="password-wrapper">
+                <input asp-for="Password" id="password" type="password" placeholder="••••••••" />
+                <span class="toggle-password" onclick="togglePassword()">👁️</span>
             </div>
+            <span class="error" asp-validation-for="Password"></span>
+        </div>
 
-            @if (ViewBag.Error != null)
-            {
-                <div class="error">@ViewBag.Error</div>
-            }
-
-            <div asp-validation-summary="ModelOnly" class="error"></div>
-
-            <button type="submit">Iniciar sesión</button>
-        </form>
-    </div>
+        <button type="submit">Entrar al Sistema</button>
+    </form>
 </div>
 
 <script>
     function togglePassword() {
         const input = document.getElementById("password");
-        input.type = input.type === "password" ? "text" : "password";
+        const icon = document.querySelector(".toggle-password");
+        if (input.type === "password") {
+            input.type = "text";
+            icon.textContent = "🙈"; // Cambia el icono al mostrar
+        } else {
+            input.type = "password";
+            icon.textContent = "👁️";
+        }
     }
 </script>
 

@@ -4,14 +4,30 @@
 }
 
 <style>
-    body { background: #f4f6f9; font-family: 'Segoe UI', sans-serif; }
+    @@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+    :root {
+        --ramave-red: #c62828;
+        --ramave-red-dark: #a81f1f;
+        --edit-accent: #ffa000; /* Naranja para indicar edición */
+        --bg-gray: #f4f6f9;
+        --text-dark: #2d3436;
+        --border-color: #ced4da;
+    }
+
+    body {
+        background-color: var(--bg-gray);
+        font-family: 'Inter', sans-serif;
+        margin: 0;
+        color: var(--text-dark);
+    }
 
     .page-container {
-        min-height: 90vh;
+        min-height: 100vh;
         display: flex;
         justify-content: center;
         align-items: center;
-        padding: 2rem;
+        padding: 1.5rem;
     }
 
     .card-form {
@@ -19,33 +35,59 @@
         width: 100%;
         max-width: 600px;
         padding: 2.5rem;
-        border-radius: 16px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-        border-top: 5px solid #ffa000; /* Color naranja para diferenciar de "Crear" */
+        border-radius: 20px;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        border-top: 6px solid var(--edit-accent);
+        box-sizing: border-box;
     }
 
-    h2 { text-align: center; color: #333; margin-bottom: 2rem; }
+    h2 {
+        text-align: center;
+        color: var(--text-dark);
+        margin: 0 0 0.5rem 0;
+        font-weight: 700;
+        font-size: 1.7rem;
+    }
 
-    .form-group { margin-bottom: 1.2rem; }
+    .subtitle {
+        text-align: center;
+        color: #636e72;
+        font-size: 0.9rem;
+        margin-bottom: 2rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.2rem;
+    }
 
     label {
         display: block;
+        font-size: 0.85rem;
         font-weight: 600;
-        margin-bottom: 0.4rem;
-        color: #444;
+        color: var(--text-dark);
+        margin-bottom: 0.5rem;
     }
 
     input, select {
         width: 100%;
-        padding: 0.8rem;
-        border-radius: 8px;
-        border: 1px solid #ddd;
-        outline: none;
+        padding: 0.8rem 1rem;
+        border-radius: 10px;
+        border: 1px solid var(--border-color);
+        font-size: 0.95rem;
+        transition: all 0.2s;
+        box-sizing: border-box;
     }
 
-    input:focus { border-color: #ffa000; box-shadow: 0 0 0 3px rgba(255, 160, 0, 0.1); }
+    input:focus, select:focus {
+        border-color: var(--edit-accent);
+        outline: none;
+        box-shadow: 0 0 0 4px rgba(255, 160, 0, 0.1);
+    }
 
-    .price-input-wrapper { position: relative; }
+    .price-input-wrapper {
+        position: relative;
+    }
+
     .price-input-wrapper::before {
         content: "$";
         position: absolute;
@@ -53,96 +95,138 @@
         top: 50%;
         transform: translateY(-50%);
         color: #555;
+        font-weight: bold;
+        z-index: 5;
     }
-    .price-input-wrapper input { padding-left: 25px; }
+
+    .price-input-wrapper input {
+        padding-left: 28px;
+    }
 
     .iva-highlight {
-        background-color: #fff9f0;
-        border: 1px dashed #ffa000;
+        background-color: #fffaf0;
+        border: 2px dashed var(--edit-accent) !important;
         color: #e65100;
-        font-weight: bold;
+        font-weight: 700;
+        font-size: 1.1rem;
     }
 
     .buttons-container {
-        display: flex;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
         gap: 1rem;
         margin-top: 2rem;
     }
 
     .btn {
-        flex: 1;
-        padding: 0.9rem;
-        border-radius: 8px;
+        padding: 0.85rem;
+        border-radius: 10px;
         border: none;
-        font-weight: bold;
+        font-weight: 700;
         cursor: pointer;
+        font-size: 0.95rem;
+        transition: 0.3s;
         text-align: center;
         text-decoration: none;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 
-    .btn-save { background: #c62828; color: white; }
-    .btn-back { background: #eee; color: #555; }
+    .btn-save {
+        background: var(--ramave-red);
+        color: white;
+    }
+
+    .btn-save:hover {
+        background: var(--ramave-red-dark);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(198, 40, 40, 0.3);
+    }
+
+    .btn-back {
+        background: #e9ecef;
+        color: #495057;
+    }
+
+    .btn-back:hover {
+        background: #dee2e6;
+    }
+
+    /* Animación de carga */
+    .loading-overlay {
+        text-align: center;
+        padding: 20px;
+        color: var(--edit-accent);
+        font-weight: 600;
+    }
 </style>
 
 <div class="page-container">
     <div class="card-form">
-        <h2>Editar Material</h2>
+        <div id="loadingContent" class="loading-overlay">⌛ Cargando datos del material...</div>
+        
+        <div id="formContent" style="display:none;">
+            <h2>Editar Material</h2>
+            <p class="subtitle">Modifique los campos necesarios y guarde los cambios</p>
 
-        <form id="formEditarMaterial">
-            <input type="hidden" id="materialId" value="@ViewContext.RouteData.Values["id"]" />
+            <form id="formEditarMaterial">
+                <input type="hidden" id="materialId" value="@ViewContext.RouteData.Values["id"]" />
 
-            <div class="form-group">
-                <label>Sistema</label>
-                <input type="text" id="sistema" required />
-            </div>
-
-            <div class="form-group">
-                <label>Tipo</label>
-                <input type="text" id="tipo" required />
-            </div>
-
-            <div class="form-group">
-                <label>Concepto / Material</label>
-                <input type="text" id="concepto" required />
-            </div>
-
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
                 <div class="form-group">
-                    <label>U.M.</label>
-                    <select id="um">
-                        <option value="M2">M2</option>
-                        <option value="ML">ML</option>
-                        <option value="PZA">PZA</option>
-                        <option value="KIT">KIT</option>
-                    </select>
+                    <label>Sistema</label>
+                    <input type="text" id="sistema" placeholder="Ej: Enrollable" required />
                 </div>
-                <div class="form-group">
-                    <label>Precio Unitario</label>
-                    <div class="price-input-wrapper">
-                        <input type="number" id="precio_unitario" step="0.01" required oninput="calcularIva()" />
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                        <label>Tipo</label>
+                        <input type="text" id="tipo" placeholder="Ej: Blackout" required />
+                    </div>
+                    <div class="form-group">
+                        <label>Unidad de Medida</label>
+                        <select id="um">
+                            <option value="M2">M2 (Metro cuadrado)</option>
+                            <option value="ML">ML (Metro lineal)</option>
+                            <option value="PZA">PZA (Pieza)</option>
+                            <option value="KIT">KIT</option>
+                        </select>
                     </div>
                 </div>
-            </div>
 
-            <div class="form-group">
-                <label>Precio con IVA (16%)</label>
-                <div class="price-input-wrapper">
-                    <input type="text" id="precio_con_iva" class="iva-highlight" readonly />
+                <div class="form-group">
+                    <label>Concepto / Material</label>
+                    <input type="text" id="concepto" placeholder="Ej: Tela Americana Premium" required />
                 </div>
-            </div>
 
-            <div class="buttons-container">
-                <a href="/MaterialesView/Index" class="btn btn-back">Volver</a>
-                <button type="submit" class="btn btn-save">Actualizar Cambios</button>
-            </div>
-        </form>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                        <label>Precio Unitario (Base)</label>
+                        <div class="price-input-wrapper">
+                            <input type="number" id="precio_unitario" step="0.01" placeholder="0.00" required oninput="calcularIva()" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Precio Final (IVA 16%)</label>
+                        <div class="price-input-wrapper">
+                            <input type="text" id="precio_con_iva" class="iva-highlight" readonly />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="buttons-container">
+                    <a href="/MaterialesView/Index" class="btn btn-back">Volver al Catálogo</a>
+                    <button type="submit" class="btn btn-save" id="btnActualizar">Actualizar Cambios</button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
 <script>
     const id = document.getElementById('materialId').value;
 
-    // 1. Cargar datos actuales del material
+    // 1. Cargar datos actuales
     async function cargarDatos() {
         try {
             const res = await fetch(`/api/CostosMateriales/${id}`);
@@ -150,28 +234,38 @@
             
             const m = await res.json();
             
-            // Llenar campos
             document.getElementById('sistema').value = m.sistema;
             document.getElementById('tipo').value = m.tipo;
             document.getElementById('concepto').value = m.concepto;
             document.getElementById('um').value = m.um;
             document.getElementById('precio_unitario').value = m.precio_unitario;
             
-            calcularIva(); // Calcular IVA inicial
+            calcularIva();
+            
+            // Mostrar formulario y quitar mensaje de carga
+            document.getElementById('loadingContent').style.display = 'none';
+            document.getElementById('formContent').style.display = 'block';
+
         } catch (error) {
-            alert("Error al cargar datos");
+            console.error(error);
+            alert("❌ Error: No se pudieron recuperar los datos del material.");
             window.location.href = '/MaterialesView/Index';
         }
     }
 
     function calcularIva() {
         const base = parseFloat(document.getElementById('precio_unitario').value) || 0;
-        document.getElementById('precio_con_iva').value = (base * 1.16).toFixed(2);
+        const total = base * 1.16;
+        document.getElementById('precio_con_iva').value = total.toFixed(2);
     }
 
     // 2. Enviar actualización (PUT)
     document.getElementById('formEditarMaterial').addEventListener('submit', async (e) => {
         e.preventDefault();
+        
+        const btn = document.getElementById('btnActualizar');
+        btn.disabled = true;
+        btn.innerText = "Actualizando...";
 
         const data = {
             id: parseInt(id),
@@ -193,10 +287,14 @@
             if (res.ok) {
                 window.location.href = '/MaterialesView/Index';
             } else {
-                alert("❌ Error al actualizar");
+                alert("❌ Error: No se pudieron guardar los cambios.");
+                btn.disabled = false;
+                btn.innerText = "Actualizar Cambios";
             }
         } catch (error) {
-            alert("❌ Error de conexión");
+            alert("❌ Error de red.");
+            btn.disabled = false;
+            btn.innerText = "Actualizar Cambios";
         }
     });
 

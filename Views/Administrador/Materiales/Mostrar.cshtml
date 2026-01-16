@@ -3,132 +3,175 @@
 }
 
 <style>
+    @@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
     :root {
         --ramave-red: #c62828;
         --ramave-dark: #8e0000;
-        --ramave-gray: #f4f6f9;
+        --bg-body: #f0f2f5;
+        --text-main: #1a1a1a;
+        --border-color: #e0e0e0;
     }
 
-    body { background-color: var(--ramave-gray); font-family: 'Segoe UI', sans-serif; }
+    body {
+        background-color: var(--bg-body);
+        font-family: 'Inter', sans-serif;
+        margin: 0;
+        color: var(--text-main);
+    }
 
-    .container { padding: 1.5rem; }
+    .wrapper {
+        width: 100%;
+        padding: 20px;
+        box-sizing: border-box;
+    }
 
-    /* Encabezado y Buscador */
-    .header-section {
+    /* Encabezado */
+    .header-panel {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 12px;
         display: flex;
         justify-content: space-between;
         align-items: center;
         flex-wrap: wrap;
-        gap: 1.5rem;
-        margin-bottom: 2rem;
-        background: white;
-        padding: 1.5rem;
-        border-radius: 12px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        gap: 1rem;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
     }
 
-    .search-box {
+    .header-info h2 {
+        margin: 0;
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: var(--ramave-red);
+    }
+
+    .header-info p {
+        margin: 4px 0 0;
+        color: #666;
+        font-size: 0.9rem;
+    }
+
+    /* Buscador */
+    .search-input {
         flex: 1;
-        min-width: 300px;
-        position: relative;
-    }
-
-    .input-search {
-        width: 100%;
-        padding: .8rem 1.2rem;
-        border-radius: 8px;
-        border: 1px solid #ddd;
+        min-width: 250px;
+        padding: 12px 20px;
+        border-radius: 50px;
+        border: 1px solid var(--border-color);
+        background: #f8f9fa;
+        font-size: 0.95rem;
         outline: none;
-        font-size: 1rem;
         transition: 0.3s;
     }
 
-    .input-search:focus {
+    .search-input:focus {
         border-color: var(--ramave-red);
-        box-shadow: 0 0 0 3px rgba(198, 40, 40, 0.1);
+        background: white;
+        box-shadow: 0 0 0 4px rgba(198, 40, 40, 0.1);
     }
 
     /* Botones */
-    .btn {
-        padding: .75rem 1.5rem;
+    .btn-group { display: flex; gap: 10px; }
+
+    .btn-main {
+        padding: 10px 18px;
         border-radius: 8px;
-        border: none;
-        cursor: pointer;
         font-weight: 600;
-        transition: 0.2s;
+        cursor: pointer;
+        border: none;
+        font-size: 0.85rem;
         display: inline-flex;
         align-items: center;
-        gap: 8px;
+        gap: 6px;
+        transition: 0.2s;
         text-decoration: none;
     }
 
-    .btn-main { background: var(--ramave-red); color: white; }
-    .btn-main:hover { background: var(--ramave-dark); transform: translateY(-2px); }
-    
-    .btn-edit { background: #ffa000; color: white; padding: .5rem .7rem; }
-    .btn-delete { background: #d32f2f; color: white; padding: .5rem .7rem; }
+    .btn-red { background: var(--ramave-red); color: white; }
+    .btn-red:hover { background: var(--ramave-dark); transform: translateY(-1px); }
+    .btn-gray { background: #e0e0e0; color: #333; }
+    .btn-gray:hover { background: #d0d0d0; }
 
-    /* Tabla Estilizada */
+    /* Tabla */
     .table-card {
         background: white;
         border-radius: 12px;
-        overflow: hidden;
         box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        overflow: hidden;
     }
 
     table { width: 100%; border-collapse: collapse; }
-    
-    thead { background: var(--ramave-red); color: white; }
-    
-    th { padding: 1.2rem 1rem; text-align: left; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px; }
-    
-    td { padding: 1.1rem 1rem; border-bottom: 1px solid #eee; font-size: 0.95rem; vertical-align: middle; }
+
+    th {
+        background: #f8f9fa;
+        padding: 15px 20px;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        color: #666;
+        border-bottom: 2px solid var(--border-color);
+        text-align: left;
+        letter-spacing: 0.5px;
+    }
+
+    td {
+        padding: 15px 20px;
+        border-bottom: 1px solid var(--border-color);
+        font-size: 0.9rem;
+        color: #444;
+    }
 
     tr:hover { background-color: #fff9f9; }
 
-    /* Formatos de Precio */
-    .price-base { color: #555; font-weight: 500; }
-    .price-iva { color: var(--ramave-red); font-weight: 700; font-size: 1.05rem; }
-    
+    /* Estilos de contenido de celda */
     .um-badge {
-        background: #eceff1;
+        background: #f1f3f5;
+        color: #495057;
         padding: 4px 10px;
         border-radius: 6px;
         font-size: 0.75rem;
-        color: #455a64;
-        font-weight: bold;
+        font-weight: 700;
     }
 
+    .price-base { color: #666; }
+    .price-iva { color: var(--ramave-red); font-weight: 700; font-size: 1rem; }
+
+    .action-btn {
+        background: none; border: none; cursor: pointer;
+        padding: 6px; border-radius: 6px; transition: 0.2s;
+        font-size: 1.1rem;
+    }
+    .btn-edit-sm:hover { background: #fff3e0; }
+    .btn-delete-sm:hover { background: #ffebee; }
+
+    /* RESPONSIVO */
     @@media (max-width: 992px) {
-        .header-section { flex-direction: column; align-items: stretch; }
-        thead { display: none; }
-        tr { display: block; border: 1px solid #eee; margin-bottom: 1.5rem; border-radius: 12px; padding: 1rem; background: white; }
-        td { display: flex; justify-content: space-between; align-items: center; border: none; padding: .6rem 0; text-align: right; }
-        td::before { content: attr(data-label); font-weight: bold; color: var(--ramave-red); text-transform: uppercase; font-size: 0.75rem; }
-        .actions { justify-content: flex-end; margin-top: 10px; border-top: 1px solid #eee; pt: 10px; }
+        .header-panel { flex-direction: column; align-items: stretch; }
+        table thead { display: none; }
+        table, tbody, tr, td { display: block; width: 100%; }
+        tr { margin-bottom: 15px; border: 1px solid var(--border-color); border-radius: 12px; padding: 10px; background: white; }
+        td { display: flex; justify-content: space-between; border: none; padding: 8px 10px; text-align: right; }
+        td::before { content: attr(data-label); font-weight: 700; color: #888; font-size: 0.75rem; }
     }
 </style>
 
-<div class="container">
-    <div class="header-section">
-        <div>
-            <h2 style="margin:0; color: #222;">📦 Gestión de Materiales</h2>
-            <p style="margin:5px 0 0; color: #777;">Catálogo de precios unitarios e impuestos</p>
+<div class="wrapper">
+    <div class="header-panel">
+        <div class="header-info">
+            <h2>📦 Gestión de Materiales</h2>
+            <p>Catálogo de precios unitarios e impuestos</p>
         </div>
 
-        <div class="search-box">
-            <input type="text" id="inputBusqueda" class="input-search" 
-                   placeholder="Buscar por sistema, tipo o concepto..." onkeyup="filtrarMateriales()">
-        </div>
+        <input type="text" id="inputBusqueda" class="search-input" 
+               placeholder="🔍 Buscar por sistema, tipo o concepto..." onkeyup="filtrarMateriales()">
 
-        <div style="display: flex; gap: 10px;">
-            <button class="btn" style="background: #ccc; color: #333;" 
-                    onclick="location.href='@Url.Action("Administrador", "Home")'">
-                <span>🏠</span> Menú
+        <div class="btn-group">
+            <button class="btn-main btn-gray" onclick="location.href='@Url.Action("Administrador", "Home")'">
+                🏠 Menú
             </button>
-
-            <button class="btn btn-main" onclick="location.href='/MaterialesView/Crear'">
-                <span>➕</span> Agregar Material
+            <button class="btn-main btn-red" onclick="location.href='/MaterialesView/Crear'">
+                ➕ Nuevo Material
             </button>
         </div>
     </div>
@@ -143,7 +186,7 @@
                     <th>U.M.</th>
                     <th>Precio Unit.</th>
                     <th>Precio c/IVA</th>
-                    <th>Acciones</th>
+                    <th style="width: 80px; text-align:center;">Acciones</th>
                 </tr>
             </thead>
             <tbody id="listaMateriales">
@@ -155,7 +198,7 @@
 <script>
     let cacheMateriales = [];
 
-    // 1. Cargar Datos desde el API
+    // 1. Cargar Datos
     async function cargarMateriales() {
         try {
             const respuesta = await fetch('/api/CostosMateriales');
@@ -164,19 +207,19 @@
             cacheMateriales = await respuesta.json();
             renderizarTabla(cacheMateriales);
         } catch (error) {
-            console.error("Error al cargar materiales:", error);
+            console.error("Error:", error);
             document.getElementById('listaMateriales').innerHTML = 
-                '<tr><td colspan="7" style="text-align:center; color:red; padding:2rem;">Error al conectar con la base de datos</td></tr>';
+                '<tr><td colspan="7" style="text-align:center; color:red; padding:30px;">⚠️ No se pudo cargar la información</td></tr>';
         }
     }
 
-    // 2. Función para Dibujar la Tabla
+    // 2. Renderizar Tabla
     function renderizarTabla(datos) {
         const tbody = document.getElementById('listaMateriales');
         tbody.innerHTML = '';
 
         if (datos.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:2rem; color:#999;">No se encontraron registros</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:30px; color:#999;">No hay registros para mostrar</td></tr>';
             return;
         }
 
@@ -189,46 +232,42 @@
                     <td data-label="U.M."><span class="um-badge">${m.um}</span></td>
                     <td data-label="Precio Unit." class="price-base">$${m.precio_unitario.toLocaleString('es-MX', {minimumFractionDigits: 2})}</td>
                     <td data-label="Precio c/IVA" class="price-iva">$${m.precio_con_iva.toLocaleString('es-MX', {minimumFractionDigits: 2})}</td>
-                    <td data-label="Acciones" class="actions">
-                        <button class="btn btn-edit" onclick="location.href='/MaterialesView/Editar/${m.id}'" title="Editar">✏️</button>
-                        <button class="btn btn-delete" onclick="eliminarMaterial(${m.id})" title="Eliminar">❌</button>
+                    <td data-label="Acciones" style="text-align:center;">
+                        <button class="action-btn btn-edit-sm" onclick="location.href='/MaterialesView/Editar/${m.id}'" title="Editar">✏️</button>
+                        <button class="action-btn btn-delete-sm" onclick="eliminarMaterial(${m.id})" title="Eliminar">❌</button>
                     </td>
                 </tr>
             `;
         });
     }
 
-    // 3. Buscador en Tiempo Real
+    // 3. Buscador
     function filtrarMateriales() {
         const query = document.getElementById('inputBusqueda').value.toLowerCase();
-        
         const filtrados = cacheMateriales.filter(m => 
             m.sistema.toLowerCase().includes(query) || 
             m.tipo.toLowerCase().includes(query) || 
             m.concepto.toLowerCase().includes(query)
         );
-
         renderizarTabla(filtrados);
     }
 
-    // 4. Eliminar Registro
+    // 4. Eliminar
     async function eliminarMaterial(id) {
-        if (!confirm('¿Seguro que deseas eliminar este material?')) return;
+        if (!confirm('¿Estás seguro de que deseas eliminar este material permanentemente?')) return;
 
         try {
             const res = await fetch('/api/CostosMateriales/' + id, { method: 'DELETE' });
             if (res.ok) {
-                // Actualizar lista local sin recargar página
                 cacheMateriales = cacheMateriales.filter(m => m.id !== id);
                 renderizarTabla(cacheMateriales);
             } else {
-                alert("No se pudo eliminar el registro.");
+                alert("No se pudo eliminar el registro. Intente de nuevo.");
             }
         } catch (error) {
-            alert("Ocurrió un error al intentar eliminar.");
+            alert("Error de conexión al eliminar.");
         }
     }
 
-    // Iniciar carga
     cargarMateriales();
 </script>
