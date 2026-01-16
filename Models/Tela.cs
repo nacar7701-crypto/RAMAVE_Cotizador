@@ -45,6 +45,16 @@ namespace RAMAVE_Cotizador.Models
 
         public string? catalogo { get; set; }
         public string? color_nombre { get; set; }
+        [NotMapped]
+        public List<string> ListaColores
+        {
+            get => string.IsNullOrEmpty(color_nombre) 
+                ? new List<string>() 
+                : color_nombre.Split(',').Select(c => c.Trim()).ToList();
+            set => color_nombre = value != null ? string.Join(",", value) : null;
+        }
+        [NotMapped]
+        public List<string>? ColoresNuevos { get; set; }
         public string? tipo { get; set; } 
 
         [Column(TypeName = "decimal(18,2)")]

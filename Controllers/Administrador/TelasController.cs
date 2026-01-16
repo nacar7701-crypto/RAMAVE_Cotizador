@@ -83,13 +83,48 @@ namespace RAMAVE_Cotizador.Controllers
             return Ok(new { mensaje = "Modelo creado", id = modelo.id });
         }
 
-        [HttpPost]
-        public async Task<IActionResult> PostTela([FromBody] Tela tela)
+// --- CLASE PARA RECIBIR LOS DATOS DESDE SWAGGER/FRONT ---
+        public class TelaCreateDto
         {
-            _context.Telas.Add(tela);
-            await _context.SaveChangesAsync();
-            return Ok(new { mensaje = "Tela agregada", id = tela.id });
+            public int id_modelo { get; set; }
+            public string? catalogo { get; set; }
+            public string? tipo { get; set; }
+            public List<string>? ColoresNuevos { get; set; } // El array que mandaste
+            public decimal ancho { get; set; }
+            public decimal precio_ml_corte { get; set; }
+            public decimal precio_ml_rollo { get; set; }
+            // Puedes agregar aquí los campos de cuidados si quieres recibirlos también
         }
+
+        [HttpPost]
+        public async Task<IActionResult> PostTela([FromBody] TelaCreateDto dto)
+        {
+            try 
+            {
+                // 1. Creamos la entidad real que va a la base de datos
+                var nuevaTela = new Tela
+                {
+                    id_modelo = dto.id_modelo,
+                    catalogo = dto.catalogo,
+                    tipo = dto.tipo,
+                    ancho = dto.ancho,
+                    precio_ml_corte = dto.precio_ml_corte,
+                    precio_ml_rollo = dto.precio_ml_rollo,
+                    // Aquí hacemos la magia: convertimos la lista a string
+                    color_nombre = dto.ColoresNuevos != null ? string.Join(", ", dto.ColoresNuevos) : null
+                };
+
+                _context.Telas.Add(nuevaTela);
+                await _context.SaveChangesAsync();
+                
+                return Ok(new { mensaje = "Tela guardada", id = nuevaTela.id, colores = nuevaTela.color_nombre });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { mensaje = "Error", detalle = ex.Message });
+            }
+        }
+
 
         // ==========================================
         // SECCIÓN: EDITAR (PUT)
@@ -179,6 +214,53 @@ namespace RAMAVE_Cotizador.Controllers
             _context.Telas.Remove(tela);
             await _context.SaveChangesAsync();
             return Ok(new { mensaje = "Tela eliminada" });
+        }
+        // --- AGREGAR UN COLOR A UNA TELA EXISTENTE ---
+        public class ColorRequest {
+            public string color { get; set; } = string.Empty;
+        }
+
+        // Cambia el método POST en TelasController por este:
+        [HttpPost("{id}/colores")]
+        public async Task<IActionResult> AgregarColor(int id, [FromBody] ColorRequest request)
+        {
+            var tela = await _context.Telas.FindAsync(id);
+            if (tela == null) return NotFound();
+
+            // Usamos request.color en lugar de nuevoColor
+            var nuevoColor = request.color.Trim();
+            var colores = tela.color_nombre?.Split(',').Select(c => c.Trim()).Where(c => !string.IsNullOrEmpty(c)).ToList() ?? new List<string>();
+
+            if (!colores.Any(c => c.Equals(nuevoColor, StringComparison.OrdinalIgnoreCase)))
+            {
+                colores.Add(nuevoColor);
+                tela.color_nombre = string.Join(",", colores);
+                await _context.SaveChangesAsync();
+            }
+
+            return Ok(new { mensaje = "Color agregado", coloresActuales = colores });
+        }
+
+        // --- QUITAR UN COLOR DE UNA TELA ---
+        [HttpDelete("{id}/colores/{colorNombre}")]
+        public async Task<IActionResult> QuitarColor(int id, string colorNombre)
+        {
+            var tela = await _context.Telas.FindAsync(id);
+            if (tela == null) return NotFound();
+
+            var colores = tela.color_nombre?.Split(',').Select(c => c.Trim()).ToList() ?? new List<string>();
+
+            // Buscamos el color sin importar si escribió "verde" o "VERDE"
+            var colorAEliminar = colores.FirstOrDefault(c => c.Equals(colorNombre, StringComparison.OrdinalIgnoreCase));
+
+            if (colorAEliminar != null)
+            {
+                colores.Remove(colorAEliminar);
+                tela.color_nombre = string.Join(", ", colores);
+                await _context.SaveChangesAsync();
+            }
+
+            return Ok(new { mensaje = "Color eliminado", coloresRestantes = colores });
         }
     }
 }
