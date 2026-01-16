@@ -3,116 +3,212 @@
 }
 
 <style>
-    .container {
-        padding: 1rem;
+    @@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+    :root {
+        --ramave-red: #c62828;
+        --ramave-dark: #8e0000;
+        --bg-body: #f0f2f5;
+        --text-main: #1a1a1a;
+        --border-color: #e0e0e0;
     }
 
-    .header {
+    body {
+        background-color: var(--bg-body);
+        font-family: 'Inter', sans-serif;
+        margin: 0;
+        color: var(--text-main);
+    }
+
+    .wrapper {
+        width: 100%;
+        padding: 20px;
+        box-sizing: border-box;
+        padding-bottom: 150px; /* Espacio para que los menús no se corten */
+    }
+
+    /* Panel Superior */
+    .header-panel {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 12px;
         display: flex;
         justify-content: space-between;
         align-items: center;
         flex-wrap: wrap;
         gap: 1rem;
-        margin-bottom: 1rem;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
     }
 
-    /* Estilos del buscador */
-    .search-box {
-        width: 100%;
-        max-width: 400px;
-        padding: .6rem;
-        border-radius: 6px;
-        border: 1px solid #ddd;
+    .header-panel h2 {
+        margin: 0;
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: var(--ramave-red);
+    }
+
+    .search-input {
+        flex: 1;
+        min-width: 250px;
+        padding: 12px 20px;
+        border-radius: 50px;
+        border: 1px solid var(--border-color);
+        background: #f8f9fa;
+        font-size: 0.95rem;
         outline: none;
+        transition: 0.3s;
     }
 
-    .search-box:focus {
-        border-color: #c62828;
-        box-shadow: 0 0 5px rgba(198, 40, 40, 0.2);
+    .search-input:focus {
+        border-color: var(--ramave-red);
+        background: white;
+        box-shadow: 0 0 0 4px rgba(198, 40, 40, 0.1);
     }
 
-    .btn {
-        background: #c62828;
-        color: white;
-        border: none;
-        padding: .6rem 1rem;
-        border-radius: 6px;
+    /* Botones */
+    .btn-main {
+        padding: 10px 18px;
+        border-radius: 8px;
+        font-weight: 600;
         cursor: pointer;
+        border: none;
+        font-size: 0.85rem;
+        transition: 0.2s;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
     }
 
-    .btn:hover {
-        background: #a81f1f;
+    .btn-red { background: var(--ramave-red); color: white; }
+    .btn-red:hover { background: var(--ramave-dark); }
+    .btn-gray { background: #e0e0e0; color: #333; }
+    .btn-gray:hover { background: #d0d0d0; }
+
+    /* Tabla */
+    .table-card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        width: 100%;
     }
 
     table {
         width: 100%;
         border-collapse: collapse;
-        margin-top: 1rem;
     }
 
-    th, td {
-        padding: .7rem;
-        border-bottom: 1px solid #ddd;
+    th {
+        background: #f8f9fa;
+        padding: 15px 20px;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        color: #666;
+        border-bottom: 2px solid var(--border-color);
         text-align: left;
     }
 
-    .actions button {
-        margin-right: .3rem;
+    td {
+        padding: 15px 20px;
+        border-bottom: 1px solid var(--border-color);
+        font-size: 0.95rem;
     }
 
+    /* Badge de Rol */
+    .badge-rol {
+        background: #f1f3f5;
+        color: #495057;
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+
+    /* Menú Desplegable */
+    .action-menu { position: relative; text-align: right; }
+
+    .dot-btn {
+        background: none; border: none; font-size: 1.2rem;
+        cursor: pointer; padding: 5px 10px; color: #999;
+    }
+
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        right: 0;
+        top: 100%;
+        background: white;
+        min-width: 150px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        z-index: 999;
+        border-radius: 8px;
+        border: 1px solid var(--border-color);
+        overflow: hidden;
+    }
+
+    .dropdown-up {
+        top: auto !important;
+        bottom: 100% !important;
+        margin-bottom: 5px;
+    }
+
+    .dropdown-content a, .dropdown-content button {
+        color: #333; padding: 12px 16px; text-decoration: none;
+        display: block; font-size: 0.9rem; width: 100%;
+        border: none; background: none; text-align: left; cursor: pointer;
+    }
+
+    .dropdown-content a:hover, .dropdown-content button:hover { 
+        background: #fff5f5; 
+        color: var(--ramave-red); 
+    }
+
+    .show { display: block; }
+
+    /* RESPONSIVO */
     @@media (max-width: 768px) {
-        .header { flex-direction: column; align-items: stretch; }
-        .search-box { max-width: 100%; }
-        
-        table, thead, tbody, tr, td, th {
-            display: block;
-        }
-
-        tr {
-            margin-bottom: 1rem;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            padding: .5rem;
-            background: white;
-        }
-
-        th { display: none; }
-        
-        td::before {
-            content: attr(data-label);
-            font-weight: bold;
-            display: block;
-            color: #c62828;
-            font-size: 0.8rem;
-            margin-bottom: 0.2rem;
-        }
+        .header-panel { flex-direction: column; align-items: stretch; }
+        table thead { display: none; }
+        table, tbody, tr, td { display: block; width: 100%; }
+        tr { margin-bottom: 15px; border: 1px solid var(--border-color); border-radius: 12px; background: white; overflow: hidden; }
+        td { display: flex; justify-content: space-between; border-bottom: 1px solid #f8f9fa; padding: 12px 15px; }
+        td::before { content: attr(data-label); font-weight: 700; color: #888; font-size: 0.75rem; text-transform: uppercase; }
     }
 </style>
 
-<div class="container">
-    <div class="header">
-        <h2>Usuarios</h2>
-        <input type="text" id="txtBuscar" class="search-box" placeholder="🔍 Buscar por nombre o correo..." onkeyup="filtrarTabla()">
-        <button class="btn" onclick="location.href='/UsuariosView/Create'">➕ Nuevo</button>
+<div class="wrapper">
+    <div class="header-panel">
+        <div style="display:flex; align-items:center; gap:15px;">
+            <h2>Usuarios</h2>
+            <div class="btn-actions-top">
+                <button class="btn-main btn-gray" onclick="location.href='@Url.Action("Administrador", "Home")'">Menú</button>
+                <button class="btn-main btn-red" onclick="location.href='/UsuariosView/Create'">➕ Nuevo</button>
+            </div>
+        </div>
+        <input type="text" id="txtBuscar" class="search-input" placeholder="🔍 Buscar por nombre o correo..." onkeyup="filtrarTabla()">
     </div>
 
-    <table>
-        <thead>
-            <tr>
-                <th>Nombre</th>
-                <th>Correo</th>
-                <th>Rol</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody id="tablaUsuarios"></tbody>
-    </table>
+    <div class="table-card">
+        <table>
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Correo Electrónico</th>
+                    <th>Rol</th>
+                    <th style="width: 50px;"></th>
+                </tr>
+            </thead>
+            <tbody id="tablaUsuarios">
+                </tbody>
+        </table>
+    </div>
 </div>
 
 <script>
-    let listaUsuarios = []; // Variable global para almacenar los datos originales
+    let listaUsuarios = [];
 
-    // Carga inicial de datos
+    // Cargar datos inicialmente
     fetch('/api/usuarios')
         .then(r => r.json())
         .then(data => {
@@ -120,48 +216,83 @@
             mostrarUsuarios(listaUsuarios);
         });
 
-    // Función para renderizar la tabla
     function mostrarUsuarios(usuarios) {
         const tbody = document.getElementById('tablaUsuarios');
-        tbody.innerHTML = ''; 
+        tbody.innerHTML = '';
 
-        usuarios.forEach(u => {
+        if (usuarios.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:30px; color:#888;">No se encontraron usuarios</td></tr>';
+            return;
+        }
+
+        usuarios.forEach((u, index) => {
+            // El menú abre hacia arriba si es uno de los últimos 2 registros
+            const isLast = (index >= usuarios.length - 2 && usuarios.length > 3);
+            
             tbody.innerHTML += `
             <tr>
-                <td data-label="Nombre">${u.nombre}</td>
+                <td data-label="Nombre"><strong>${u.nombre}</strong></td>
                 <td data-label="Correo">${u.correo_electronico}</td>
-                <td data-label="Rol">${u.rol}</td>
-                <td class="actions" data-label="Acciones">
-                    <button class="btn" onclick="location.href='/UsuariosView/Edit/${u.id}'" title="Editar">✏️</button>
-                    <button class="btn" onclick="eliminar(${u.id})" title="Eliminar">❌</button>
+                <td data-label="Rol"><span class="badge-rol">${u.rol}</span></td>
+                <td>
+                    <div class="action-menu">
+                        <button class="dot-btn" onclick="toggleMenu(event, ${u.id})">⋮</button>
+                        <div id="dropdown-${u.id}" class="dropdown-content ${isLast ? 'dropdown-up' : ''}">
+                            <a href="/UsuariosView/Edit/${u.id}">✏️ Editar</a>
+                            <button onclick="eliminar(${u.id})" style="color: #d32f2f;">❌ Eliminar</button>
+                        </div>
+                    </div>
                 </td>
             </tr>`;
         });
     }
 
-    // Función de búsqueda/filtrado
-    function filtrarTabla() {
-        const busqueda = document.getElementById('txtBuscar').value.toLowerCase();
-        
-        const usuariosFiltrados = listaUsuarios.filter(u => 
-            u.nombre.toLowerCase().includes(busqueda) || 
-            u.correo_electronico.toLowerCase().includes(busqueda)
-        );
+    // --- FUNCIÓN PARA ELIMINAR ---
+    function eliminar(id) {
+        if (!confirm('¿Seguro que deseas eliminar permanentemente este usuario?')) return;
 
-        mostrarUsuarios(usuariosFiltrados);
+        fetch('/api/usuarios/' + id, { 
+            method: 'DELETE' 
+        })
+        .then(res => {
+            if (res.ok) {
+                // Actualizar lista local sin recargar
+                listaUsuarios = listaUsuarios.filter(u => u.id !== id);
+                filtrarTabla(); // Mantiene el filtro si el usuario estaba buscando
+            } else {
+                alert("Error: No se pudo eliminar el registro.");
+            }
+        })
+        .catch(err => console.error("Error al eliminar:", err));
     }
 
-    function eliminar(id) {
-        if (!confirm('¿Eliminar usuario?')) return;
-        fetch('/api/usuarios/' + id, { method: 'DELETE' })
-            .then(res => {
-                if (res.ok) {
-                    // Actualizar lista local sin recargar toda la página (opcional pero más rápido)
-                    listaUsuarios = listaUsuarios.filter(u => u.id !== id);
-                    filtrarTabla(); 
-                } else {
-                    alert("Error al eliminar el usuario");
-                }
-            });
+    // --- FUNCIÓN PARA FILTRAR ---
+    function filtrarTabla() {
+        const busqueda = document.getElementById('txtBuscar').value.toLowerCase();
+        const filtrados = listaUsuarios.filter(u => 
+            u.nombre.toLowerCase().includes(busqueda) || 
+            u.correo_electronico.toLowerCase().includes(busqueda) ||
+            u.rol.toLowerCase().includes(busqueda)
+        );
+        mostrarUsuarios(filtrados);
+    }
+
+    // Control del Menú Desplegable
+    function toggleMenu(event, id) {
+        event.stopPropagation();
+        const el = document.getElementById('dropdown-' + id);
+        const wasShowing = el.classList.contains('show');
+        
+        // Cerrar todos los demás primero
+        document.querySelectorAll('.dropdown-content').forEach(d => d.classList.remove('show'));
+        
+        if (!wasShowing) {
+            el.classList.add('show');
+        }
+    }
+
+    // Cerrar menús al hacer clic en cualquier otra parte
+    window.onclick = function() {
+        document.querySelectorAll('.dropdown-content').forEach(d => d.classList.remove('show'));
     }
 </script>

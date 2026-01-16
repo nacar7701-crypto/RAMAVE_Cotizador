@@ -4,97 +4,227 @@
 }
 
 <style>
-    body { background: #f4f6f9; font-family: sans-serif; }
-    .page { min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 1rem; }
-    .card { background: white; width: 100%; max-width: 500px; padding: 2rem; border-radius: 14px; box-shadow: 0 15px 35px rgba(0,0,0,.12); }
-    h2 { text-align: center; color: #c62828; margin-bottom: 1.5rem; }
-    .form-group { margin-bottom: 1rem; }
-    label { font-size: .9rem; color: #555; display: block; margin-bottom: 4px; }
-    input, select { width: 100%; padding: .6rem; border-radius: 6px; border: 1px solid #ccc; box-sizing: border-box; }
-    input:focus, select:focus { border-color: #c62828; outline: none; }
-    .buttons { display: flex; justify-content: space-between; margin-top: 1.5rem; gap: 10px; }
-    .btn { padding: .6rem 1.2rem; border-radius: 6px; border: none; cursor: pointer; flex: 1; font-weight: bold; }
-    .btn-save { background: #c62828; color: white; }
-    .btn-save:hover { background: #a81f1f; }
-    .btn-back { background: #ccc; color: black; text-align: center; text-decoration: none; }
-    @@media (max-width: 480px) { .buttons { flex-direction: column; } }
+    @@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+    :root {
+        --ramave-red: #c62828;
+        --ramave-red-dark: #a81f1f;
+        --bg-gray: #f4f6f9;
+        --text-dark: #2d3436;
+        --border-color: #ced4da;
+    }
+
+    body {
+        background-color: var(--bg-gray);
+        font-family: 'Inter', sans-serif;
+        margin: 0;
+    }
+
+    .page-container {
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 1.5rem;
+    }
+
+    .card {
+        background: white;
+        width: 100%;
+        max-width: 500px;
+        padding: 2.5rem;
+        border-radius: 20px;
+        box-shadow: 0 15px 35px rgba(0,0,0,.1);
+        border-top: 6px solid var(--ramave-red);
+        box-sizing: border-box;
+    }
+
+    h2 {
+        text-align: center;
+        color: var(--ramave-red);
+        margin: 0 0 0.5rem 0;
+        font-weight: 700;
+        font-size: 1.7rem;
+    }
+
+    .subtitle {
+        text-align: center;
+        color: #636e72;
+        font-size: 0.9rem;
+        margin-bottom: 2rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.2rem;
+    }
+
+    label {
+        display: block;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--text-dark);
+        margin-bottom: 0.5rem;
+    }
+
+    input, select {
+        width: 100%;
+        padding: 0.8rem 1rem;
+        border-radius: 10px;
+        border: 1px solid var(--border-color);
+        font-size: 0.95rem;
+        transition: all 0.2s;
+        box-sizing: border-box;
+    }
+
+    input:focus, select:focus {
+        border-color: var(--ramave-red);
+        outline: none;
+        box-shadow: 0 0 0 4px rgba(198, 40, 40, 0.1);
+    }
+
+    .hint {
+        font-size: 0.75rem;
+        color: #888;
+        margin-top: 4px;
+        display: block;
+    }
+
+    .buttons {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+
+    .btn {
+        padding: 0.85rem;
+        border-radius: 10px;
+        border: none;
+        font-weight: 700;
+        cursor: pointer;
+        font-size: 0.95rem;
+        transition: 0.3s;
+        text-align: center;
+        text-decoration: none;
+    }
+
+    .btn-save {
+        background: var(--ramave-red);
+        color: white;
+    }
+
+    .btn-save:hover {
+        background: var(--ramave-red-dark);
+        transform: translateY(-2px);
+    }
+
+    .btn-back {
+        background: #e9ecef;
+        color: #495057;
+    }
+
+    .btn-back:hover {
+        background: #dee2e6;
+    }
+
+    /* Ajustes responsivos */
+    @@media (max-width: 480px) {
+        .card { padding: 1.8rem; }
+        .buttons { grid-template-columns: 1fr; }
+        .btn-save { order: -1; } /* El botón principal primero en móvil */
+        h2 { font-size: 1.5rem; }
+    }
 </style>
 
-<div class="page">
+<div class="page-container">
     <div class="card">
         <h2>Editar Usuario</h2>
+        <p class="subtitle">Actualiza la información del perfil</p>
 
         <form id="formEdit">
             <div class="form-group">
                 <label>Nombre Completo</label>
-                <input id="nombre" required />
+                <input id="nombre" type="text" placeholder="Ej. Juan Pérez" required />
             </div>
 
             <div class="form-group">
                 <label>Correo Electrónico</label>
-                <input id="correo" type="email" required />
+                <input id="correo" type="email" placeholder="correo@ramave.com" required />
             </div>
 
             <div class="form-group">
-                <label>Contraseña</label>
-                <input id="password" type="password" placeholder="Nueva contraseña (opcional)" />
+                <label>Nueva Contraseña</label>
+                <input id="password" type="password" placeholder="••••••••" />
+                <span class="hint">Deja en blanco para mantener la actual.</span>
             </div>
 
             <div class="form-group">
                 <label>Rol del Sistema</label>
                 <select id="rol">
-                    <option>Administrador</option>
-                    <option>Tienda</option>
-                    <option>Distribuidor</option>
+                    <option value="Administrador">Administrador</option>
+                    <option value="Tienda">Tienda</option>
+                    <option value="Distribuidor">Distribuidor</option>
                 </select>
             </div>
 
             <div class="buttons">
-                <button type="button" class="btn btn-back" onclick="history.back()">Cancelar</button>
-                <button type="submit" class="btn btn-save">Guardar Cambios</button>
+                <a href="@Url.Action("Index", "UsuariosView")" class="btn btn-back">
+                    Cancelar
+                </a>
+                <button type="submit" class="btn btn-save">
+                    Guardar Cambios
+                </button>
             </div>
         </form>
     </div>
 </div>
 
 <script>
-const id = @ViewBag.Id;
+    const id = @ViewBag.Id;
+    const inputNombre = document.getElementById('nombre');
+    const inputCorreo = document.getElementById('correo');
+    const inputRol = document.getElementById('rol');
+    const inputPassword = document.getElementById('password');
 
-// Referencias a los elementos
-const inputNombre = document.getElementById('nombre');
-const inputCorreo = document.getElementById('correo');
-const inputRol = document.getElementById('rol');
-const inputPassword = document.getElementById('password');
+    // Cargar datos actuales
+    fetch('/api/usuarios')
+        .then(r => r.json())
+        .then(data => {
+            const u = data.find(x => x.id === id);
+            if (u) {
+                inputNombre.value = u.nombre;
+                inputCorreo.value = u.correo_electronico;
+                inputRol.value = u.rol;
+            }
+        });
 
-fetch('/api/usuarios')
-    .then(r => r.json())
-    .then(data => {
-        const u = data.find(x => x.id === id);
-        if (u) {
-            inputNombre.value = u.nombre;
-            inputCorreo.value = u.correo_electronico;
-            inputRol.value = u.rol;
-        }
-    });
+    // Manejar el envío
+    document.getElementById('formEdit').onsubmit = e => {
+        e.preventDefault();
+        
+        // Bloquear botón para evitar múltiples clics
+        const btnSave = e.target.querySelector('.btn-save');
+        btnSave.disabled = true;
+        btnSave.innerText = "Guardando...";
 
-document.getElementById('formEdit').onsubmit = e => {
-    e.preventDefault();
-    fetch('/api/usuarios/' + id, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            id: id,
-            nombre: inputNombre.value,
-            correo_electronico: inputCorreo.value,
-            password: inputPassword.value,
-            rol: inputRol.value
-        })
-    }).then(res => {
-        if (res.ok) {
-            location.href = '/UsuariosView/Index';
-        } else {
-            alert("Error al actualizar el usuario");
-        }
-    });
-};
+        fetch('/api/usuarios/' + id, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                id: id,
+                nombre: inputNombre.value,
+                correo_electronico: inputCorreo.value,
+                password: inputPassword.value,
+                rol: inputRol.value
+            })
+        }).then(res => {
+            if (res.ok) {
+                location.href = '@Url.Action("Index", "UsuariosView")';
+            } else {
+                alert("Error al actualizar el usuario");
+                btnSave.disabled = false;
+                btnSave.innerText = "Guardar Cambios";
+            }
+        });
+    };
 </script>

@@ -3,98 +3,118 @@
 }
 
 <style>
+    @@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
     :root {
         --ramave-red: #c62828;
-        --ramave-dark-red: #8e0000;
-        --bg-light: #f4f6f9;
-        --card-shadow: 0 10px 20px rgba(0,0,0,0.08);
+        --ramave-red-dark: #a81f1f;
+        --bg-light: #f0f2f5;
+        --text-main: #1a1a1a;
+        --text-muted: #636e72;
     }
 
     body {
         background-color: var(--bg-light);
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        font-family: 'Inter', sans-serif;
         margin: 0;
+        color: var(--text-main);
     }
 
-    /* Header Responsivo */
+    /* Navbar Unificada */
     .header-nav {
         background: white;
-        padding: 0.8rem 1.5rem;
+        padding: 0.75rem 2rem;
         display: flex;
-        justify-content: flex-end;
+        justify-content: space-between;
         align-items: center;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
         position: sticky;
         top: 0;
         z-index: 1000;
     }
 
     .logo-img {
-        height: 50px;
+        height: 45px;
         width: auto;
     }
 
-    /* Contenedor Adaptable */
+    .btn-logout {
+        color: var(--ramave-red);
+        text-decoration: none;
+        font-weight: 700;
+        font-size: 0.85rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 16px;
+        border-radius: 8px;
+        transition: all 0.2s;
+        border: 1px solid transparent;
+    }
+
+    .btn-logout:hover {
+        background: #fff5f5;
+        border-color: var(--ramave-red);
+    }
+
+    /* Contenedor Principal */
     .container {
-        width: 100%;
-        max-width: 1200px;
+        max-width: 1100px;
         margin: 0 auto;
-        padding: 2rem 1rem;
-        box-sizing: border-box;
+        padding: 3rem 1.5rem;
     }
 
-    .welcome-text {
+    .welcome-section {
         text-align: center;
-        margin-bottom: 2.5rem;
+        margin-bottom: 3.5rem;
     }
 
-    .welcome-text h1 {
-        font-size: clamp(1.5rem, 5vw, 2.5rem); /* Ajuste automático según pantalla */
-        color: #222;
-        margin-bottom: 0.5rem;
+    .welcome-section h1 {
+        font-size: clamp(1.8rem, 5vw, 2.8rem);
+        font-weight: 800;
+        margin-bottom: 0.8rem;
+        letter-spacing: -0.5px;
     }
 
-    .welcome-text span {
+    .welcome-section h1 span {
         color: var(--ramave-red);
     }
 
-    .welcome-text p {
-        font-size: clamp(0.9rem, 2vw, 1.1rem);
-        color: #666;
+    .welcome-section p {
+        color: var(--text-muted);
+        font-size: 1.1rem;
     }
 
-    /* Grid Inteligente */
+    /* Grid de Selección */
     .selection-grid {
         display: grid;
-        /* Define columnas: 1 en móvil, 2 en tablet pequeña, 3 en escritorio */
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-        gap: 1.5rem;
-        justify-content: center;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
     }
 
-    /* Tarjetas */
+    /* Tarjetas Estilo "Catálogo" */
     .category-card {
         background: white;
-        border-radius: 12px;
+        border-radius: 20px;
         overflow: hidden;
-        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
         cursor: pointer;
         display: flex;
         flex-direction: column;
-        box-shadow: var(--card-shadow);
-        border: 1px solid #eee;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        border: 1px solid rgba(0,0,0,0.03);
     }
 
     .category-card:hover {
-        transform: translateY(-8px);
-        box-shadow: 0 15px 30px rgba(0,0,0,0.12);
+        transform: translateY(-12px);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.12);
         border-color: var(--ramave-red);
     }
 
     .card-image {
+        position: relative;
         width: 100%;
-        height: 220px;
-        background-color: #f0f0f0;
+        height: 250px;
         overflow: hidden;
     }
 
@@ -102,73 +122,85 @@
         width: 100%;
         height: 100%;
         object-fit: cover;
-        transition: transform 0.5s ease;
+        transition: transform 0.6s ease;
     }
 
     .category-card:hover .card-image img {
-        transform: scale(1.05);
+        transform: scale(1.1);
+    }
+
+    /* Overlay sutil en la imagen al hacer hover */
+    .card-image::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to top, rgba(0,0,0,0.4), transparent);
+        opacity: 0;
+        transition: 0.3s;
+    }
+
+    .category-card:hover .card-image::after {
+        opacity: 1;
     }
 
     .card-body {
-        padding: 1.5rem;
+        padding: 1.8rem;
         text-align: center;
-        flex-grow: 1;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
     }
 
     .card-body h3 {
-        margin: 0 0 1rem 0;
-        font-size: 1.4rem;
-        color: #333;
+        margin: 0 0 1.2rem 0;
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--text-main);
     }
 
+    /* Botón Unificado */
     .btn-quote {
         background-color: var(--ramave-red);
         color: white;
         border: none;
-        padding: 0.8rem;
-        border-radius: 8px;
-        font-weight: 600;
-        font-size: 1rem;
+        padding: 12px 24px;
+        border-radius: 12px;
+        font-weight: 700;
+        font-size: 0.95rem;
         width: 100%;
         cursor: pointer;
-        transition: background 0.3s ease;
+        transition: all 0.3s;
+        box-shadow: 0 4px 12px rgba(198, 40, 40, 0.2);
     }
 
-    /* --- Media Queries para Control Total --- */
-
-    /* Tablets (Pantallas medianas) */
-    @@media (max-width: 992px) {
-        .selection-grid {
-            grid-template-columns: repeat(2, 1fr); /* Fuerza 2 columnas en tablet */
-        }
+    .category-card:hover .btn-quote {
+        background-color: var(--ramave-red-dark);
+        box-shadow: 0 6px 18px rgba(198, 40, 40, 0.3);
     }
 
-    /* Móviles (Pantallas pequeñas) */
+    /* Media Queries */
     @@media (max-width: 600px) {
         .header-nav {
-            justify-content: center; /* Logo al centro en móvil */
-        }
-        .selection-grid {
-            grid-template-columns: 1fr; /* 1 columna completa */
+            padding: 0.5rem 1rem;
         }
         .container {
-            padding-top: 1rem;
+            padding-top: 2rem;
+        }
+        .welcome-section {
+            margin-bottom: 2rem;
         }
         .card-image {
-            height: 180px; /* Imagen un poco más baja en móvil */
+            height: 200px;
         }
     }
 </style>
 
 <header class="header-nav">
     <img src="~/images/logo_ramave.png" alt="RAMAVE Logo" class="logo-img">
+    <a href="@Url.Action("Logout", "Auth")" class="btn-logout">
+        <span>🚪</span> Cerrar Sesión
+    </a>
 </header>
 
 <div class="container">
-    <div class="welcome-text">
+    <div class="welcome-section">
         <h1>¿Qué quieres <span>cotizar</span> hoy?</h1>
         <p>Selecciona el tipo de confección para tus persianas.</p>
     </div>
@@ -180,7 +212,7 @@
             </div>
             <div class="card-body">
                 <h3>Ojillos</h3>
-                <button class="btn-quote">Seleccionar</button>
+                <button class="btn-quote">Seleccionar Confección</button>
             </div>
         </div>
 
@@ -190,7 +222,7 @@
             </div>
             <div class="card-body">
                 <h3>Francesa</h3>
-                <button class="btn-quote">Seleccionar</button>
+                <button class="btn-quote">Seleccionar Confección</button>
             </div>
         </div>
 
@@ -200,7 +232,7 @@
             </div>
             <div class="card-body">
                 <h3>Ondulada</h3>
-                <button class="btn-quote">Seleccionar</button>
+                <button class="btn-quote">Seleccionar Confección</button>
             </div>
         </div>
     </div>

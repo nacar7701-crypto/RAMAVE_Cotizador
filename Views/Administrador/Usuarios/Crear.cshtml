@@ -1,148 +1,223 @@
 @model RAMAVE_Cotizador.Models.UsuarioCreateViewModel
 @{
-    ViewData["Title"] = "Crear Usuario";
+    ViewData["Title"] = "Nuevo Usuario";
 }
 
 <style>
-body {
-    background: #f4f6f9;
-}
+    @@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
-.page {
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 1rem;
-}
-
-.card {
-    background: white;
-    width: 100%;
-    max-width: 500px;
-    padding: 2rem;
-    border-radius: 14px;
-    box-shadow: 0 15px 35px rgba(0,0,0,.12);
-}
-
-h2 {
-    text-align: center;
-    color: #c62828;
-    margin-bottom: 1.5rem;
-}
-
-.form-group {
-    margin-bottom: 1rem;
-}
-
-label {
-    font-size: .9rem;
-    color: #555;
-}
-
-input, select {
-    width: 100%;
-    padding: .6rem;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-    margin-top: .3rem;
-}
-
-input:focus, select:focus {
-    border-color: #c62828;
-    outline: none;
-}
-
-.error {
-    color: #c62828;
-    font-size: .8rem;
-}
-
-.buttons {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 1.5rem;
-}
-
-.btn {
-    padding: .6rem 1.2rem;
-    border-radius: 6px;
-    border: none;
-    cursor: pointer;
-}
-
-.btn-save {
-    background: #c62828;
-    color: white;
-}
-
-.btn-save:hover {
-    background: #a81f1f;
-}
-
-.btn-back {
-    background: #ccc;
-}
-
-@@media (max-width: 480px) {
-    .buttons {
-        flex-direction: column;
-        gap: .6rem;
+    :root {
+        --ramave-red: #c62828;
+        --ramave-red-dark: #a81f1f;
+        --bg-gray: #f4f6f9;
+        --text-dark: #2d3436;
+        --error-color: #d32f2f;
     }
-}
+
+    body {
+        background-color: var(--bg-gray);
+        font-family: 'Inter', sans-serif;
+        margin: 0;
+    }
+
+    .page-container {
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 15px; /* Evita que la card pegue a los bordes en móvil */
+    }
+
+    .card {
+        background: white;
+        width: 100%;
+        max-width: 500px; /* Tamaño ideal para Desktop y Tablet */
+        padding: 2.5rem;
+        border-radius: 20px;
+        box-shadow: 0 15px 35px rgba(0,0,0,.1);
+        border-top: 6px solid var(--ramave-red);
+        box-sizing: border-box;
+    }
+
+    h2 {
+        text-align: center;
+        color: var(--ramave-red);
+        margin: 0 0 0.5rem 0;
+        font-weight: 700;
+        font-size: 1.6rem;
+    }
+
+    .subtitle {
+        text-align: center;
+        color: #636e72;
+        font-size: 0.9rem;
+        margin-bottom: 2rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.2rem;
+    }
+
+    label {
+        display: block;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--text-dark);
+        margin-bottom: 0.5rem;
+    }
+
+    input, select {
+        width: 100%;
+        padding: 0.8rem 1rem;
+        border-radius: 10px;
+        border: 1px solid #ced4da;
+        font-size: 1rem;
+        transition: all 0.2s;
+        box-sizing: border-box; /* Crucial para responsivo */
+    }
+
+    input:focus, select:focus {
+        border-color: var(--ramave-red);
+        outline: none;
+        box-shadow: 0 0 0 4px rgba(198, 40, 40, 0.1);
+    }
+
+    /* ESTILOS DE VALIDACIÓN BASADOS EN TU MODELO */
+    .field-validation-error {
+        color: var(--error-color);
+        font-size: 0.75rem;
+        font-weight: 600;
+        display: block;
+        margin-top: 5px;
+    }
+
+    /* Resalta el input cuando el modelo detecta error */
+    .input-validation-error {
+        border: 1px solid var(--error-color) !important;
+        background-color: #fff8f8;
+    }
+
+    .validation-summary-errors {
+        background: #fdecea;
+        padding: 12px;
+        border-radius: 8px;
+        margin-bottom: 1.5rem;
+        border: 1px solid #facccc;
+    }
+
+    .validation-summary-errors ul {
+        margin: 0;
+        padding-left: 20px;
+        color: var(--error-color);
+        font-size: 0.85rem;
+    }
+
+    .button-group {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+
+    .btn {
+        padding: 0.85rem;
+        border-radius: 10px;
+        border: none;
+        font-weight: 700;
+        cursor: pointer;
+        font-size: 0.95rem;
+        transition: 0.3s;
+        text-align: center;
+        text-decoration: none;
+    }
+
+    .btn-save { background: var(--ramave-red); color: white; }
+    .btn-save:hover { background: var(--ramave-red-dark); transform: translateY(-2px); }
+
+    .btn-back { background: #e9ecef; color: #495057; }
+    .btn-back:hover { background: #dee2e6; }
+
+    /* AJUSTES RESPONSIVOS */
+    @@media (max-width: 480px) {
+        .card {
+            padding: 1.5rem;
+        }
+        .button-group {
+            grid-template-columns: 1fr; /* Los botones se apilan en móvil */
+        }
+        .btn-save {
+            order: -1; /* Pone el botón de Guardar arriba del de Cancelar en móvil */
+        }
+        h2 { font-size: 1.4rem; }
+    }
 </style>
 
-<div class="page">
+<div class="page-container">
     <div class="card">
-
         <h2>Nuevo Usuario</h2>
+        <p class="subtitle">Ingresa la información del colaborador</p>
 
         <form asp-action="Create" method="post" novalidate>
-
-            <div asp-validation-summary="ModelOnly" class="error"></div>
+            
+            @* Este bloque muestra errores generales del modelo si los hubiera *@
+            <div asp-validation-summary="ModelOnly" class="field-validation-error"></div>
 
             <div class="form-group">
-                <label asp-for="Nombre"></label>
-                <input asp-for="Nombre" />
-                <span asp-validation-for="Nombre" class="error"></span>
+                <label asp-for="Nombre">Nombre Completo</label>
+                <input asp-for="Nombre" placeholder="Ej. Juan Pérez" />
+                <span asp-validation-for="Nombre" class="field-validation-error"></span>
             </div>
 
             <div class="form-group">
-                <label asp-for="Correo"></label>
-                <input asp-for="Correo" />
-                <span asp-validation-for="Correo" class="error"></span>
+                <label asp-for="Correo">Correo Electrónico</label>
+                <input asp-for="Correo" type="email" placeholder="correo@ramave.com" />
+                <span asp-validation-for="Correo" class="field-validation-error"></span>
             </div>
 
             <div class="form-group">
-                <label asp-for="Password"></label>
-                <input asp-for="Password" type="password" />
-                <span asp-validation-for="Password" class="error"></span>
+                <label asp-for="Password">Contraseña</label>
+                <input asp-for="Password" type="password" placeholder="Mínimo 6 caracteres" />
+                <span asp-validation-for="Password" class="field-validation-error"></span>
             </div>
 
             <div class="form-group">
-                <label asp-for="Rol"></label>
+                <label asp-for="Rol">Asignar Rol</label>
                 <select asp-for="Rol">
                     <option value="">-- Selecciona --</option>
-                    <option>Administrador</option>
-                    <option>Tienda</option>
-                    <option>Distribuidor</option>
+                    <option value="Administrador">Administrador</option>
+                    <option value="Tienda">Tienda</option>
+                    <option value="Distribuidor">Distribuidor</option>
                 </select>
-                <span asp-validation-for="Rol" class="error"></span>
+                <span asp-validation-for="Rol" class="field-validation-error"></span>
             </div>
 
-            <div class="buttons">
-                <button type="button" class="btn btn-back"
-                        onclick="location.href='@Url.Action("Index","UsuariosView")'">
+            <div class="button-group">
+                <a href="@Url.Action("Index","UsuariosView")" class="btn btn-back">
                     Cancelar
-                </button>
-
+                </a>
                 <button type="submit" class="btn btn-save">
-                    Guardar
+                    Guardar Usuario
                 </button>
             </div>
-
         </form>
-
     </div>
 </div>
 
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
+
+    <script>
+        // Opcional: Esto ayuda a que los errores se limpien visualmente 
+        // cuando el usuario empieza a escribir de nuevo
+        $(document).ready(function () {
+            $('input, select').on('input change', function () {
+                $(this).removeClass('input-validation-error');
+                $(this).next('.field-validation-error').text('');
+            });
+        });
+    </script>
+}

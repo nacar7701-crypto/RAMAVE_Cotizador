@@ -4,14 +4,29 @@
 }
 
 <style>
-    body { background: #f4f6f9; font-family: 'Segoe UI', sans-serif; }
+    @@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+    :root {
+        --ramave-red: #c62828;
+        --ramave-red-dark: #a81f1f;
+        --error-color: #d32f2f;
+        --bg-gray: #f4f6f9;
+        --text-dark: #2d3436;
+        --border-color: #ced4da;
+    }
+
+    body {
+        background-color: var(--bg-gray);
+        font-family: 'Inter', sans-serif;
+        color: var(--text-dark);
+    }
 
     .page-container {
-        min-height: 90vh;
+        min-height: 100vh;
         display: flex;
         justify-content: center;
         align-items: center;
-        padding: 2rem;
+        padding: 1.5rem;
     }
 
     .card-form {
@@ -19,49 +34,41 @@
         width: 100%;
         max-width: 600px;
         padding: 2.5rem;
-        border-radius: 16px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-        border-top: 5px solid #c62828;
+        border-radius: 20px;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        border-top: 6px solid var(--ramave-red);
     }
 
-    h2 {
-        text-align: center;
-        color: #333;
-        margin-bottom: 0.5rem;
-    }
+    h2 { text-align: center; color: var(--ramave-red); font-weight: 700; margin-bottom: 0.5rem; }
+    .subtitle { text-align: center; color: #636e72; font-size: 0.9rem; margin-bottom: 2rem; }
 
-    p.subtitle {
-        text-align: center;
-        color: #777;
-        margin-bottom: 2rem;
-        font-size: 0.9rem;
-    }
+    .form-group { margin-bottom: 1.2rem; position: relative; }
 
-    .form-group { margin-bottom: 1.2rem; }
-
-    label {
-        display: block;
-        font-weight: 600;
-        margin-bottom: 0.4rem;
-        color: #444;
-        font-size: 0.9rem;
-    }
+    label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem; }
 
     input, select {
         width: 100%;
-        padding: 0.8rem;
-        border-radius: 8px;
-        border: 1px solid #ddd;
-        outline: none;
-        transition: 0.3s;
+        padding: 0.8rem 1rem;
+        border-radius: 10px;
+        border: 1px solid var(--border-color);
+        font-size: 0.95rem;
+        transition: all 0.2s;
+        box-sizing: border-box;
     }
 
-    input:focus {
-        border-color: #c62828;
-        box-shadow: 0 0 0 3px rgba(198, 40, 40, 0.1);
+    /* Estilo cuando el campo es inválido */
+    input.is-invalid, select.is-invalid {
+        border-color: var(--error-color);
+        background-color: #fff8f8;
     }
 
-    /* Estilo para campos de precio */
+    .error-message {
+        color: var(--error-color);
+        font-size: 0.75rem;
+        margin-top: 4px;
+        display: none; /* Oculto por defecto */
+    }
+
     .price-input-wrapper { position: relative; }
     .price-input-wrapper::before {
         content: "$";
@@ -69,108 +76,143 @@
         left: 12px;
         top: 50%;
         transform: translateY(-50%);
-        color: #555;
         font-weight: bold;
+        color: #555;
     }
-    .price-input-wrapper input { padding-left: 25px; }
+    .price-input-wrapper input { padding-left: 28px; }
 
     .iva-highlight {
-        background-color: #fff5f5;
-        border: 1px dashed #c62828;
-        color: #c62828;
-        font-weight: bold;
+        background-color: #fff8f8;
+        border: 2px dashed var(--ramave-red) !important;
+        color: var(--ramave-red);
+        font-weight: 700;
     }
 
     .buttons-container {
-        display: flex;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
         gap: 1rem;
         margin-top: 2rem;
     }
 
     .btn {
-        flex: 1;
-        padding: 0.9rem;
-        border-radius: 8px;
+        padding: 0.85rem;
+        border-radius: 10px;
         border: none;
-        font-weight: bold;
+        font-weight: 700;
         cursor: pointer;
-        transition: 0.2s;
+        transition: 0.3s;
         text-align: center;
         text-decoration: none;
     }
 
-    .btn-save { background: #c62828; color: white; }
-    .btn-save:hover { background: #a81f1f; transform: translateY(-2px); }
+    .btn-save { background: var(--ramave-red); color: white; }
+    .btn-save:hover { background: var(--ramave-red-dark); transform: translateY(-2px); }
+    .btn-back { background: #e9ecef; color: #495057; }
 
-    .btn-back { background: #eee; color: #555; }
-    .btn-back:hover { background: #ddd; }
+    @@media (max-width: 480px) { .buttons-container { grid-template-columns: 1fr; } }
 </style>
 
 <div class="page-container">
     <div class="card-form">
         <h2>Nuevo Material</h2>
-        <p class="subtitle">Ingrese los detalles del sistema y costos</p>
+        <p class="subtitle">Complete todos los campos para continuar</p>
 
-        <form id="formMaterial">
+        <form id="formMaterial" novalidate>
             <div class="form-group">
                 <label>Sistema</label>
-                <input type="text" id="sistema" placeholder="Ej: Enrollable, PVC, etc." required />
-            </div>
-
-            <div class="form-group">
-                <label>Tipo</label>
-                <input type="text" id="tipo" placeholder="Ej: Blackout, Traslúcida" required />
-            </div>
-
-            <div class="form-group">
-                <label>Concepto / Material</label>
-                <input type="text" id="concepto" placeholder="Ej: Tela Americana Premium" required />
+                <input type="text" id="sistema" placeholder="Ej: Enrollable" required />
+                <div class="error-message">El nombre del sistema es obligatorio.</div>
             </div>
 
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
                 <div class="form-group">
-                    <label>Unidad de Medida (U.M.)</label>
-                    <select id="um">
+                    <label>Tipo</label>
+                    <input type="text" id="tipo" placeholder="Ej: Blackout" required />
+                    <div class="error-message">Campo requerido.</div>
+                </div>
+                <div class="form-group">
+                    <label>Unidad de Medida</label>
+                    <select id="um" required>
+                        <option value="">Seleccione...</option>
                         <option value="M2">M2 (Metro cuadrado)</option>
                         <option value="ML">ML (Metro lineal)</option>
                         <option value="PZA">PZA (Pieza)</option>
                         <option value="KIT">KIT</option>
                     </select>
-                </div>
-                <div class="form-group">
-                    <label>Precio Unitario (Base)</label>
-                    <div class="price-input-wrapper">
-                        <input type="number" id="precio_unitario" step="0.01" placeholder="0.00" required oninput="calcularIva()" />
-                    </div>
+                    <div class="error-message">Seleccione una unidad.</div>
                 </div>
             </div>
 
             <div class="form-group">
-                <label>Precio Final (con IVA 16%)</label>
-                <div class="price-input-wrapper">
-                    <input type="text" id="precio_con_iva" class="iva-highlight" readonly placeholder="0.00" />
+                <label>Concepto / Material</label>
+                <input type="text" id="concepto" placeholder="Ej: Tela Americana Premium" required />
+                <div class="error-message">El concepto es obligatorio.</div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div class="form-group">
+                    <label>Precio Unitario (Base)</label>
+                    <div class="price-input-wrapper">
+                        <input type="number" id="precio_unitario" step="0.01" min="0.01" placeholder="0.00" required oninput="calcularIva()" />
+                    </div>
+                    <div class="error-message">Ingrese un precio mayor a 0.</div>
+                </div>
+                <div class="form-group">
+                    <label>Precio Final (IVA 16%)</label>
+                    <div class="price-input-wrapper">
+                        <input type="text" id="precio_con_iva" class="iva-highlight" readonly placeholder="0.00" />
+                    </div>
                 </div>
             </div>
 
             <div class="buttons-container">
                 <a href="/MaterialesView/Index" class="btn btn-back">Cancelar</a>
-                <button type="submit" class="btn btn-save">Guardar Material</button>
+                <button type="submit" class="btn btn-save" id="btnGuardar">Guardar Material</button>
             </div>
         </form>
     </div>
 </div>
 
 <script>
-    // 1. Función para calcular el IVA en tiempo real
     function calcularIva() {
-        const precioUnitario = parseFloat(document.getElementById('precio_unitario').value) || 0;
+        const input = document.getElementById('precio_unitario');
+        const precioUnitario = parseFloat(input.value) || 0;
         const precioIva = precioUnitario * 1.16;
         document.getElementById('precio_con_iva').value = precioIva.toFixed(2);
+        
+        // Quitar error si el usuario empieza a escribir un valor válido
+        if (precioUnitario > 0) {
+            input.classList.remove('is-invalid');
+            input.parentElement.nextElementSibling.style.display = 'none';
+        }
     }
 
-    // 2. Función para guardar los datos mediante el API
     document.getElementById('formMaterial').addEventListener('submit', async (e) => {
         e.preventDefault();
+        const form = e.target;
+        let esValido = true;
+
+        // Validar cada campo requerido
+        const campos = form.querySelectorAll('[required]');
+        campos.forEach(campo => {
+            const errorMsg = campo.closest('.form-group').querySelector('.error-message');
+            
+            if (!campo.value || (campo.type === 'number' && parseFloat(campo.value) <= 0)) {
+                campo.classList.add('is-invalid');
+                if (errorMsg) errorMsg.style.display = 'block';
+                esValido = false;
+            } else {
+                campo.classList.remove('is-invalid');
+                if (errorMsg) errorMsg.style.display = 'none';
+            }
+        });
+
+        if (!esValido) return; // Detener si hay errores
+
+        const btn = document.getElementById('btnGuardar');
+        btn.disabled = true;
+        btn.innerText = "Guardando...";
 
         const material = {
             sistema: document.getElementById('sistema').value,
@@ -178,7 +220,7 @@
             concepto: document.getElementById('concepto').value,
             um: document.getElementById('um').value,
             precio_unitario: parseFloat(document.getElementById('precio_unitario').value),
-            precio_con_iva: parseFloat(document.getElementById('precio_con_iva').value)
+            precio_con_iva: parseFloat(document.getElementById('precio_unitario').value) * 1.16
         };
 
         try {
@@ -189,15 +231,28 @@
             });
 
             if (response.ok) {
-                alert("✅ Material guardado exitosamente");
                 window.location.href = '/MaterialesView/Index';
             } else {
-                const errorData = await response.json();
-                alert("❌ Error: " + (errorData.mensaje || "No se pudo guardar"));
+                alert("❌ Error al guardar en el servidor.");
+                btn.disabled = false;
+                btn.innerText = "Guardar Material";
             }
         } catch (error) {
             console.error("Error:", error);
-            alert("❌ Hubo un problema al conectar con el servidor");
+            alert("❌ Error de conexión.");
+            btn.disabled = false;
+            btn.innerText = "Guardar Material";
         }
+    });
+
+    // Eventos para quitar el color rojo mientras el usuario escribe
+    document.querySelectorAll('#formMaterial input, #formMaterial select').forEach(input => {
+        input.addEventListener('input', () => {
+            if (input.value) {
+                input.classList.remove('is-invalid');
+                const errorMsg = input.closest('.form-group').querySelector('.error-message');
+                if (errorMsg) errorMsg.style.display = 'none';
+            }
+        });
     });
 </script>
