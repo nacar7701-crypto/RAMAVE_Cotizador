@@ -29,13 +29,14 @@ namespace RAMAVE_Cotizador.Controllers
 
             if (!string.IsNullOrEmpty(filtro))
             {
-                consulta = consulta.Where(t => t.modelo.marca.nombre.Contains(filtro) 
-                                            || t.modelo.nombre.Contains(filtro) 
+                consulta = consulta.Where(t => t.modelo.marca.nombre.Contains(filtro)
+                                            || t.modelo.nombre.Contains(filtro)
                                             || t.color_nombre.Contains(filtro)
                                             || t.catalogo.Contains(filtro));
             }
 
-            var resultado = await consulta.Select(t => new {
+            var resultado = await consulta.Select(t => new
+            {
                 t.id,
                 marca = t.modelo.marca.nombre,
                 modelo = t.modelo.nombre,
@@ -58,7 +59,7 @@ namespace RAMAVE_Cotizador.Controllers
         public async Task<ActionResult<IEnumerable<Marca>>> GetMarcas() => await _context.Marcas.ToListAsync();
 
         [HttpGet("modelos/{idMarca}")]
-        public async Task<ActionResult<IEnumerable<Modelo>>> GetModelosPorMarca(int idMarca) 
+        public async Task<ActionResult<IEnumerable<Modelo>>> GetModelosPorMarca(int idMarca)
             => await _context.Modelos.Where(m => m.id_marca == idMarca).ToListAsync();
 
         // ==========================================
@@ -83,7 +84,7 @@ namespace RAMAVE_Cotizador.Controllers
             return Ok(new { mensaje = "Modelo creado", id = modelo.id });
         }
 
-// --- CLASE PARA RECIBIR LOS DATOS DESDE SWAGGER/FRONT ---
+        // --- CLASE PARA RECIBIR LOS DATOS DESDE SWAGGER/FRONT ---
         public class TelaCreateDto
         {
             public int id_modelo { get; set; }
@@ -99,7 +100,7 @@ namespace RAMAVE_Cotizador.Controllers
         [HttpPost]
         public async Task<IActionResult> PostTela([FromBody] TelaCreateDto dto)
         {
-            try 
+            try
             {
                 // 1. Creamos la entidad real que va a la base de datos
                 var nuevaTela = new Tela
@@ -116,7 +117,7 @@ namespace RAMAVE_Cotizador.Controllers
 
                 _context.Telas.Add(nuevaTela);
                 await _context.SaveChangesAsync();
-                
+
                 return Ok(new { mensaje = "Tela guardada", id = nuevaTela.id, colores = nuevaTela.color_nombre });
             }
             catch (Exception ex)
@@ -172,10 +173,10 @@ namespace RAMAVE_Cotizador.Controllers
                     .Split(',')
                     .Select(c => c.Trim())
                     .Where(c => !string.IsNullOrEmpty(c));
-                    
+
                 telaDb.color_nombre = string.Join(", ", listaLimpia);
             }
-            else 
+            else
             {
                 telaDb.color_nombre = null;
             }
@@ -236,8 +237,44 @@ namespace RAMAVE_Cotizador.Controllers
             return Ok(new { mensaje = "Tela eliminada" });
         }
         // --- AGREGAR UN COLOR A UNA TELA EXISTENTE ---
-        public class ColorRequest {
+        public class ColorRequest
+        {
             public string color { get; set; } = string.Empty;
+        }
+
+        // Obtener una sola tela por ID para la pantalla de Editar
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetTela(int id)
+        {
+            var t = await _context.Telas
+                .Include(x => x.modelo)
+                .ThenInclude(m => m.marca)
+                .FirstOrDefaultAsync(x => x.id == id);
+
+            if (t == null) return NotFound();
+
+            // Devolvemos el objeto con la misma estructura que espera tu JS
+            return Ok(new
+            {
+                t.id,
+                id_modelo = t.id_modelo,
+                marca = t.modelo?.marca?.nombre,
+                modelo = t.modelo?.nombre,
+                t.tipo,
+                t.catalogo,
+                t.color_nombre,
+                t.ancho,
+                t.existencia,
+                t.precio_ml_corte,
+                t.precio_ml_rollo,
+                // Mandamos los cuidados para que el JS los asigne
+                lavar = t.lavar,
+                temp_agua = t.temp_agua,
+                exprimir = t.exprimir,
+                planchar = t.planchar,
+                blanqueador = t.blanqueador,
+                jabon = t.jabon
+            });
         }
 
     }

@@ -1,0 +1,280 @@
+@model RAMAVE_Cotizador.Models.Tela
+@{
+    ViewData["Title"] = "Editar Tela";
+}
+
+<style>
+    @@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+    :root {
+        --ramave-red: #c62828;
+        --ramave-red-dark: #a81f1f;
+        --bg-gray: #f4f6f9;
+        --text-dark: #2d3436;
+        --border-color: #ced4da;
+    }
+
+    body {
+        background-color: var(--bg-gray);
+        font-family: 'Inter', sans-serif;
+        margin: 0;
+    }
+
+    .page-container {
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 2rem 1.5rem;
+    }
+
+    .card {
+        background: white;
+        width: 100%;
+        max-width: 700px; /* Un poco más ancha para los datos de tela */
+        padding: 2.5rem;
+        border-radius: 20px;
+        box-shadow: 0 15px 35px rgba(0,0,0,.1);
+        border-top: 6px solid var(--ramave-red);
+        box-sizing: border-box;
+    }
+
+    h2 {
+        text-align: center;
+        color: var(--ramave-red);
+        margin: 0 0 0.5rem 0;
+        font-weight: 700;
+        font-size: 1.7rem;
+        text-transform: uppercase;
+    }
+
+    .subtitle {
+        text-align: center;
+        color: #636e72;
+        font-size: 0.9rem;
+        margin-bottom: 2rem;
+    }
+
+    .section-divider {
+        border-bottom: 1px solid #eee;
+        margin: 1.5rem 0 1rem 0;
+        padding-bottom: 0.5rem;
+        font-size: 0.75rem;
+        font-weight: 800;
+        color: #b2bec3;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.2rem;
+    }
+
+    .full-width { grid-column: span 2; }
+
+    label {
+        display: block;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--text-dark);
+        margin-bottom: 0.5rem;
+    }
+
+    input, select {
+        width: 100%;
+        padding: 0.8rem 1rem;
+        border-radius: 10px;
+        border: 1px solid var(--border-color);
+        font-size: 0.95rem;
+        transition: all 0.2s;
+        box-sizing: border-box;
+        text-transform: uppercase; /* Forzar mayúsculas visuales */
+    }
+
+    input:focus {
+        border-color: var(--ramave-red);
+        outline: none;
+        box-shadow: 0 0 0 4px rgba(198, 40, 40, 0.1);
+    }
+
+    .buttons {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+
+    .btn {
+        padding: 0.85rem;
+        border-radius: 10px;
+        border: none;
+        font-weight: 700;
+        cursor: pointer;
+        font-size: 0.95rem;
+        transition: 0.3s;
+        text-align: center;
+        text-decoration: none;
+    }
+
+    .btn-save { background: var(--ramave-red); color: white; }
+    .btn-save:hover { background: var(--ramave-red-dark); transform: translateY(-2px); }
+    .btn-back { background: #e9ecef; color: #495057; }
+
+    @@media (max-width: 600px) {
+        .form-grid { grid-template-columns: 1fr; }
+        .full-width { grid-column: span 1; }
+        .buttons { grid-template-columns: 1fr; }
+    }
+</style>
+
+<div class="page-container">
+    <div class="card">
+        <h2 id="headerTitulo">Editar Tela</h2>
+        <p class="subtitle" id="headerSubtitulo">Cargando información del registro...</p>
+
+        <form id="formEdit">
+            <input type="hidden" id="id_tela" value="@ViewContext.RouteData.Values["id"]" />
+            <input type="hidden" id="id_modelo" />
+            <input type="hidden" id="tipo" />
+            <input type="hidden" id="catalogo" />
+            <input type="hidden" id="ancho" />
+            <input type="hidden" id="existencia" />
+
+            <div class="section-divider">Información de Venta</div>
+            
+            <div class="form-group">
+                <label>Colores (Separados por coma)</label>
+                <input id="color_nombre" type="text" placeholder="EJ. ROJO, AZUL, VERDE" required />
+            </div>
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Precio Corte ($)</label>
+                    <input id="precio_corte" type="number" step="0.0001" required />
+                </div>
+                <div class="form-group">
+                    <label>Precio Rollo ($)</label>
+                    <input id="precio_rollo" type="number" step="0.0001" required />
+                </div>
+            </div>
+
+            <div class="section-divider">Ficha de Cuidados</div>
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Lavar</label>
+                    <input id="lavar" type="text" />
+                </div>
+                <div class="form-group">
+                    <label>Jabón</label>
+                    <input id="jabon" type="text" />
+                </div>
+                <div class="form-group">
+                    <label>Temp. Agua</label>
+                    <input id="temp_agua" type="text" />
+                </div>
+                <div class="form-group">
+                    <label>Blanqueador</label>
+                    <input id="blanqueador" type="text" />
+                </div>
+                <div class="form-group">
+                    <label>Exprimir</label>
+                    <input id="exprimir" type="text" />
+                </div>
+                <div class="form-group">
+                    <label>Planchar</label>
+                    <input id="planchar" type="text" />
+                </div>
+            </div>
+
+            <div class="buttons">
+                <a href="@Url.Action("Telas", "Administrador")" class="btn btn-back">Cancelar</a>
+                <button type="submit" class="btn btn-save" id="btnGuardar">Guardar Cambios</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    const id = document.getElementById('id_tela').value;
+
+    // Cargar datos actuales apenas entre a la página
+    fetch(`/api/Telas/${id}`)
+        .then(r => r.json())
+        .then(t => {
+            // Actualizar encabezados
+            document.getElementById('headerTitulo').innerText = t.modelo || "Editar Tela";
+            document.getElementById('headerSubtitulo').innerText = `Catálogo: ${t.catalogo || 'N/A'} | Tipo: ${t.tipo || 'N/A'}`;
+
+            // Llenar inputs principales
+            document.getElementById('color_nombre').value = t.color_nombre || "";
+            document.getElementById('precio_corte').value = t.precio_ml_corte;
+            document.getElementById('precio_rollo').value = t.precio_ml_rollo;
+
+            // Llenar ficha de cuidados (del objeto anidado que manda tu controlador)
+            const c = t.cuidados || {};
+            document.getElementById('lavar').value = c.lavar || "";
+            document.getElementById('jabon').value = c.jabon || "";
+            document.getElementById('temp_agua').value = c.temp_agua || "";
+            document.getElementById('blanqueador').value = c.blanqueador || "";
+            document.getElementById('exprimir').value = c.exprimir || "";
+            document.getElementById('planchar').value = c.planchar || "";
+
+            // Llenar campos ocultos (necesarios para el PUT)
+            document.getElementById('id_modelo').value = t.id_modelo;
+            document.getElementById('tipo').value = t.tipo;
+            document.getElementById('catalogo').value = t.catalogo;
+            document.getElementById('ancho').value = t.ancho;
+            document.getElementById('existencia').value = t.existencia || 0;
+        })
+        .catch(err => console.error("Error cargando tela:", err));
+
+    // Manejar el envío del formulario
+    document.getElementById('formEdit').onsubmit = e => {
+        e.preventDefault();
+        
+        const btnSave = document.getElementById('btnGuardar');
+        btnSave.disabled = true;
+        btnSave.innerText = "Guardando...";
+
+        const data = {
+            id: parseInt(id),
+            id_modelo: parseInt(document.getElementById('id_modelo').value),
+            color_nombre: document.getElementById('color_nombre').value.toUpperCase(),
+            precio_ml_corte: parseFloat(document.getElementById('precio_corte').value),
+            precio_ml_rollo: parseFloat(document.getElementById('precio_rollo').value),
+            tipo: document.getElementById('tipo').value,
+            catalogo: document.getElementById('catalogo').value,
+            ancho: parseFloat(document.getElementById('ancho').value),
+            existencia: parseFloat(document.getElementById('existencia').value),
+            // Campos de cuidados
+            lavar: document.getElementById('lavar').value.toUpperCase(),
+            jabon: document.getElementById('jabon').value.toUpperCase(),
+            temp_agua: document.getElementById('temp_agua').value.toUpperCase(),
+            blanqueador: document.getElementById('blanqueador').value.toUpperCase(),
+            exprimir: document.getElementById('exprimir').value.toUpperCase(),
+            planchar: document.getElementById('planchar').value.toUpperCase()
+        };
+
+        fetch(`/api/Telas/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        }).then(res => {
+            if (res.ok) {
+                alert("TELA ACTUALIZADA");
+                location.href = '@Url.Action("Telas", "Administrador")';
+            } else {
+                alert("Error al guardar los cambios");
+                btnSave.disabled = false;
+                btnSave.innerText = "Guardar Cambios";
+            }
+        });
+    };
+</script>

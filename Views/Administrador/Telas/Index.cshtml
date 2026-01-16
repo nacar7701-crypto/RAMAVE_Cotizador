@@ -1,0 +1,388 @@
+@{
+    ViewData["Title"] = "Administración Integral de Telas";
+}
+
+<style>
+    @@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+    :root {
+        --ramave-red: #c62828;
+        --ramave-dark: #8e0000;
+        --bg-body: #f0f2f5;
+        --text-main: #1a1a1a;
+        --border-color: #e0e0e0;
+    }
+
+    body {
+        background-color: var(--bg-body);
+        font-family: 'Inter', sans-serif;
+        margin: 0;
+        color: var(--text-main);
+    }
+
+    .wrapper {
+        width: 100%;
+        padding: 20px;
+        box-sizing: border-box;
+        padding-bottom: 150px;
+        /* Espacio para que los menús no se corten */
+    }
+
+    /* Panel Superior Estilo Usuarios */
+    .header-panel {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 12px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .header-panel h2 {
+        margin: 0;
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: var(--ramave-red);
+    }
+
+    .search-input {
+        flex: 1;
+        min-width: 250px;
+        padding: 12px 20px;
+        border-radius: 50px;
+        border: 1px solid var(--border-color);
+        background: #f8f9fa;
+        font-size: 0.95rem;
+        outline: none;
+        transition: 0.3s;
+    }
+
+    .search-input:focus {
+        border-color: var(--ramave-red);
+        background: white;
+        box-shadow: 0 0 0 4px rgba(198, 40, 40, 0.1);
+    }
+
+    /* Botones Estilo Usuarios */
+    .btn-main {
+        padding: 10px 18px;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        border: none;
+        font-size: 0.85rem;
+        transition: 0.2s;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .btn-red {
+        background: var(--ramave-red);
+        color: white;
+    }
+
+    .btn-red:hover {
+        background: var(--ramave-dark);
+    }
+
+    .btn-gray {
+        background: #e0e0e0;
+        color: #333;
+    }
+
+    .btn-gray:hover {
+        background: #d0d0d0;
+    }
+
+    /* Tabla Estilo Usuarios */
+    .table-card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        width: 100%;
+        overflow: hidden;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th {
+        background: #f8f9fa;
+        padding: 15px 20px;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        color: #666;
+        border-bottom: 2px solid var(--border-color);
+        text-align: left;
+    }
+
+    td {
+        padding: 15px 20px;
+        border-bottom: 1px solid var(--border-color);
+        font-size: 0.9rem;
+        vertical-align: top;
+    }
+
+    /* Etiquetas internas alineadas */
+    .field-label {
+        font-size: 0.65rem;
+        font-weight: 700;
+        color: #888;
+        width: 65px;
+        display: inline-block;
+        text-transform: uppercase;
+    }
+
+    /* Grid de cuidados compacto */
+    .care-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 4px;
+        max-width: 300px;
+    }
+
+    .care-item {
+        font-size: 0.75rem;
+        color: #555;
+    }
+
+    /* Menú Desplegable (Tres puntos) */
+    .action-menu {
+        position: relative;
+        text-align: right;
+    }
+
+    .dot-btn {
+        background: none;
+        border: none;
+        font-size: 1.2rem;
+        cursor: pointer;
+        padding: 5px 10px;
+        color: #999;
+    }
+
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        right: 0;
+        top: 100%;
+        background: white;
+        min-width: 150px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        z-index: 999;
+        border-radius: 8px;
+        border: 1px solid var(--border-color);
+        overflow: hidden;
+    }
+
+    .dropdown-up {
+        top: auto !important;
+        bottom: 100% !important;
+        margin-bottom: 5px;
+    }
+
+    .dropdown-content button {
+        color: #333;
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+        font-size: 0.9rem;
+        width: 100%;
+        border: none;
+        background: none;
+        text-align: left;
+        cursor: pointer;
+    }
+
+    .dropdown-content button:hover {
+        background: #fff5f5;
+        color: var(--ramave-red);
+    }
+
+    .show {
+        display: block;
+    }
+
+    /* RESPONSIVO Estilo Usuarios */
+    @@media (max-width: 992px) {
+        table thead {
+            display: none;
+        }
+
+        table,
+        tbody,
+        tr,
+        td {
+            display: block;
+            width: 100%;
+        }
+
+        tr {
+            margin-bottom: 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            background: white;
+        }
+
+        td {
+            display: flex;
+            flex-direction: column;
+            border-bottom: 1px solid #f8f9fa;
+            padding: 12px 15px;
+        }
+
+        td::before {
+            content: attr(data-label);
+            font-weight: 700;
+            color: var(--ramave-red);
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+    }
+</style>
+
+<div class="wrapper">
+    <div class="header-panel">
+        <div style="display:flex; align-items:center; flex-wrap:wrap; gap:15px;">
+            <h2>Inventario</h2>
+            <div class="btn-actions-top">
+                <button class="btn-main btn-gray"
+                    onclick="location.href='@Url.Action("Administrador", "Home")'">Menú</button>
+                <button class="btn-main btn-gray" onclick="location.href='@Url.Action("Crear", "Administrador")'">➕
+                    Nueva Marca/Modelo</button>
+                <button class="btn-main btn-red" onclick="location.href='@Url.Action("CrearTela", "Administrador")'">➕
+                    Nueva Tela</button>
+            </div>
+        </div>
+        <input type="text" id="txtBuscar" class="search-input" placeholder="🔍 Buscar por marca, modelo, color..."
+            onkeyup="filtrarTabla()">
+    </div>
+
+    <div class="table-card">
+        <table>
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Descripción</th>
+                    <th>Costos Base</th>
+                    <th>Venta (IVA)</th>
+                    <th>Cuidados</th>
+                    <th style="width: 50px;"></th>
+                </tr>
+            </thead>
+            <tbody id="listaTelas">
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    const API_BASE = '/api/telas';
+    let listaTelas = [];
+
+    document.addEventListener("DOMContentLoaded", cargarDatos);
+
+    const renderField = (label, value) => {
+        if (!value) return '';
+        return `<div><span class="field-label">${label}:</span> <strong>${value}</strong></div>`;
+    };
+
+    async function cargarDatos() {
+        const res = await fetch(API_BASE);
+        listaTelas = await res.json();
+        mostrarTelas(listaTelas);
+    }
+
+    function mostrarTelas(datos) {
+        const tbody = document.getElementById('listaTelas');
+        tbody.innerHTML = datos.map((t, index) => {
+            const isLast = (index >= datos.length - 2 && datos.length > 3);
+            const c = t.cuidados || {};
+
+            return `
+            <tr>
+                <td data-label="Producto">
+                    ${renderField('Marca', t.marca)}
+                    ${renderField('Modelo', t.modelo)}
+                    ${renderField('Tipo', t.tipo)}
+                </td>
+                <td data-label="Descripción">
+                    ${renderField('Color', t.color_nombre)}
+                    ${renderField('Catálogo', t.catalogo)}
+                    ${renderField('Ancho', t.ancho ? t.ancho + 'm' : null)}
+                </td>
+                <td data-label="Costos Base">
+                    <div style="color:#666">Corte: <strong>$${t.precio_ml_corte.toFixed(2)}</strong></div>
+                    <div style="color:#666">Rollo: <strong>$${t.precio_ml_rollo.toFixed(2)}</strong></div>
+                </td>
+                <td data-label="Precios Venta">
+                    <div style="color:var(--ramave-red); font-weight:700">Corte: $${t.precio_ml_corte_iva.toFixed(2)}</div>
+                    <div style="color:#1976d2; font-weight:700">Rollo: $${t.precio_ml_rollo_iva.toFixed(2)}</div>
+                    <div style="color:#1976d2; font-weight:700">Costo M2: $${t.costo_x_m2.toFixed(2)}</div>
+                </td>
+                <td data-label="Cuidados">
+                    <div class="care-grid">
+                        <div class="care-item"><strong>Lavar:</strong> ${c.lavar || ''}</div>
+                        <div class="care-item"><strong>Temp:</strong> ${c.temp_agua || ''}</div>
+                        <div class="care-item"><strong>Plancha:</strong> ${c.planchar || ''}</div>
+                        <div class="care-item"><strong>Blanq:</strong> ${c.blanqueador || ''}</div>
+                        <div class="care-item"><strong>Jabón:</strong> ${c.jabon || ''}</div>
+                        <div class="care-item"><strong>Exprimir:</strong> ${c.exprimir || ''}</div>
+                    </div>
+                </td>
+                <td>
+                    <div class="action-menu">
+                        <button class="dot-btn" onclick="toggleMenu(event, ${t.id})">⋮</button>
+                        <div id="dropdown-${t.id}" class="dropdown-content ${isLast ? 'dropdown-up' : ''}">
+                            <button onclick="EditarTela(${t.id})">✏️ Editar</button>
+                            <button onclick="eliminar(${t.id})" style="color: #d32f2f;">❌ Eliminar</button>
+                        </div>
+                    </div>
+                </td>
+            </tr>`;
+        }).join('');
+    }
+
+    function filtrarTabla() {
+        const busqueda = document.getElementById('txtBuscar').value.toLowerCase();
+        const filtrados = listaTelas.filter(t =>
+            (t.marca || "").toLowerCase().includes(busqueda) ||
+            (t.modelo || "").toLowerCase().includes(busqueda) ||
+            (t.color_nombre || "").toLowerCase().includes(busqueda)
+        );
+        mostrarTelas(filtrados);
+    }
+
+    function toggleMenu(event, id) {
+        event.stopPropagation();
+        const el = document.getElementById('dropdown-' + id);
+        const wasShowing = el.classList.contains('show');
+        document.querySelectorAll('.dropdown-content').forEach(d => d.classList.remove('show'));
+        if (!wasShowing) el.classList.add('show');
+    }
+
+    window.onclick = () => {
+        document.querySelectorAll('.dropdown-content').forEach(d => d.classList.remove('show'));
+    }
+
+    function EditarTela(id) {
+        const urlBase = '@Url.Action("EditarTela", "Administrador")';
+        window.location.href = `${urlBase}/${id}`;
+    }
+
+    async function eliminar(id) {
+        if (confirm("¿Eliminar tela permanentemente?")) {
+            const res = await fetch(`${API_BASE}/${id}`, { method: 'DELETE' });
+            if (res.ok) cargarDatos();
+        }
+    }
+</script>

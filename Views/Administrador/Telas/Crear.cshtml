@@ -1,0 +1,367 @@
+@{
+    ViewData["Title"] = "Gestión de Marcas y Modelos";
+}
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+    :root {
+        --ramave-red: #c62828;
+        --ramave-dark: #8e0000;
+        --ramave-soft-red: #fff5f5;
+        --bg-light: #f4f7f6;
+        --text-main: #2d3436;
+        --text-muted: #636e72;
+        --border-color: #dfe6e9;
+    }
+
+    body { 
+        background-color: var(--bg-light); 
+        font-family: 'Inter', sans-serif; 
+        color: var(--text-main);
+    }
+
+    .wrapper { padding: 25px; max-width: 1200px; margin: 0 auto; }
+
+    /* Grid principal */
+    .admin-grid {
+        display: grid; 
+        grid-template-columns: 1fr 1fr; 
+        gap: 30px;
+    }
+
+    .card-admin {
+        background: white; 
+        border-radius: 16px; 
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        border: 1px solid var(--border-color);
+        height: 80vh; 
+        display: flex; 
+        flex-direction: column;
+        overflow: hidden;
+    }
+
+    /* Cabeceras */
+    .card-header { 
+        padding: 25px; 
+        border-bottom: 2px solid var(--ramave-soft-red); 
+    }
+    
+    .card-header h2 { 
+        margin: 0; 
+        font-size: 1.1rem; 
+        color: var(--ramave-red); 
+        font-weight: 800; 
+        text-transform: uppercase; 
+        letter-spacing: 0.5px;
+    }
+
+    /* Caja de Registro Superior */
+    .registration-box { 
+        padding: 20px 25px; 
+        background: var(--ramave-soft-red); 
+        border-bottom: 1px solid var(--border-color); 
+    }
+    
+    .input-group { display: flex; gap: 10px; margin-top: 10px; }
+    
+    .form-control {
+        flex: 1; 
+        padding: 12px 15px; 
+        border: 1px solid var(--border-color); 
+        border-radius: 8px; 
+        font-family: 'Inter', sans-serif;
+        outline: none; 
+        transition: 0.3s;
+    }
+    
+    .form-control:focus { 
+        border-color: var(--ramave-red); 
+        box-shadow: 0 0 0 4px rgba(198, 40, 40, 0.1); 
+    }
+
+    .btn-save {
+        background: var(--ramave-red); 
+        color: white; 
+        border: none; 
+        padding: 0 25px;
+        border-radius: 8px; 
+        font-weight: 700; 
+        cursor: pointer; 
+        transition: 0.2s;
+        text-transform: uppercase;
+        font-size: 0.8rem;
+    }
+    
+    .btn-save:hover { background: var(--ramave-dark); transform: translateY(-1px); }
+
+    /* Contenedor de Listas */
+    .list-container { flex: 1; overflow-y: auto; padding: 20px; }
+    
+    .search-mini { 
+        width: 100%; 
+        padding: 10px 15px; 
+        margin-bottom: 20px; 
+        border: 1px solid var(--border-color); 
+        border-radius: 25px; 
+        font-size: 0.85rem; 
+        background: #f8f9fa;
+    }
+
+    /* Filas de la lista */
+    .item-row {
+        padding: 12px 15px; 
+        border-bottom: 1px solid #f1f1f1; 
+        display: flex; 
+        justify-content: space-between;
+        align-items: center; 
+        cursor: pointer; 
+        transition: 0.2s; 
+        border-radius: 10px; 
+        margin-bottom: 6px;
+    }
+    
+    .item-row:hover { background: var(--ramave-soft-red); }
+    
+    .item-row.selected { 
+        background: #fff1f1; 
+        border-left: 5px solid var(--ramave-red);
+        font-weight: 700;
+    }
+
+    /* Ocultamos el badge-id por completo */
+    .badge-id { display: none; }
+
+    /* Acciones */
+    .actions-group { display: flex; gap: 8px; }
+    
+    .btn-action {
+        border: none; 
+        background: white; 
+        width: 32px; 
+        height: 32px; 
+        border-radius: 8px;
+        cursor: pointer; 
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.9rem; 
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        transition: 0.2s;
+    }
+    
+    .btn-edit:hover { color: #0d6efd; background: #e7f1ff; }
+    .btn-delete:hover { color: #dc3545; background: #f8d7da; }
+    .btn-confirm:hover { color: #198754; background: #d1e7dd; }
+
+    .edit-input {
+        padding: 6px 12px; 
+        border: 2px solid var(--ramave-red); 
+        border-radius: 6px; 
+        outline: none; 
+        width: 80%;
+        font-family: 'Inter', sans-serif;
+    }
+
+    @@media (max-width: 900px) { .admin-grid { grid-template-columns: 1fr; } .card-admin { height: auto; min-height: 500px; } }
+</style>
+
+<div class="wrapper">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+        <button onclick="location.href='@Url.Action("Telas", "Administrador")'" style="background:var(--ramave-soft-red); border:none; color:var(--ramave-red); padding: 10px 20px; border-radius: 8px; cursor:pointer; font-weight:700; font-size: 0.8rem;">
+            ← VOLVER AL INVENTARIO
+        </button>
+
+    </div>
+
+    <div class="admin-grid">
+        <div class="card-admin">
+            <div class="card-header"><h2>1. Marcas Registradas</h2></div>
+            <div class="registration-box">
+                <label style="font-size: 0.65rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">Añadir Nueva Marca</label>
+                <div class="input-group">
+                    <input type="text" id="txtNuevaMarca" class="form-control" placeholder="Nombre de la marca...">
+                    <button class="btn-save" onclick="guardarMarca()">REGISTRAR</button>
+                </div>
+            </div>
+            <div class="list-container">
+                <input type="text" class="search-mini" placeholder="🔍 Filtrar marcas..." onkeyup="filtrarLista('listaMarcas', this.value)">
+                <div id="listaMarcas"></div>
+            </div>
+        </div>
+
+        <div class="card-admin">
+            <div class="card-header">
+                <h2>2. Modelos Registrados</h2>
+                <div id="marcaSeleccionadaNombre" style="font-size: 0.85rem; color: var(--text-muted); margin-top: 8px;">Selecciona una marca para gestionar sus modelos</div>
+            </div>
+            <div class="registration-box" id="boxModelo" style="display: none;">
+                <label style="font-size: 0.65rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">Añadir Modelo a la Marca</label>
+                <div class="input-group">
+                    <input type="text" id="txtNuevoModelo" class="form-control" placeholder="Nombre del modelo...">
+                    <button class="btn-save" onclick="guardarModelo()">REGISTRAR</button>
+                </div>
+            </div>
+            <div class="list-container">
+                <input type="text" id="searchModelo" class="search-mini" placeholder="🔍 Filtrar modelos..." onkeyup="filtrarLista('listaModelos', this.value)" style="display:none;">
+                <div id="listaModelos">
+                    <div style="text-align: center; color: #ced4da; margin-top: 100px; font-weight: 600;">
+                        <i class="fas fa-arrow-left"></i> <br>Selecciona una marca
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let marcaSeleccionadaId = null;
+
+    document.addEventListener("DOMContentLoaded", cargarMarcas);
+
+    // --- MARCAS ---
+    async function cargarMarcas() {
+        const res = await fetch('/api/Telas/marcas');
+        const marcas = await res.json();
+        const contenedor = document.getElementById('listaMarcas');
+        
+        contenedor.innerHTML = marcas.map(m => `
+            <div class="item-row" id="marca-${m.id}" onclick="seleccionarMarca(${m.id}, '${m.nombre}')">
+                <div id="content-marca-${m.id}" style="flex:1">
+                    <span class="txt-name">${m.nombre}</span>
+                </div>
+                <div class="actions-group" id="actions-marca-${m.id}">
+                    <button class="btn-action btn-edit" onclick="habilitarEdicionFila(event, 'marca', ${m.id}, '${m.nombre}')" title="Editar">✏️</button>
+                    <button class="btn-action btn-delete" onclick="eliminarMarca(event, ${m.id})" title="Eliminar">🗑️</button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    async function guardarMarca() {
+        const nombre = document.getElementById('txtNuevaMarca').value;
+        if(!nombre) return;
+        const res = await fetch('/api/Telas/marcas', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ nombre })
+        });
+        if(res.ok) { document.getElementById('txtNuevaMarca').value = ''; cargarMarcas(); }
+    }
+
+    // --- MODELOS ---
+    async function seleccionarMarca(id, nombre) {
+        marcaSeleccionadaId = id;
+        document.querySelectorAll('.item-row').forEach(el => el.classList.remove('selected'));
+        const row = document.getElementById(`marca-${id}`);
+        if(row) row.classList.add('selected');
+
+        document.getElementById('marcaSeleccionadaNombre').innerHTML = `Marca activa: <b style="color:var(--ramave-red)">${nombre}</b>`;
+        document.getElementById('boxModelo').style.display = 'block';
+        document.getElementById('searchModelo').style.display = 'block';
+        cargarModelos(id);
+    }
+
+    async function cargarModelos(idMarca) {
+        const res = await fetch(`/api/Telas/modelos/${idMarca}`);
+        const modelos = await res.json();
+        const contenedor = document.getElementById('listaModelos');
+
+        if(modelos.length === 0) {
+            contenedor.innerHTML = '<div style="text-align: center; color: #ced4da; margin-top: 50px;">No hay modelos registrados para esta marca.</div>';
+            return;
+        }
+
+        contenedor.innerHTML = modelos.map(m => `
+            <div class="item-row" id="modelo-row-${m.id}">
+                <div id="content-modelo-${m.id}" style="flex:1">
+                    <span>${m.nombre}</span>
+                </div>
+                <div class="actions-group" id="actions-modelo-${m.id}">
+                    <button class="btn-action btn-edit" onclick="habilitarEdicionFila(event, 'modelo', ${m.id}, '${m.nombre}')" title="Editar">✏️</button>
+                    <button class="btn-action btn-delete" onclick="eliminarModelo(event, ${m.id})" title="Eliminar">🗑️</button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    async function guardarModelo() {
+        const nombre = document.getElementById('txtNuevoModelo').value;
+        if(!nombre || !marcaSeleccionadaId) return;
+        const res = await fetch('/api/Telas/modelos', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ nombre, id_marca: marcaSeleccionadaId })
+        });
+        if(res.ok) { document.getElementById('txtNuevoModelo').value = ''; cargarModelos(marcaSeleccionadaId); }
+    }
+
+    // --- EDICIÓN ---
+    function habilitarEdicionFila(event, tipo, id, nombreActual) {
+        event.stopPropagation();
+        const divContent = document.getElementById(`content-${tipo}-${id}`);
+        const divActions = document.getElementById(`actions-${tipo}-${id}`);
+
+        divContent.innerHTML = `
+            <input type="text" id="input-edit-${tipo}-${id}" class="edit-input" value="${nombreActual}" onclick="event.stopPropagation()">
+        `;
+
+        divActions.innerHTML = `
+            <button class="btn-action btn-confirm" onclick="confirmarEdicion(event, '${tipo}', ${id})" title="Confirmar">✔️</button>
+            <button class="btn-action" onclick="event.stopPropagation(); ${tipo === 'marca' ? 'cargarMarcas()' : 'cargarModelos(marcaSeleccionadaId)'}" title="Cancelar">❌</button>
+        `;
+        
+        document.getElementById(`input-edit-${tipo}-${id}`).focus();
+    }
+
+    async function confirmarEdicion(event, tipo, id) {
+        event.stopPropagation();
+        const nuevoNombre = document.getElementById(`input-edit-${tipo}-${id}`).value;
+        if(!nuevoNombre) return;
+
+        const body = { id: id, nombre: nuevoNombre };
+        if(tipo === 'modelo') body.id_marca = marcaSeleccionadaId;
+
+        const res = await fetch(`/api/Telas/${tipo === 'marca' ? 'marcas' : 'modelos'}/${id}`, {
+            method: 'PUT',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(body)
+        });
+
+        if(res.ok) {
+            tipo === 'marca' ? cargarMarcas() : cargarModelos(marcaSeleccionadaId);
+        }
+    }
+
+    // --- ELIMINACIÓN ---
+    async function eliminarMarca(event, id) {
+        event.stopPropagation();
+        if(!confirm("¿Desea eliminar esta marca permanentemente?")) return;
+        const res = await fetch(`/api/Telas/marcas/${id}`, { method: 'DELETE' });
+        if(res.ok) { cargarMarcas(); if(marcaSeleccionadaId === id) resetModelosView(); }
+        else { alert("No se puede eliminar: Verifique que la marca no tenga modelos asociados."); }
+    }
+
+    async function eliminarModelo(event, id) {
+        event.stopPropagation();
+        if(!confirm("¿Desea eliminar este modelo?")) return;
+        const res = await fetch(`/api/Telas/modelos/${id}`, { method: 'DELETE' });
+        if(res.ok) cargarModelos(marcaSeleccionadaId);
+    }
+
+    function resetModelosView() {
+        marcaSeleccionadaId = null;
+        document.getElementById('boxModelo').style.display = 'none';
+        document.getElementById('searchModelo').style.display = 'none';
+        document.getElementById('listaModelos').innerHTML = '<div style="text-align: center; color: #ced4da; margin-top: 100px;">Selecciona una marca.</div>';
+        document.getElementById('marcaSeleccionadaNombre').innerText = "Seleccione una marca...";
+    }
+
+    function filtrarLista(idContenedor, texto) {
+        const val = texto.toLowerCase();
+        const items = document.getElementById(idContenedor).getElementsByClassName('item-row');
+        for (let item of items) {
+            item.style.display = item.textContent.toLowerCase().includes(val) ? "flex" : "none";
+        }
+    }
+</script>
