@@ -1,0 +1,183 @@
+using Microsoft.AspNetCore.Mvc;
+using RAMAVE_Cotizador.Data;
+using RAMAVE_Cotizador.Models;
+using Microsoft.EntityFrameworkCore;
+
+namespace RAMAVE_Cotizador.Controllers
+{
+    [ApiController]
+    [Route("api/[controller]")]
+    public class TelasController : ControllerBase
+    {
+        private readonly ApplicationDbContext _context;
+
+        public TelasController(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+
+        // ==========================================
+        // SECCIÓN: OBTENER (GET)
+        // ==========================================
+
+        [HttpGet]
+        public async Task<IActionResult> GetTelas([FromQuery] string? filtro)
+        {
+            var consulta = _context.Telas
+                .Include(t => t.modelo).ThenInclude(m => m.marca)
+                .AsQueryable();
+
+            if (!string.IsNullOrEmpty(filtro))
+            {
+                consulta = consulta.Where(t => t.modelo.marca.nombre.Contains(filtro) 
+                                            || t.modelo.nombre.Contains(filtro) 
+                                            || t.color_nombre.Contains(filtro)
+                                            || t.catalogo.Contains(filtro));
+            }
+
+            var resultado = await consulta.Select(t => new {
+                t.id,
+                marca = t.modelo.marca.nombre,
+                modelo = t.modelo.nombre,
+                t.tipo,
+                t.catalogo,
+                t.color_nombre,
+                t.ancho,
+                t.precio_ml_corte,
+                t.precio_ml_corte_iva,
+                t.precio_ml_rollo_iva,
+                t.costo_x_m2,
+                cuidados = new { t.lavar, t.temp_agua, t.exprimir, t.planchar, t.blanqueador, t.jabon }
+            }).ToListAsync();
+
+            return Ok(resultado);
+        }
+
+        [HttpGet("marcas")]
+        public async Task<ActionResult<IEnumerable<Marca>>> GetMarcas() => await _context.Marcas.ToListAsync();
+
+        [HttpGet("modelos/{idMarca}")]
+        public async Task<ActionResult<IEnumerable<Modelo>>> GetModelosPorMarca(int idMarca) 
+            => await _context.Modelos.Where(m => m.id_marca == idMarca).ToListAsync();
+
+        // ==========================================
+        // SECCIÓN: CREAR (POST)
+        // ==========================================
+
+        [HttpPost("marcas")]
+        public async Task<IActionResult> PostMarca([FromBody] Marca marca)
+        {
+            _context.Marcas.Add(marca);
+            await _context.SaveChangesAsync();
+            return Ok(new { mensaje = "Marca creada", id = marca.id });
+        }
+
+        [HttpPost("modelos")]
+        public async Task<IActionResult> PostModelo([FromBody] Modelo modelo)
+        {
+            if (!await _context.Marcas.AnyAsync(m => m.id == modelo.id_marca))
+                return BadRequest("La marca no existe.");
+            _context.Modelos.Add(modelo);
+            await _context.SaveChangesAsync();
+            return Ok(new { mensaje = "Modelo creado", id = modelo.id });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> PostTela([FromBody] Tela tela)
+        {
+            _context.Telas.Add(tela);
+            await _context.SaveChangesAsync();
+            return Ok(new { mensaje = "Tela agregada", id = tela.id });
+        }
+
+        // ==========================================
+        // SECCIÓN: EDITAR (PUT)
+        // ==========================================
+
+        [HttpPut("marcas/{id}")]
+        public async Task<IActionResult> PutMarca(int id, [FromBody] Marca marca)
+        {
+            var db = await _context.Marcas.FindAsync(id);
+            if (db == null) return NotFound();
+            db.nombre = marca.nombre;
+            await _context.SaveChangesAsync();
+            return Ok(new { mensaje = "Marca actualizada" });
+        }
+
+        [HttpPut("modelos/{id}")]
+        public async Task<IActionResult> PutModelo(int id, [FromBody] Modelo modelo)
+        {
+            var db = await _context.Modelos.FindAsync(id);
+            if (db == null) return NotFound();
+            db.nombre = modelo.nombre;
+            db.id_marca = modelo.id_marca;
+            await _context.SaveChangesAsync();
+            return Ok(new { mensaje = "Modelo actualizado" });
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutTela(int id, [FromBody] Tela telaActualizada)
+        {
+            if (id != telaActualizada.id) return BadRequest(new { mensaje = "El ID no coincide" });
+
+            var telaDb = await _context.Telas.FindAsync(id);
+            if (telaDb == null) return NotFound(new { mensaje = "Tela no encontrada" });
+
+            // Actualizamos la información básica
+            telaDb.id_modelo = telaActualizada.id_modelo;
+            telaDb.catalogo = telaActualizada.catalogo;
+            telaDb.color_nombre = telaActualizada.color_nombre;
+            telaDb.tipo = telaActualizada.tipo;
+            telaDb.ancho = telaActualizada.ancho;
+            telaDb.existencia = telaActualizada.existencia;
+            telaDb.precio_ml_corte = telaActualizada.precio_ml_corte;
+            telaDb.precio_ml_rollo = telaActualizada.precio_ml_rollo;
+
+            // Actualizamos los campos de cuidados (los que estaban en NULL)
+            telaDb.lavar = telaActualizada.lavar;
+            telaDb.temp_agua = telaActualizada.temp_agua;
+            telaDb.exprimir = telaActualizada.exprimir;
+            telaDb.planchar = telaActualizada.planchar;
+            telaDb.blanqueador = telaActualizada.blanqueador;
+            telaDb.jabon = telaActualizada.jabon;
+
+            await _context.SaveChangesAsync();
+            return Ok(new { mensaje = "Registro de tela actualizado con éxito" });
+        }
+
+        // ==========================================
+        // SECCIÓN: ELIMINAR (DELETE)
+        // ==========================================
+
+        [HttpDelete("marcas/{id}")]
+        public async Task<IActionResult> DeleteMarca(int id)
+        {
+            var marca = await _context.Marcas.Include(m => m.modelos).FirstOrDefaultAsync(m => m.id == id);
+            if (marca == null) return NotFound();
+            if (marca.modelos.Any()) return BadRequest("No puedes eliminar una marca con modelos activos.");
+            _context.Marcas.Remove(marca);
+            await _context.SaveChangesAsync();
+            return Ok(new { mensaje = "Marca eliminada" });
+        }
+
+        [HttpDelete("modelos/{id}")]
+        public async Task<IActionResult> DeleteModelo(int id)
+        {
+            var modelo = await _context.Modelos.FindAsync(id);
+            if (modelo == null) return NotFound();
+            _context.Modelos.Remove(modelo);
+            await _context.SaveChangesAsync();
+            return Ok(new { mensaje = "Modelo eliminado" });
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteTela(int id)
+        {
+            var tela = await _context.Telas.FindAsync(id);
+            if (tela == null) return NotFound();
+            _context.Telas.Remove(tela);
+            await _context.SaveChangesAsync();
+            return Ok(new { mensaje = "Tela eliminada" });
+        }
+    }
+}
