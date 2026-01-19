@@ -18,162 +18,151 @@
         font-family: 'Inter', sans-serif;
         margin: 0;
         color: var(--text-main);
+        overflow-x: hidden;
     }
 
     .wrapper {
         width: 100%;
-        padding: 20px;
+        padding: 10px;
         box-sizing: border-box;
     }
 
-    /* Encabezado */
+    /* --- PANEL SUPERIOR --- */
     .header-panel {
         background: white;
-        padding: 1.5rem;
+        padding: 1.2rem;
         border-radius: 12px;
         display: flex;
-        justify-content: space-between;
-        align-items: center;
-        flex-wrap: wrap;
-        gap: 1rem;
+        flex-direction: column;
+        gap: 15px;
         margin-bottom: 20px;
         box-shadow: 0 2px 10px rgba(0,0,0,0.05);
     }
 
+    .header-top-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
     .header-info h2 {
         margin: 0;
-        font-size: 1.4rem;
+        font-size: 1.3rem;
         font-weight: 700;
         color: var(--ramave-red);
     }
 
-    .header-info p {
-        margin: 4px 0 0;
-        color: #666;
-        font-size: 0.9rem;
-    }
+    .header-info p { margin: 2px 0 0; color: #666; font-size: 0.85rem; }
 
-    /* Buscador */
     .search-input {
-        flex: 1;
-        min-width: 250px;
-        padding: 12px 20px;
-        border-radius: 50px;
+        width: 100%;
+        padding: 12px 18px;
+        border-radius: 10px;
         border: 1px solid var(--border-color);
         background: #f8f9fa;
         font-size: 0.95rem;
         outline: none;
-        transition: 0.3s;
+        box-sizing: border-box;
+        transition: 0.2s;
     }
 
-    .search-input:focus {
-        border-color: var(--ramave-red);
-        background: white;
-        box-shadow: 0 0 0 4px rgba(198, 40, 40, 0.1);
-    }
-
-    /* Botones */
-    .btn-group { display: flex; gap: 10px; }
+    .btn-group { display: flex; gap: 8px; }
 
     .btn-main {
-        padding: 10px 18px;
+        padding: 10px 15px;
         border-radius: 8px;
         font-weight: 600;
         cursor: pointer;
         border: none;
-        font-size: 0.85rem;
+        font-size: 0.8rem;
         display: inline-flex;
         align-items: center;
         gap: 6px;
-        transition: 0.2s;
         text-decoration: none;
     }
 
     .btn-red { background: var(--ramave-red); color: white; }
-    .btn-red:hover { background: var(--ramave-dark); transform: translateY(-1px); }
     .btn-gray { background: #e0e0e0; color: #333; }
-    .btn-gray:hover { background: #d0d0d0; }
 
-    /* Tabla */
-    .table-card {
+    /* --- TABLA / TARJETAS --- */
+    .table-card { background: white; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); overflow: hidden; }
+    table { width: 100%; border-collapse: collapse; }
+    th { background: #f8f9fa; padding: 12px 15px; font-size: 0.75rem; text-transform: uppercase; color: #666; border-bottom: 2px solid var(--border-color); text-align: left; }
+    td { padding: 12px 15px; border-bottom: 1px solid var(--border-color); font-size: 0.9rem; color: #444; }
+
+    .um-badge { background: #f1f3f5; color: #495057; padding: 3px 8px; border-radius: 6px; font-size: 0.7rem; font-weight: 700; }
+    .price-iva { color: var(--ramave-red); font-weight: 700; }
+
+    /* --- MENÚ DE ACCIONES (TRES PUNTOS) --- */
+    .action-menu { position: relative; display: inline-block; }
+    .dot-btn { background: #f1f1f1; border: 1px solid #ddd; border-radius: 6px; padding: 6px 12px; cursor: pointer; font-size: 1rem; }
+    
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        right: 0;
+        top: 100%;
         background: white;
-        border-radius: 12px;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        min-width: 140px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        z-index: 100;
+        border-radius: 8px;
+        border: 1px solid var(--border-color);
         overflow: hidden;
     }
+    
+    .dropdown-up { top: auto !important; bottom: 100% !important; margin-bottom: 5px; }
+    .show { display: block; }
 
-    table { width: 100%; border-collapse: collapse; }
-
-    th {
-        background: #f8f9fa;
-        padding: 15px 20px;
-        font-size: 0.75rem;
-        text-transform: uppercase;
-        color: #666;
-        border-bottom: 2px solid var(--border-color);
-        text-align: left;
-        letter-spacing: 0.5px;
+    .dropdown-content a, .dropdown-content button {
+        display: block; padding: 12px 15px; text-decoration: none; color: #333; border: none; background: none; width: 100%; text-align: left; font-size: 0.9rem; cursor: pointer;
     }
+    .dropdown-content a:hover, .dropdown-content button:hover { background: #f8f9fa; }
 
-    td {
-        padding: 15px 20px;
-        border-bottom: 1px solid var(--border-color);
-        font-size: 0.9rem;
-        color: #444;
-    }
-
-    tr:hover { background-color: #fff9f9; }
-
-    /* Estilos de contenido de celda */
-    .um-badge {
-        background: #f1f3f5;
-        color: #495057;
-        padding: 4px 10px;
-        border-radius: 6px;
-        font-size: 0.75rem;
-        font-weight: 700;
-    }
-
-    .price-base { color: #666; }
-    .price-iva { color: var(--ramave-red); font-weight: 700; font-size: 1rem; }
-
-    .action-btn {
-        background: none; border: none; cursor: pointer;
-        padding: 6px; border-radius: 6px; transition: 0.2s;
-        font-size: 1.1rem;
-    }
-    .btn-edit-sm:hover { background: #fff3e0; }
-    .btn-delete-sm:hover { background: #ffebee; }
-
-    /* RESPONSIVO */
-    @@media (max-width: 992px) {
-        .header-panel { flex-direction: column; align-items: stretch; }
+    /* --- DISEÑO MÓVIL --- */
+    @@media (max-width: 768px) {
+        .header-top-row { flex-direction: column; align-items: stretch; text-align: center; }
+        .btn-group { justify-content: center; }
+        
         table thead { display: none; }
-        table, tbody, tr, td { display: block; width: 100%; }
+        table, tbody, tr, td { display: block; width: 100%; box-sizing: border-box; }
+        
         tr { margin-bottom: 15px; border: 1px solid var(--border-color); border-radius: 12px; padding: 10px; background: white; }
-        td { display: flex; justify-content: space-between; border: none; padding: 8px 10px; text-align: right; }
-        td::before { content: attr(data-label); font-weight: 700; color: #888; font-size: 0.75rem; }
+
+        td { 
+            display: flex; 
+            flex-direction: column; 
+            align-items: flex-start; 
+            padding: 8px 12px; 
+            border-bottom: 1px solid #f8f9fa; 
+            word-break: break-word;
+        }
+
+        td:last-child { border-bottom: none; align-items: flex-end; padding-top: 12px; }
+
+        td::before { 
+            content: attr(data-label); 
+            font-weight: 700; color: #999; font-size: 0.65rem; text-transform: uppercase; margin-bottom: 2px;
+        }
     }
 </style>
 
 <div class="wrapper">
     <div class="header-panel">
-        <div class="header-info">
-            <h2>📦 Gestión de Materiales</h2>
-            <p>Catálogo de precios unitarios e impuestos</p>
+        <div class="header-top-row">
+            <div class="header-info">
+                <h2>📦 Gestión de Materiales</h2>
+                <p>Catálogo de precios unitarios e impuestos</p>
+            </div>
+            <div class="btn-group">
+                <a class="btn-main btn-gray" href="@Url.Action("Administrador", "Home")">🏠 Menú</a>
+                <a class="btn-main btn-red" href="/MaterialesView/Crear">➕ Nuevo</a>
+            </div>
         </div>
-
         <input type="text" id="inputBusqueda" class="search-input" 
                placeholder="🔍 Buscar por sistema, tipo o concepto..." onkeyup="filtrarMateriales()">
-
-        <div class="btn-group">
-            <button class="btn-main btn-gray" onclick="location.href='@Url.Action("Administrador", "Home")'">
-                🏠 Menú
-            </button>
-            <button class="btn-main btn-red" onclick="location.href='/MaterialesView/Crear'">
-                ➕ Nuevo Material
-            </button>
-        </div>
     </div>
 
     <div class="table-card">
@@ -186,11 +175,10 @@
                     <th>U.M.</th>
                     <th>Precio Unit.</th>
                     <th>Precio c/IVA</th>
-                    <th style="width: 80px; text-align:center;">Acciones</th>
+                    <th style="width: 50px; text-align:center;"></th>
                 </tr>
             </thead>
-            <tbody id="listaMateriales">
-                </tbody>
+            <tbody id="listaMateriales"></tbody>
         </table>
     </div>
 </div>
@@ -198,50 +186,52 @@
 <script>
     let cacheMateriales = [];
 
-    // 1. Cargar Datos
     async function cargarMateriales() {
         try {
             const respuesta = await fetch('/api/CostosMateriales');
-            if (!respuesta.ok) throw new Error("Error en la red");
-            
             cacheMateriales = await respuesta.json();
             renderizarTabla(cacheMateriales);
         } catch (error) {
-            console.error("Error:", error);
             document.getElementById('listaMateriales').innerHTML = 
-                '<tr><td colspan="7" style="text-align:center; color:red; padding:30px;">⚠️ No se pudo cargar la información</td></tr>';
+                '<tr><td colspan="7" style="text-align:center; color:red; padding:30px;">⚠️ Error al cargar datos</td></tr>';
         }
     }
 
-    // 2. Renderizar Tabla
     function renderizarTabla(datos) {
         const tbody = document.getElementById('listaMateriales');
         tbody.innerHTML = '';
 
         if (datos.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:30px; color:#999;">No hay registros para mostrar</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:30px; color:#999;">No hay registros</td></tr>';
             return;
         }
 
-        datos.forEach(m => {
+        datos.forEach((m, index) => {
+            // Si es de los últimos 2, el menú abre hacia arriba
+            const isLast = (index >= datos.length - 2 && datos.length > 2);
+            
             tbody.innerHTML += `
                 <tr>
                     <td data-label="Sistema"><strong>${m.sistema}</strong></td>
                     <td data-label="Tipo">${m.tipo}</td>
                     <td data-label="Concepto">${m.concepto}</td>
                     <td data-label="U.M."><span class="um-badge">${m.um}</span></td>
-                    <td data-label="Precio Unit." class="price-base">$${m.precio_unitario.toLocaleString('es-MX', {minimumFractionDigits: 2})}</td>
-                    <td data-label="Precio c/IVA" class="price-iva">$${m.precio_con_iva.toLocaleString('es-MX', {minimumFractionDigits: 2})}</td>
-                    <td data-label="Acciones" style="text-align:center;">
-                        <button class="action-btn btn-edit-sm" onclick="location.href='/MaterialesView/Editar/${m.id}'" title="Editar">✏️</button>
-                        <button class="action-btn btn-delete-sm" onclick="eliminarMaterial(${m.id})" title="Eliminar">❌</button>
+                    <td data-label="Precio Unit.">$${m.precio_unitario.toLocaleString('es-MX', {minimumFractionDigits: 2})}</td>
+                    <td data-label="Precio c/IVA"><span class="price-iva">$${m.precio_con_iva.toLocaleString('es-MX', {minimumFractionDigits: 2})}</span></td>
+                    <td data-label="Acciones">
+                        <div class="action-menu">
+                            <button class="dot-btn" onclick="toggleMenu(event, ${m.id})">⋮</button>
+                            <div id="dropdown-${m.id}" class="dropdown-content ${isLast ? 'dropdown-up' : ''}">
+                                <a href="/MaterialesView/Editar/${m.id}">✏️ Editar</a>
+                                <button onclick="eliminarMaterial(${m.id})" style="color:red">❌ Eliminar</button>
+                            </div>
+                        </div>
                     </td>
                 </tr>
             `;
         });
     }
 
-    // 3. Buscador
     function filtrarMateriales() {
         const query = document.getElementById('inputBusqueda').value.toLowerCase();
         const filtrados = cacheMateriales.filter(m => 
@@ -252,20 +242,22 @@
         renderizarTabla(filtrados);
     }
 
-    // 4. Eliminar
-    async function eliminarMaterial(id) {
-        if (!confirm('¿Estás seguro de que deseas eliminar este material permanentemente?')) return;
+    function toggleMenu(e, id) {
+        e.stopPropagation();
+        const menu = document.getElementById('dropdown-' + id);
+        const yaAbierto = menu.classList.contains('show');
+        document.querySelectorAll('.dropdown-content').forEach(d => d.classList.remove('show'));
+        if (!yaAbierto) menu.classList.add('show');
+    }
 
-        try {
-            const res = await fetch('/api/CostosMateriales/' + id, { method: 'DELETE' });
-            if (res.ok) {
-                cacheMateriales = cacheMateriales.filter(m => m.id !== id);
-                renderizarTabla(cacheMateriales);
-            } else {
-                alert("No se pudo eliminar el registro. Intente de nuevo.");
-            }
-        } catch (error) {
-            alert("Error de conexión al eliminar.");
+    window.onclick = () => document.querySelectorAll('.dropdown-content').forEach(d => d.classList.remove('show'));
+
+    async function eliminarMaterial(id) {
+        if (!confirm('¿Eliminar este material?')) return;
+        const res = await fetch('/api/CostosMateriales/' + id, { method: 'DELETE' });
+        if (res.ok) {
+            cacheMateriales = cacheMateriales.filter(m => m.id !== id);
+            renderizarTabla(cacheMateriales);
         }
     }
 
