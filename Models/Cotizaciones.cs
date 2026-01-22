@@ -45,6 +45,14 @@ public class Cotizaciones {
     public decimal Tarlatana { get; set; }
     public int CarroEmbaladoFrances { get; set; }
     public int Ganchos { get; set; }
+    public int TopeCarritoSujecion { get; set; }
+    public int TopeMecanismoCortinero { get; set; }
+    public int Engrane { get; set; }
+    public int TapasEngrane { get; set; }
+    public int Hebilla { get; set; }
+    public int CorrederaGoma { get; set; }
+    public decimal GomaVerde { get; set; }
+    public int PesaPlomo { get; set; }
 
     // costos 
     public decimal CostoRiel { get; set; }
@@ -70,5 +78,15 @@ public class Cotizaciones {
     public decimal TotalDistribuidor { get; set; }
     public decimal CostoCarroEmbaladoFrances { get; set; }
     public decimal CostoGanchos { get; set; }
+    public decimal Motor { get; set; }
+    public decimal CostoTopeCarritoSujecion { get; set; }
+    public decimal CostoTopeMecanismoCortinero { get; set; }
+    public decimal CostoEngrane { get; set; }
+    public decimal CostoTapasEngrane { get; set; }
+    public decimal CostoHebilla { get; set; }
+    public decimal CostoCorreaGoma { get; set; }
+    public decimal CostoGomaVerde { get; set; }
+    public decimal CostoPesaPlomo { get; set; }
+    public decimal CostoCarritos { get; set; }
 }
 }

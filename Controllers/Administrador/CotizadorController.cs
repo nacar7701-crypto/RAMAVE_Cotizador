@@ -243,6 +243,98 @@ else if (tipoCortina == "FRANCESA" && sistema == "MOTORIZADO ESTANDAR")
     model.PrecioCortinaDistribuidor = model.CostoTotalCortina * 2;
     model.TotalDistribuidor = model.CostoTotalGeneral * 2;
 }
+// ============================================================
+// BLOQUE 4: ONDULADO Y MOTORIZADO WIFI
+// ============================================================
+else if (tipoCortina == "ONDULADO" && sistema == "MOTORIZADO WIFI")
+{
+    // --- 1. INGENIERÍA ---
+    decimal factor = model.PorcentajeOnda == 60 ? (10.8m / 6.8m) : 
+                     model.PorcentajeOnda == 80 ? (10.8m / 6.1m) : (10.8m / 4.5m);
+    
+    decimal brochesRaw = (model.AnchoCM * factor) / 10.8m;
+    model.CantidadBroches = (int)Math.Ceiling(brochesRaw);
+    if (model.CantidadBroches % 2 != 0) model.CantidadBroches++; 
+
+    model.CintaBroches = Math.Round(((model.CantidadBroches * 10.8m) + 5) / 100, 2);
+    model.TotalAnchoLienzo = model.CintaBroches + 0.52m;
+    model.TotalAltura = (model.AlturaCM + 44) / 100;
+    model.AlturaExacta = model.TotalAltura;
+    model.NumLienzos = (int)Math.Ceiling(model.TotalAnchoLienzo / model.AnchoRollo);
+    model.TotalML = model.AlturaExacta > model.AnchoRollo ? (model.NumLienzos * model.AlturaExacta) : model.TotalAnchoLienzo;
+    model.MLComprar = (int)Math.Ceiling(model.TotalML);
+
+    // Piezas Fijas
+    model.TopeCarritoSujecion = 1;
+    model.TopeMecanismoCortinero = 1;
+    model.Engrane = 1;
+    model.TapasEngrane = 2;
+    model.PesaPlomo = 4;
+    model.Riel = model.Ancho;
+    model.GomaVerde = (model.Ancho * 2) + 0.3m;
+    model.UnionRiel = model.Ancho > 5.8m ? 1 : 0;
+
+    if (model.TipoApertura == "DOS HOJAS") {
+        model.Hebilla = 2; model.CorrederaGoma = 2; model.CarroMaestro = 2;
+    } else {
+        model.Hebilla = 1; model.CorrederaGoma = 1; model.CarroMaestro = 1;
+    }
+
+    // Soportes
+    string inst = (model.Instalacion ?? "MURO").ToUpper();
+    var sopConfig = await _context.ConfigSoportes.FirstOrDefaultAsync(s => model.Ancho >= s.AnchoMin && model.Ancho <= s.AnchoMax);
+    model.Soportes = inst.Contains("TECHO") ? 0 : (sopConfig?.CantidadSoportes ?? 0);
+
+    // --- 2. COSTOS (SISTEMA MOTORIZADO) ---
+    async Task<decimal> GetP(string concepto) {
+        var m = await _context.CostosMateriales.FirstOrDefaultAsync(x => x.concepto.ToUpper() == concepto.ToUpper() && x.sistema.ToUpper() == "MOTORIZADO");
+        return (m?.precio_unitario ?? 0m) * 1.16m;
+    }
+
+    model.Motor = await GetP("MOTOR WIFI + CONTROL");
+    model.CostoRiel = (await GetP("RIEL PARA CORTINERO MOTORIZADO")) * model.Riel;
+    
+    // Carro Maestro dinámico
+    string conceptoCarro = (model.CarroMaestro == 2) ? "CARRO MAESTRO 2HOJA RIPP MOTOR" : "CARRO MAESTRO 1HOJA RIPP MOTOR";
+    model.CostoCarroMaestro = (await GetP(conceptoCarro)) * (decimal)model.CarroMaestro;
+
+    model.CostoTopeCarritoSujecion = (await GetP("TOPE DE CARRITOS SUJECION")) * (decimal)model.TopeCarritoSujecion;
+    model.CostoTopeMecanismoCortinero = (await GetP("TOPE MECANISMO DE CORTINERO")) * (decimal)model.TopeMecanismoCortinero;
+    model.CostoCarritos = (await GetP("CARRITO PARA CORTINERO ONDULADO")) * (decimal)model.CantidadBroches;
+    model.CostoSoportes = (await GetP(inst.Contains("TECHO") ? "SOPORTE A TECHO" : "SOPORTE PARED")) * (decimal)model.Soportes;
+    model.CostoEngrane = (await GetP("ENGRANE CORTINERO W")) * (decimal)model.Engrane;
+    model.CostoUnionRiel = (await GetP("CONECTOR PERF - UNION")) * (decimal)model.UnionRiel;
+    model.CostoTapasEngrane = (await GetP("TAPA PARA SISTEMA DE ENGRANE")) * (decimal)model.TapasEngrane;
+    model.CostoHebilla = (await GetP("HEBILLA PARA CINTA CORTINERO RIPP")) * (decimal)model.Hebilla;
+    model.CostoCorreaGoma = (await GetP("CORREA DE GOMA")) * (decimal)model.CorrederaGoma;
+    model.CostoCintaBroches = (await GetP("CINTA CON BROCHES")) * model.CintaBroches;
+    model.CostoGomaVerde = (await GetP("GOMA VERDE")) * model.GomaVerde;
+    model.CostoPesaPlomo = (await GetP("PESO PLOMO")) * (decimal)model.PesaPlomo;
+    model.CostoEmpaque = 20.00m;
+
+    // SUMA TOTAL CORTINERO
+    model.CostoTotalCortinero = model.Motor + model.CostoRiel + model.CostoCarroMaestro + model.CostoTopeCarritoSujecion + 
+                                model.CostoTopeMecanismoCortinero + model.CostoCarritos + model.CostoSoportes + 
+                                model.CostoEngrane + model.CostoUnionRiel + model.CostoTapasEngrane + 
+                                model.CostoHebilla + model.CostoCorreaGoma + model.CostoEmpaque + 
+                                model.CostoCintaBroches + model.CostoPesaPlomo + model.CostoGomaVerde;
+
+    // --- 3. COMERCIAL ---
+    model.PrecioTelaML = tela.precio_ml_corte * 1.16m;
+    model.CostoTotalTela = (decimal)model.MLComprar * model.PrecioTelaML;
+    
+    // COSTO TOTAL CORTINA: Tela + Pesa Plomo + Cinta Broches + Empaque
+    model.CostoTotalCortina = model.CostoTotalTela + model.CostoPesaPlomo + model.CostoCintaBroches + model.CostoEmpaque;
+    model.CostoTotalGeneral = model.CostoTotalCortinero + model.CostoTotalCortina;
+
+    // Totales x3 y x2
+    model.PrecioCortineroPublico = model.CostoTotalCortinero * 3;
+    model.PrecioCortinaPublico = model.CostoTotalCortina * 3;
+    model.TotalPublico = model.CostoTotalGeneral * 3;
+    model.PrecioCortineroDistribuidor = model.CostoTotalCortinero * 2;
+    model.PrecioCortinaDistribuidor = model.CostoTotalCortina * 2;
+    model.TotalDistribuidor = model.CostoTotalGeneral * 2;
+}
             else return BadRequest("Combinación no válida.");
 
             _context.Cotizaciones.Add(model);
