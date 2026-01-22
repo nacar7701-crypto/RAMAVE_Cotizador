@@ -277,5 +277,53 @@ namespace RAMAVE_Cotizador.Controllers
             });
         }
 
+
+
+
+
+
+        // 1. Obtener lista de catálogos únicos
+[HttpGet("catalogos-unicos")]
+public async Task<IActionResult> GetCatalogos()
+{
+    var catalogos = await _context.Telas
+        .Select(t => t.catalogo)
+        .Distinct()
+        .ToListAsync();
+    return Ok(catalogos);
+}
+
+// 2. Obtener marcas que pertenecen a un catálogo específico
+[HttpGet("marcas-por-catalogo/{catalogo}")]
+public async Task<IActionResult> GetMarcasPorCatalogo(string catalogo)
+{
+    var marcas = await _context.Telas
+        .Where(t => t.catalogo == catalogo)
+        .Select(t => t.modelo.marca)
+        .Distinct()
+        .ToListAsync();
+    return Ok(marcas);
+}
+
+// 3. Obtener modelos (telas) filtrados por catálogo y marca
+// ESTO ES LO QUE TE DARÁ EL ID_TELA FINAL
+[HttpGet("buscar-id-tela")]
+public async Task<IActionResult> GetIdTela(string catalogo, int idMarca)
+{
+    var telasDisponibles = await _context.Telas
+        .Where(t => t.catalogo == catalogo && t.modelo.id_marca == idMarca)
+        .Select(t => new {
+            t.id,
+            t.modelo.nombre,
+            t.color_nombre,
+            t.ancho // Importante para tus cálculos futuros
+        })
+        .ToListAsync();
+    return Ok(telasDisponibles);
+}
+
     }
 }
+
+
+
