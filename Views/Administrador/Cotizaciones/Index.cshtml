@@ -6,9 +6,20 @@
             <h2 class="fw-bold m-0 text-dark"><i class="fas fa-file-invoice-dollar me-2 text-danger"></i>Cotizaciones</h2>
             <p class="text-muted m-0 small">Listado técnico y financiero completo.</p>
         </div>
-        <a href="@Url.Content("~/Administrador/Cotizaciones/Nuevo")" class="btn btn-danger px-4 shadow-sm fw-bold">
-            <i class="fas fa-plus me-2"></i>Nueva Cotización
-        </a>
+        
+        <div class="d-flex gap-3 align-items-center">
+            <div class="input-group shadow-sm" style="width: 400px;">
+                <span class="input-group-text bg-white border-end-0 text-muted">
+                    <i class="fas fa-search"></i>
+                </span>
+                <input type="text" id="inputBusquedaCot" class="form-control border-start-0 ps-0" 
+                       placeholder="Buscar por cliente, sistema o marca..." onkeyup="filtrarCotizaciones()">
+            </div>
+
+            <a href="@Url.Content("~/Administrador/Cotizaciones/Home")" class="btn btn-danger px-4 shadow-sm fw-bold">
+                <i class="fas fa-plus me-2"></i>Nueva Cotización
+            </a>
+        </div>
     </div>
 
     <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
@@ -22,38 +33,34 @@
                         <th rowspan="2" class="align-middle">Color</th>
                         <th rowspan="2" class="align-middle">Ancho</th>
                         <th rowspan="2" class="align-middle">Altura</th>
-
                         <th colspan="3" class="bg-primary text-white border-bottom border-primary">COSTOS</th>
                         <th colspan="3" class="bg-danger text-white border-bottom border-danger">PÚBLICO</th>
                         <th colspan="3" class="bg-secondary text-white border-bottom border-light">DISTRIBUIDOR</th>
-                        
                         <th rowspan="2" class="align-middle text-center px-4">Acción</th>
                     </tr>
                     <tr class="small text-uppercase" style="font-size: 0.65rem;">
                         <th class="bg-primary opacity-75">Cortina</th>
                         <th class="bg-primary opacity-75">Cortinero</th>
                         <th class="bg-primary fw-bold">Total</th>
-                        
                         <th class="bg-danger opacity-75">Cortina</th>
                         <th class="bg-danger opacity-75">Cortinero</th>
                         <th class="bg-danger fw-bold">Total</th>
-
                         <th class="bg-secondary opacity-75">Cortina</th>
                         <th class="bg-secondary opacity-75">Cortinero</th>
                         <th class="bg-secondary fw-bold">Total</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="listaCotizaciones">
                     @foreach (var item in Model)
                     {
                         var totalCosto = item.CostoTotalCortina + item.CostoTotalCortinero;
                         var totalPublico = item.PrecioCortinaPublico + item.PrecioCortineroPublico;
                         var totalDistribuidor = item.PrecioCortinaDistribuidor + item.PrecioCortineroDistribuidor;
 
-                        <tr>
-                            <td class="ps-4 fw-bold text-uppercase">@item.Cliente</td>
-                            <td><span class="badge bg-light text-dark border">@item.TipoCortina</span></td>
-                            <td>@item.Marca</td>
+                        <tr class="fila-cotizacion">
+                            <td class="ps-4 fw-bold text-uppercase busqueda-cliente">@item.Cliente</td>
+                            <td class="busqueda-tipo"><span class="badge bg-light text-dark border">@item.TipoCortina</span></td>
+                            <td class="busqueda-marca">@item.Marca</td>
                             <td>@item.Modelo</td>
                             <td class="text-center">@item.Ancho.ToString("N2")m</td>
                             <td class="text-center">@item.Alto.ToString("N2")m</td>
@@ -80,28 +87,50 @@
                     }
                 </tbody>
             </table>
+            <div id="sinResultados" class="text-center py-5 d-none">
+                <i class="fas fa-folder-open fa-3x text-muted mb-3"></i>
+                <h5 class="text-muted">No se encontraron cotizaciones coincidentes</h5>
+            </div>
         </div>
     </div>
 </div>
 
 <style>
-    .table td {
-        padding: 10px 4px !important;
-        font-size: 0.85rem;
-        white-space: nowrap;
-    }
-    .table thead th {
-        padding: 8px 5px !important;
-        border: 1px solid rgba(255,255,255,0.1);
-    }
-    .bg-light {
-        background-color: #f8f9fa !important;
-    }
-    .btn-danger {
-        transition: all 0.2s;
-    }
-    .btn-danger:hover {
-        transform: scale(1.05);
-        background-color: #bb2d3b;
-    }
+    .table td { padding: 10px 4px !important; font-size: 0.85rem; white-space: nowrap; }
+    .table thead th { padding: 8px 5px !important; border: 1px solid rgba(255,255,255,0.1); }
+    .bg-light { background-color: #f8f9fa !important; }
+    .btn-danger { transition: all 0.2s; }
+    .btn-danger:hover { transform: scale(1.05); background-color: #bb2d3b; }
+    #inputBusquedaCot:focus { border-color: #dc3545; box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.15); outline: none; }
 </style>
+
+<script>
+    function filtrarCotizaciones() {
+        const query = document.getElementById('inputBusquedaCot').value.toLowerCase().trim();
+        const filas = document.querySelectorAll('.fila-cotizacion');
+        const divMensaje = document.getElementById('sinResultados');
+        let contador = 0;
+
+        filas.forEach(fila => {
+            // Obtenemos los textos de las columnas clave
+            const cliente = fila.querySelector('.busqueda-cliente').textContent.toLowerCase();
+            const tipo = fila.querySelector('.busqueda-tipo').textContent.toLowerCase();
+            const marca = fila.querySelector('.busqueda-marca').textContent.toLowerCase();
+
+            // Lógica: Si la búsqueda está en cliente, tipo O marca...
+            if (cliente.includes(query) || tipo.includes(query) || marca.includes(query)) {
+                fila.style.display = "";
+                contador++;
+            } else {
+                fila.style.display = "none";
+            }
+        });
+
+        // Mostrar u ocultar mensaje de "No hay registros"
+        if (contador === 0) {
+            divMensaje.classList.remove('d-none');
+        } else {
+            divMensaje.classList.add('d-none');
+        }
+    }
+</script>

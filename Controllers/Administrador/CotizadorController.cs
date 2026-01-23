@@ -16,7 +16,7 @@ namespace RAMAVE_Cotizador.Controllers
             _context = context;
         }
 
-        [HttpPost]
+        [HttpPost("Crear")]
         public async Task<IActionResult> PostCotizacion([FromBody] Cotizaciones model)
         {
             var tela = await _context.Telas
@@ -683,18 +683,20 @@ namespace RAMAVE_Cotizador.Controllers
         [HttpGet("buscar-cliente/{nombre}")]
         public async Task<ActionResult<IEnumerable<Cotizaciones>>> BuscarPorCliente(string nombre)
         {
-            // Filtramos la tabla donde el campo Cliente contenga el texto enviado
-            // Usamos ToUpper() en ambos lados para que no importe si escriben con mayúsculas o minúsculas
+            // Si el nombre es nulo o espacios, devolvemos lista vacía
+            if (string.IsNullOrWhiteSpace(nombre))
+            {
+                return Ok(new List<Cotizaciones>());
+            }
+
+            // El Contains con ToUpper es correcto para ignorar mayúsculas/minúsculas
             var resultados = await _context.Cotizaciones
                 .Where(c => c.Cliente.ToUpper().Contains(nombre.ToUpper()))
                 .OrderByDescending(c => c.Id)
                 .ToListAsync();
 
-            if (resultados == null || !resultados.Any())
-            {
-                return NotFound(new { mensaje = $"No se encontraron cotizaciones para el cliente: {nombre}" });
-            }
-
+            // IMPORTANTE: Siempre devolvemos Ok. 
+            // Si resultados está vacío, enviará [], y el JS entrará al bloque de "No se encontraron"
             return Ok(resultados);
         }
         [HttpPut("{id}")]

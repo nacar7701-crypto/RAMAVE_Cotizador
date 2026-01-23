@@ -1,0 +1,183 @@
+@model RAMAVE_Cotizador.Models.Cotizaciones
+@{
+    ViewData["Title"] = "Nueva Cotización";
+    string tipoSeleccionado = Context.Request.Query["tipo"].ToString().ToUpper() ?? "FRANCESA";
+    
+    // Condición: Solo se muestra para ONDULADA
+    bool mostrarOnda = tipoSeleccionado.Contains("ONDULADO");
+}
+
+<div class="form-container">
+    <div class="card card-form shadow-sm">
+        <div class="header-form p-3 bg-primary text-white text-center">
+            <h2 class="m-0 h4">Nueva Cotización: @tipoSeleccionado</h2>
+        </div>
+
+        <div class="card-body p-4">
+            <form id="cotizadorForm">
+                <input type="hidden" id="TipoCortina" value="@tipoSeleccionado" />
+                
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Cliente</label>
+                        <input id="Cliente" class="form-control" placeholder="Nombre del cliente" required />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Área</label>
+                        <input id="Area" class="form-control" placeholder="Ej: Sala, Recámara" required />
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold">Catálogo</label>
+                        <select id="selectCatalogo" class="form-select" required><option value="">Seleccione...</option></select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold">Marca</label>
+                        <select id="selectMarca" class="form-select" disabled required><option value="">Seleccione...</option></select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold">Modelo (Tela)</label>
+                        <select id="selectModelo" class="form-select" disabled required><option value="">Seleccione...</option></select>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label class="form-label fw-bold">Ancho (m)</label>
+                        <input id="ancho" type="number" step="0.01" class="form-control" placeholder="0.00" required />
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label fw-bold">Alto (m)</label>
+                        <input id="alto" type="number" step="0.01" class="form-control" placeholder="0.00" required />
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label fw-bold">Instalación</label>
+                        <select id="Instalacion" class="form-select">
+                            <option value="TECHO">TECHO</option>
+                            <option value="MURO">MURO</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label fw-bold">Sistema</label>
+                        <select id="Sistema" class="form-select">
+                            <option value="MANUAL">MANUAL</option>
+                            <option value="MOTORIZADO WIFI">MOTORIZADO WIFI</option>
+                            <option value="MOTORIZADO BATERIA">MOTORIZADO BATERIA</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Acoplamiento</label>
+                        <select id="selectAcoplamiento" class="form-select">
+                            <option value="DERECHO">DERECHO</option>
+                            <option value="IZQUIERDO">IZQUIERDO</option>
+                            <option value="AMBOS">AMBOS (2 Hojas)</option>
+                        </select>
+                    </div>
+
+                    @* CONDICIONAL RAZOR PARA MOSTRAR/OCULTAR *@
+                    @if (mostrarOnda)
+                    {
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">% de Onda</label>
+                            <select id="PorcentajeOnda" class="form-select">
+                                <option value="80">80%</option>
+                                <option value="60">60%</option>
+                                <option value="120">120%</option>
+                            </select>
+                        </div>
+                    }
+
+                    <div class="col-12 mt-4">
+                        <button type="button" onclick="enviarCotizacion()" class="btn btn-success btn-lg w-100" id="btnGuardar">
+                            <i class="fas fa-calculator me-2"></i> Calcular y Guardar
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const selCat = document.getElementById("selectCatalogo");
+        const selMar = document.getElementById("selectMarca");
+        const selMod = document.getElementById("selectModelo");
+
+        fetch('/api/Telas/catalogos-unicos')
+            .then(r => r.json()).then(d => d.forEach(c => selCat.add(new Option(c, c))));
+
+        selCat.onchange = () => {
+            reset(selMar); reset(selMod);
+            if (selCat.value) fetch(`/api/Telas/marcas-por-catalogo/${selCat.value}`)
+                .then(r => r.json()).then(d => { 
+                    selMar.disabled = false; 
+                    d.forEach(m => selMar.add(new Option(m.nombre, m.id))); 
+                });
+        };
+
+        selMar.onchange = () => {
+            reset(selMod);
+            if (selMar.value) fetch(`/api/Telas/buscar-id-tela?catalogo=${selCat.value}&idMarca=${selMar.value}`)
+                .then(r => r.json()).then(d => { 
+                    selMod.disabled = false; 
+                    d.forEach(t => {
+                        const texto = t.color_nombre && t.color_nombre !== "null" ? `${t.nombre} - ${t.color_nombre}` : t.nombre;
+                        selMod.add(new Option(texto, t.id)); 
+                    }); 
+                });
+        };
+    });
+
+    function reset(s) { s.innerHTML = '<option value="">Seleccione...</option>'; s.disabled = true; }
+
+    async function enviarCotizacion() {
+        const btn = document.getElementById('btnGuardar');
+        
+        // CORRECCIÓN: Manejar la ausencia del elemento PorcentajeOnda en el DOM
+        const inputOnda = document.getElementById('PorcentajeOnda');
+        const valorOnda = inputOnda ? parseInt(inputOnda.value) : 0;
+
+        const data = {
+            idTela: parseInt(document.getElementById('selectModelo').value),
+            cliente: document.getElementById('Cliente').value,
+            ancho: parseFloat(document.getElementById('ancho').value),
+            alto: parseFloat(document.getElementById('alto').value),
+            tipoCortina: document.getElementById('TipoCortina').value,
+            porcentajeOnda: valorOnda,
+            sistema: document.getElementById('Sistema').value,
+            area: document.getElementById('Area').value,
+            instalacion: document.getElementById('Instalacion').value,
+            acoplamiento: document.getElementById('selectAcoplamiento').value
+        };
+
+        if (isNaN(data.idTela) || !data.cliente || isNaN(data.ancho) || isNaN(data.alto)) {
+            alert("Completa todos los campos obligatorios y asegúrate de que el ancho/alto sean números.");
+            return;
+        }
+
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Calculando...';
+
+        try {
+            const response = await fetch('/api/Cotizador/Crear', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+
+            if (response.ok) {
+                alert("Cotización generada y guardada con éxito.");
+                window.location.href = '/Cotizaciones/Index';
+            } else {
+                const txt = await response.text();
+                alert("Error en el cálculo: " + txt);
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-calculator me-2"></i> Calcular y Guardar';
+            }
+        } catch (e) {
+            alert("Error de conexión con el servidor.");
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-calculator me-2"></i> Calcular y Guardar';
+        }
+    }
+</script>

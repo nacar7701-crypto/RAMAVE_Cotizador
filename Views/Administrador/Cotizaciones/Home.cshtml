@@ -1,0 +1,184 @@
+@{
+    ViewData["Title"] = "Panel de Cotización";
+}
+
+<style>
+    @@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+    :root {
+        --ramave-red: #c62828;
+        --ramave-red-dark: #a81f1f;
+        --bg-light: #f0f2f5;
+        --text-main: #1a1a1a;
+        --text-muted: #636e72;
+    }
+
+    body {
+        background-color: var(--bg-light);
+        font-family: 'Inter', sans-serif;
+        margin: 0;
+        color: var(--text-main);
+    }
+
+    /* Navbar */
+    .header-nav {
+        background: white;
+        padding: 0.75rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+    }
+
+    .logo-img { height: 45px; width: auto; }
+
+    .btn-logout {
+        color: var(--ramave-red);
+        text-decoration: none;
+        font-weight: 700;
+        font-size: 0.85rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 16px;
+        border-radius: 8px;
+        transition: all 0.2s;
+        border: 1px solid transparent;
+    }
+
+    .btn-logout:hover { background: #fff5f5; border-color: var(--ramave-red); }
+
+    /* Contenedor */
+    .container {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 3rem 1.5rem;
+    }
+
+    .welcome-section {
+        text-align: center;
+        margin-bottom: 3.5rem;
+    }
+
+    .welcome-section h1 {
+        font-size: clamp(1.8rem, 5vw, 2.8rem);
+        font-weight: 800;
+        margin-bottom: 0.8rem;
+        letter-spacing: -0.5px;
+    }
+
+    .welcome-section h1 span { color: var(--ramave-red); }
+
+    .welcome-section p { color: var(--text-muted); font-size: 1.1rem; }
+
+    /* Grid */
+    .selection-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+    }
+
+    .category-card {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        border: 1px solid rgba(0,0,0,0.03);
+    }
+
+    .category-card:hover {
+        transform: translateY(-12px);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+        border-color: var(--ramave-red);
+    }
+
+    .card-image {
+        position: relative;
+        width: 100%;
+        height: 250px;
+        overflow: hidden;
+    }
+
+    .card-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.6s ease;
+    }
+
+    .category-card:hover .card-image img { transform: scale(1.1); }
+
+    .card-body { padding: 1.8rem; text-align: center; }
+
+    .card-body h3 {
+        margin: 0 0 1.2rem 0;
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--text-main);
+    }
+
+    .btn-quote {
+        background-color: var(--ramave-red);
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 12px;
+        font-weight: 700;
+        font-size: 0.95rem;
+        width: 100%;
+        transition: all 0.3s;
+    }
+</style>
+
+<header class="header-nav">
+    <img src="~/images/logo_ramave.png" alt="RAMAVE Logo" class="logo-img">
+    <a href="@Url.Action("Logout", "Auth")" class="btn-logout">
+        <span>🚪</span> Cerrar Sesión
+    </a>
+</header>
+
+<div class="container">
+    <div class="welcome-section">
+        <h1>¿Qué quieres <span>cotizar</span> hoy?</h1>
+        <p>Selecciona el tipo de confección para tus persianas.</p>
+    </div>
+
+    <div class="selection-grid">
+        <div class="category-card" onclick="location.href='@Url.Action("Crear", "Cotizaciones", new { tipo = "OJILLOS" })'">
+            <div class="card-image">
+                <img src="~/images/persiana-ojillos.jpg" alt="Ojillos">
+            </div>
+            <div class="card-body">
+                <h3>Ojillos</h3>
+                <button class="btn-quote">Seleccionar Confección</button>
+            </div>
+        </div>
+
+        <div class="category-card" onclick="location.href='@Url.Action("Crear", "Cotizaciones", new { tipo = "FRANCESA" })'">
+            <div class="card-image">
+                <img src="~/images/persiana-francesa.jpg" alt="Francesa">
+            </div>
+            <div class="card-body">
+                <h3>Francesa</h3>
+                <button class="btn-quote">Seleccionar Confección</button>
+            </div>
+        </div>
+
+        <div class="category-card" onclick="location.href='@Url.Action("Crear", "Cotizaciones", new { tipo = "ONDULADO" })'">
+            <div class="card-image">
+                <img src="~/images/persiana-ondulada.jpg" alt="Ondulado">
+            </div>
+            <div class="card-body">
+                <h3>Ondulada</h3>
+                <button class="btn-quote">Seleccionar Confección</button>
+            </div>
+        </div>
+    </div>
+</div>

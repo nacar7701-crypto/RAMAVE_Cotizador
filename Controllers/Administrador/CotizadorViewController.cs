@@ -47,11 +47,18 @@ namespace RAMAVE_Cotizador.Controllers
         }
 
         // GET: /Administrador/Cotizaciones/Nuevo
-        [HttpGet("Nuevo")]
-        public IActionResult Nuevo()
+        [HttpGet("Crear")]
+        public IActionResult Crear()
         {
             // También especificamos la ruta para la vista de creación
-            return View("~/Views/Administrador/Cotizaciones/Nuevo.cshtml");
+            return View("~/Views/Administrador/Cotizaciones/Crear.cshtml");
+        }
+
+        [HttpGet("Home")]
+        public IActionResult Home()
+        {
+            // También especificamos la ruta para la vista de creación
+            return View("~/Views/Administrador/Cotizaciones/Home.cshtml");
         }
 
         [HttpGet("Detalle/{id}")]
