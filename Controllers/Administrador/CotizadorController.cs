@@ -635,5 +635,27 @@ namespace RAMAVE_Cotizador.Controllers
             await _context.SaveChangesAsync();
             return Ok(model);
         }
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Cotizaciones>>> GetCotizaciones()
+        {
+            // Retorna la lista completa de cotizaciones ordenadas por la más reciente
+            return await _context.Cotizaciones
+                .OrderByDescending(c => c.Id)
+                .ToListAsync();
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Cotizaciones>> GetCotizacion(int id)
+        {
+            // Busca una cotización específica por su ID primario
+            var cotizacion = await _context.Cotizaciones.FindAsync(id);
+
+            if (cotizacion == null)
+            {
+                return NotFound(new { mensaje = $"La cotización con ID {id} no existe." });
+            }
+
+            return cotizacion;
+        }
     }
 }
