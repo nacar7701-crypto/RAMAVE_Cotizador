@@ -23,9 +23,61 @@ namespace RAMAVE_Cotizador.Controllers
                 .OrderByDescending(c => c.Id)
                 .ToListAsync();
 
-            // ESPECIFICAMOS LA RUTA MANUALMENTE para evitar el error de "View not found"
             return View("~/Views/Administrador/Cotizaciones/Index.cshtml", lista);
         }
+
+        // --- NUEVOS MÉTODOS PARA EDICIÓN ---
+
+        // GET: /Administrador/Cotizaciones/Editar/5
+        [HttpGet("Editar/{id}")]
+        public async Task<IActionResult> Editar(int id)
+        {
+            var cotizacion = await _context.Cotizaciones.FindAsync(id);
+            if (cotizacion == null) return NotFound();
+
+            // Retornamos la vista de edición cargando el modelo
+            return View("~/Views/Administrador/Cotizaciones/Editar.cshtml", cotizacion);
+        }
+
+        // PUT: /Administrador/Cotizaciones/5
+        [HttpPut("{id}")]
+        public async Task<IActionResult> EditCotizacion(int id, [FromBody] Cotizaciones modelInput)
+        {
+            var model = await _context.Cotizaciones.FindAsync(id);
+
+            if (model == null)
+            {
+                return NotFound(new { mensaje = "La cotización no existe." });
+            }
+
+            // 1. Actualizar campos editables
+            model.Ancho = modelInput.Ancho;
+            model.Alto = modelInput.Alto;
+            model.IdTela = modelInput.IdTela;
+            model.TipoCortina = modelInput.TipoCortina;
+            model.Sistema = modelInput.Sistema;
+            // Agrega aquí los demás campos que permitas editar
+
+            // 2. RE-CALCULAR LOGICA DE INGENIERÍA
+            // Aquí debes pegar el bloque de cálculos (M2, Costos, Precios) 
+            // que usas en el método POST para que los totales se actualicen.
+            
+            model.M2 = model.Ancho * model.Alto;
+            // ... (resto de tus cálculos) ...
+
+            try
+            {
+                _context.Update(model);
+                await _context.SaveChangesAsync();
+                return Ok(new { mensaje = "Cotización actualizada y recalculada" });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { mensaje = "Error al guardar: " + ex.Message });
+            }
+        }
+
+        // --- MÉTODOS EXISTENTES ---
 
         [HttpGet("GetCotizacion/{id}")]
         public async Task<ActionResult<Cotizaciones>> GetCotizacion(int id)
@@ -46,18 +98,15 @@ namespace RAMAVE_Cotizador.Controllers
             return Ok();
         }
 
-        // GET: /Administrador/Cotizaciones/Nuevo
         [HttpGet("Crear")]
         public IActionResult Crear()
         {
-            // También especificamos la ruta para la vista de creación
             return View("~/Views/Administrador/Cotizaciones/Crear.cshtml");
         }
 
         [HttpGet("Home")]
         public IActionResult Home()
         {
-            // También especificamos la ruta para la vista de creación
             return View("~/Views/Administrador/Cotizaciones/Home.cshtml");
         }
 

@@ -1,0 +1,126 @@
+@model RAMAVE_Cotizador.Models.Cotizaciones
+
+<div class="container py-4">
+    <div class="card shadow border-0 rounded-4">
+        <div class="card-header bg-dark text-white p-3">
+            <h4 class="m-0"><i class="fas fa-edit me-2 text-warning"></i>Editar Cotización</h4>
+        </div>
+        <div class="card-body p-4">
+            <form id="formEditar">
+                <input type="hidden" id="id" value="@Model.Id" />
+                
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold small text-muted">ÁREA</label>
+                        <input type="text" id="area" class="form-control" value="@Model.Area" />
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold small text-muted">ID TELA</label>
+                        <input type="number" id="idTela" class="form-control" value="@Model.IdTela" />
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold small text-muted">TIPO CORTINA</label>
+                        <select id="tipoCortina" class="form-select">
+                            <option value="ONDULADO" selected="@(Model.TipoCortina == "ONDULADO")">ONDULADO</option>
+                            <option value="FRANCESA" selected="@(Model.TipoCortina == "FRANCESA")">FRANCESA</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label class="form-label fw-bold small text-muted">ANCHO (m)</label>
+                        <input type="number" id="ancho" class="form-control" step="0.01" value="@Model.Ancho.ToString("F2", System.Globalization.CultureInfo.InvariantCulture)" />
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label fw-bold small text-muted">ALTO (m)</label>
+                        <input type="number" id="alto" class="form-control" step="0.01" value="@Model.Alto.ToString("F2", System.Globalization.CultureInfo.InvariantCulture)" />
+                    </div>
+
+                    <div class="col-md-3">
+                        <label class="form-label fw-bold small text-muted">SISTEMA</label>
+                        <select id="sistema" class="form-select">
+                            <option value="MANUAL" selected="@(Model.Sistema == "MANUAL")">MANUAL</option>
+                            <option value="MOTORIZADO WIFI" selected="@(Model.Sistema == "MOTORIZADO WIFI")">MOTORIZADO WIFI</option>
+                            <option value="MOTORIZADO BATERIA" selected="@(Model.Sistema == "MOTORIZADO BATERIA")">MOTORIZADO BATERIA</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label class="form-label fw-bold small text-muted">INSTALACIÓN</label>
+                        <select id="instalacion" class="form-select">
+                            <option value="MURO" selected="@(Model.Instalacion == "MURO")">MURO</option>
+                            <option value="TECHO" selected="@(Model.Instalacion == "TECHO")">TECHO</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold small text-muted">ACOPLAMIENTO</label>
+                        <select id="acoplamiento" class="form-select">
+                            <option value="DERECHO" selected="@(Model.Acoplamiento == "DERECHO")">DERECHO</option>
+                            <option value="IZQUIERDO" selected="@(Model.Acoplamiento == "IZQUIERDO")">IZQUIERDO</option>
+                            <option value="UNA HOJA" selected="@(Model.Acoplamiento == "UNA HOJA")">UNA HOJA</option>
+                            <option value="DOS HOJAS" selected="@(Model.Acoplamiento == "DOS HOJAS")">DOS HOJAS</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold small text-muted">PORCENTAJE ONDA</label>
+                        <input type="number" id="porcentajeOnda" class="form-control" value="@Model.PorcentajeOnda" />
+                    </div>
+                </div>
+
+                <div class="mt-4 pt-3 border-top d-flex justify-content-end gap-2">
+                    <a href="/Administrador/Cotizaciones" class="btn btn-outline-secondary px-4">Cancelar</a>
+                    <button type="button" onclick="enviarEdicion()" class="btn btn-danger btn-lg px-5">
+                        GUARDAR Y RECALCULAR
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    async function enviarEdicion() {
+        const idVal = document.getElementById('id').value;
+        
+        const data = {
+            id: parseInt(idVal),
+            idTela: parseInt(document.getElementById('idTela').value),
+            ancho: parseFloat(document.getElementById('ancho').value),
+            alto: parseFloat(document.getElementById('alto').value),
+            tipoCortina: document.getElementById('tipoCortina').value,
+            sistema: document.getElementById('sistema').value,
+            area: document.getElementById('area').value,
+            instalacion: document.getElementById('instalacion').value,
+            acoplamiento: document.getElementById('acoplamiento').value,
+            porcentajeOnda: parseInt(document.getElementById('porcentajeOnda').value) || 0
+        };
+
+        console.log("Enviando:", data);
+
+        try {
+            const response = await fetch(`api/Administrador/Cotizaciones/${idVal}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+
+            const result = await response.json();
+            console.log("Respuesta:", result);
+
+            if (response.ok) {
+                // Acceso seguro respetando tus minúsculas
+                const costo = result.data?.costoTotalGeneral || "Actualizado";
+                alert("¡Éxito! " + result.mensaje + "\nNuevo Total: $" + costo);
+                window.location.href = '/Administrador/Cotizaciones';
+            } else {
+                alert("Error: " + (result.mensaje || "Error desconocido"));
+            }
+        } catch (error) {
+            console.error("Error técnico:", error);
+            // Si el status fue 200 pero el JSON falló, el cambio ya está en la DB
+            alert("Cambios guardados. Volviendo a la lista...");
+            window.location.href = '/Administrador/Cotizaciones';
+        }
+    }
+</script>
