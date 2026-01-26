@@ -702,6 +702,7 @@ namespace RAMAVE_Cotizador.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> EditCotizacion(int id, [FromBody] Cotizaciones modelInput)
         {
+            
             // 1. Buscar el registro original en la DB
             var model = await _context.Cotizaciones.FindAsync(id);
 
@@ -750,6 +751,7 @@ namespace RAMAVE_Cotizador.Controllers
                 var m = await _context.CostosMateriales.FirstOrDefaultAsync(x => x.concepto.ToUpper() == c.ToUpper());
                 return (m?.precio_unitario ?? 0m) * 1.16m;
             }
+            
 
             // ============================================================
             // BLOQUE 1: ONDULADO Y MANUAL (Cálculo de Ingeniería y Costos)

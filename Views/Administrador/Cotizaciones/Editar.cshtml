@@ -70,7 +70,7 @@
 
                 <div class="mt-4 pt-3 border-top d-flex justify-content-end gap-2">
                     <a href="/Administrador/Cotizaciones" class="btn btn-outline-secondary px-4">Cancelar</a>
-                    <button type="button" onclick="enviarEdicion()" class="btn btn-danger btn-lg px-5">
+                    <button type="button" id="btnGuardar" onclick="enviarEdicion()" class="btn btn-danger btn-lg px-5">
                         GUARDAR Y RECALCULAR
                     </button>
                 </div>
@@ -81,8 +81,13 @@
 
 <script>
     async function enviarEdicion() {
+        const btn = document.getElementById('btnGuardar');
         const idVal = document.getElementById('id').value;
         
+        // Bloqueamos el botón para evitar doble clic
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Calculando...';
+
         const data = {
             id: parseInt(idVal),
             idTela: parseInt(document.getElementById('idTela').value),
@@ -96,31 +101,39 @@
             porcentajeOnda: parseInt(document.getElementById('porcentajeOnda').value) || 0
         };
 
-        console.log("Enviando:", data);
+        console.log("Enviando a API:", data);
 
         try {
-            const response = await fetch(`api/Administrador/Cotizaciones/${idVal}`, {
+            // CAMBIO CLAVE: Usamos la ruta completa empezando desde la raíz /
+            // Asegúrate que el puerto coincida con el de tu proyecto
+            const response = await fetch(`/api/Cotizador/${idVal}`, { 
                 method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
                 body: JSON.stringify(data)
             });
 
             const result = await response.json();
-            console.log("Respuesta:", result);
+            console.log("Respuesta del servidor:", result);
 
             if (response.ok) {
-                // Acceso seguro respetando tus minúsculas
-                const costo = result.data?.costoTotalGeneral || "Actualizado";
-                alert("¡Éxito! " + result.mensaje + "\nNuevo Total: $" + costo);
+                // Si el backend devuelve camelCase, usamos result.data.totalPublico
+                // Si devuelve PascalCase, usamos result.data.TotalPublico
+                const costo = result.data.totalPublico || result.data.TotalPublico || "0.00";
+                
+                alert(`¡Éxito!\n${result.mensaje}\nNuevo Total: $${costo}`);
                 window.location.href = '/Administrador/Cotizaciones';
             } else {
-                alert("Error: " + (result.mensaje || "Error desconocido"));
+                throw new Error(result.mensaje || "Error en el servidor");
             }
         } catch (error) {
             console.error("Error técnico:", error);
-            // Si el status fue 200 pero el JSON falló, el cambio ya está en la DB
-            alert("Cambios guardados. Volviendo a la lista...");
-            window.location.href = '/Administrador/Cotizaciones';
+            alert("Ocurrió un error: " + error.message);
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = 'GUARDAR Y RECALCULAR';
         }
     }
 </script>
