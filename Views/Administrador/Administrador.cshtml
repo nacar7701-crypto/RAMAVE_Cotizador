@@ -14,9 +14,13 @@
     <style>
         :root {
             --ramave-red: #c62828;
+            --ramave-red-light: #ff5f52;
             --ramave-dark: #8e0000;
-            --bg-gray: #f4f7f6;
-            --shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            --bg-gray: #f8fafc;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
             --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
@@ -28,62 +32,41 @@
         body {
             margin: 0;
             background: var(--bg-gray);
-            color: #333;
-            /* Soporte para notch de celulares */
+            color: var(--text-main);
             padding-bottom: env(safe-area-inset-bottom);
         }
 
-        /* HEADER RESPONSIVO */
+        /* HEADER */
         header {
-            background: white;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
             padding: 0.8rem 5%;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
             position: sticky;
             top: 0;
             z-index: 1000;
-            padding-top: calc(0.8rem + env(safe-area-inset-top));
+            border-bottom: 1px solid rgba(0,0,0,0.05);
         }
 
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 15px;
+        .header-left { display: flex; align-items: center; gap: 15px; }
+        header img { height: 45px; width: auto; }
+        header h1 { 
+            margin: 0; font-size: 1.1rem; font-weight: 700; 
+            color: var(--ramave-red); letter-spacing: -0.5px; 
         }
 
-        .logo-box {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        header img {
-            height: 50px; /* Tamaño del logo aumentado para legibilidad */
-            width: auto;
-            object-fit: contain;
-        }
-
-        header h1 {
-            margin: 0;
-            font-size: 1.2rem;
-            font-weight: 800;
-            color: var(--ramave-red);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        /* BOTÓN CERRAR SESIÓN */
         .btn-logout {
-            background: #fff0f0;
-            color: var(--ramave-red);
-            border: 1.5px solid var(--ramave-red);
-            padding: 10px 18px;
-            border-radius: 12px;
+            background: white;
+            color: #ef4444;
+            border: 1px solid #fee2e2;
+            padding: 8px 16px;
+            border-radius: 10px;
             cursor: pointer;
-            font-size: 0.9rem;
-            font-weight: 700;
+            font-size: 0.85rem;
+            font-weight: 600;
             transition: var(--transition);
             text-decoration: none;
             display: flex;
@@ -92,154 +75,126 @@
         }
 
         .btn-logout:hover {
-            background: var(--ramave-red);
-            color: white;
-            transform: scale(1.05);
+            background: #fef2f2;
+            border-color: #fca5a5;
+            transform: translateY(-1px);
         }
 
-        /* CONTENEDOR PRINCIPAL */
+        /* CONTENEDOR */
         .container {
-            max-width: 1200px;
+            max-width: 1100px;
             margin: 0 auto;
-            padding: 40px 20px;
+            padding: 50px 20px;
         }
 
-        .welcome-msg {
-            margin-bottom: 40px;
-            border-left: 5px solid var(--ramave-red);
-            padding-left: 20px;
+        .welcome-msg { margin-bottom: 45px; }
+        .welcome-msg h2 { 
+            margin: 0; font-size: 2.2rem; font-weight: 800; 
+            letter-spacing: -1px; color: #0f172a;
         }
+        .welcome-msg p { color: var(--text-muted); margin: 5px 0 0; font-size: 1.05rem; }
 
-        .welcome-msg h2 {
-            margin: 0;
-            font-size: 2rem;
-            color: #1a1a1a;
-            font-weight: 800;
-        }
-
-        .welcome-msg p {
-            color: #666;
-            margin: 8px 0 0;
-            font-size: 1.1rem;
-        }
-
-        /* GRID DE TARJETAS */
+        /* GRID & CARDS */
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 25px;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 30px;
         }
 
         .card {
             background: white;
             border-radius: 24px;
-            padding: 40px 30px;
-            text-align: center;
+            padding: 35px;
             text-decoration: none;
             color: inherit;
-            cursor: pointer;
             transition: var(--transition);
-            box-shadow: var(--shadow);
-            border: 1px solid rgba(0,0,0,0.02);
+            border: 1px solid rgba(226, 232, 240, 0.8);
             display: flex;
             flex-direction: column;
-            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Decoración sutil de fondo para las cards */
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0; right: 0;
+            width: 100px; height: 100px;
+            background: linear-gradient(135deg, rgba(198, 40, 40, 0.03) 0%, transparent 100%);
+            border-radius: 0 24px 0 100%;
         }
 
         .card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 40px rgba(198, 40, 40, 0.1);
-            background: linear-gradient(to bottom, white, #fffafa);
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-lg);
+            border-color: rgba(198, 40, 40, 0.2);
         }
 
+        /* Estilos únicos por Icono para dar variedad */
         .icon-circle {
-            width: 80px;
-            height: 80px;
-            background: #fdf2f2;
-            border-radius: 22px;
+            width: 64px;
+            height: 64px;
+            background: #f8fafc;
+            border-radius: 18px;
             display: flex;
             align-items: center;
             justify-content: center;
             margin-bottom: 25px;
+            font-size: 28px;
             transition: var(--transition);
-            font-size: 35px;
+            border: 1px solid #f1f5f9;
         }
 
+        /* Efectos de color específicos al hacer hover */
         .card:hover .icon-circle {
             background: var(--ramave-red);
             color: white;
-            transform: rotate(5deg);
+            transform: scale(1.1) rotate(-5deg);
+            box-shadow: 0 10px 15px -3px rgba(198, 40, 40, 0.3);
         }
 
         .card h3 {
             margin: 0;
-            color: #1a1a1a;
-            font-size: 1.3rem;
+            color: #1e293b;
+            font-size: 1.4rem;
             font-weight: 700;
+            letter-spacing: -0.3px;
         }
 
         .card p {
             font-size: 0.95rem;
-            color: #777;
-            margin-top: 15px;
-            line-height: 1.6;
+            color: var(--text-muted);
+            margin-top: 12px;
+            line-height: 1.5;
+            flex-grow: 1;
         }
 
-        /* 📱 RESPONSIVE */
-
-        /* Tablets */
-        @@media (max-width: 992px) {
-            .grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
+        .card-footer {
+            margin-top: 25px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--ramave-red);
+            opacity: 0;
+            transform: translateX(-10px);
+            transition: var(--transition);
         }
 
-        /* Teléfonos */
-        @@media (max-width: 650px) {
-            header {
-                padding: 1rem 5%;
-                flex-direction: row; /* Mantenemos logo y botón alineados */
-            }
+        .card:hover .card-footer {
+            opacity: 1;
+            transform: translateX(0);
+        }
 
-            header h1 {
-                display: none; /* Ocultamos texto largo en móviles para dar espacio al logo */
-            }
-
-            header img {
-                height: 60px;
-            }
-
-            .container {
-                padding: 30px 20px;
-            }
-
-            .welcome-msg h2 {
-                font-size: 1.6rem;
-            }
-
-            .grid {
-                grid-template-columns: 1fr; /* Una sola columna en celular */
-                gap: 20px;
-            }
-
-            .card {
-                padding: 30px 20px;
-                flex-direction: row; /* Diseño horizontal en celular para ahorrar espacio vertical */
-                text-align: left;
-                gap: 20px;
-            }
-
-            .icon-circle {
-                width: 60px;
-                height: 60px;
-                margin-bottom: 0;
-                font-size: 25px;
-                flex-shrink: 0;
-            }
-
-            .card p {
-                display: none; /* Ocultamos descripción en celular para vista compacta */
-            }
+        /* RESPONSIVE */
+        @@media (max-width: 768px) {
+            .grid { grid-template-columns: 1fr; }
+            .welcome-msg h2 { font-size: 1.8rem; }
+            .card { padding: 25px; }
+            /* En móvil mantenemos el footer visible */
+            .card-footer { opacity: 1; transform: translateX(0); }
         }
     </style>
 </head>
@@ -248,14 +203,12 @@
 
     <header>
         <div class="header-left">
-            <div class="logo-box">
-                <img src="/images/logoramave.jpg" alt="Logo RAMAVE" />
-            </div>
-            <h1>Sistema Central</h1>
+            <img src="/images/logoramave.jpg" alt="Logo RAMAVE" />
+            <h1>SISTEMA CENTRAL</h1>
         </div>
 
         <a href="@Url.Action("Logout", "Auth")" class="btn-logout">
-            <span>🚪</span> <span class="txt-logout">Cerrar Sesión</span>
+            <span>🚪</span> <span class="txt-logout">Salir</span>
         </a>
     </header>
 
@@ -269,43 +222,38 @@
 
             <a href="@Url.Action("Index", "UsuariosView")" class="card">
                 <div class="icon-circle">👤</div>
-                <div>
-                    <h3>Usuarios</h3>
-                    <p>Gestiona cuentas, permisos y roles del personal de la fábrica.</p>
-                </div>
+                <h3>Usuarios</h3>
+                <p>Gestiona cuentas, permisos y roles del personal de la fábrica.</p>
+                <div class="card-footer">Administrar ahora →</div>
             </a>
 
             <a href="@Url.Action("Index", "MaterialesView")" class="card">
                 <div class="icon-circle">📏</div>
-                <div>
-                    <h3>Materiales</h3>
-                    <p>Actualiza precios unitarios, herrajes y especificaciones técnicas.</p>
-                </div>
+                <h3>Materiales</h3>
+                <p>Actualiza precios unitarios, herrajes y especificaciones técnicas.</p>
+                <div class="card-footer">Gestionar costos →</div>
             </a>
 
             <a href="@Url.Action("Telas", "Administrador")" class="card">
                 <div class="icon-circle">🛍️</div>
-                <div>
-                    <h3>Catálogo</h3>
-                    <p>Manejo de colecciones, telas y acabados disponibles.</p>
-                </div>
+                <h3>Catálogo</h3>
+                <p>Manejo de colecciones, telas y acabados disponibles.</p>
+                <div class="card-footer">Ver muestrarios →</div>
             </a>
 
             <a href="@Url.Action("Index", "Cotizaciones")" class="card">
                 <div class="icon-circle">📊</div>
-                <div>
-                    <h3>Reportes</h3>
-                    <p>Analiza el rendimiento de ventas y proyecciones mensuales.</p>
-                </div>
-            </div>
+                <h3>Historial de cotizaciones</h3>
+                <p>Revisa y gestiona todas las cotizaciones emitidas anteriormente.</p>
+                <div class="card-footer">Ver registros →</div>
+            </a>
 
-            <div class="card">
-                <div class="icon-circle">⚙️</div>
-                <div>
-                    <h3>Configuración</h3>
-                    <p>Ajustes de la empresa, impuestos y parámetros del sistema.</p>
-                </div>
-            </div>
+            <a href="@Url.Action("Home", "Cotizaciones")" class="card">
+                <div class="icon-circle">➕</div>
+                <h3>Cotizar</h3>
+                <p>Genera un presupuesto nuevo para clientes y distribuidores.</p>
+                <div class="card-footer">Comenzar →</div>
+            </a>
 
         </div>
     </div>

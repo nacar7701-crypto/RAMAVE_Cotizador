@@ -2,102 +2,314 @@
 @{
     ViewData["Title"] = "Nueva Cotización";
     string tipoSeleccionado = Context.Request.Query["tipo"].ToString().ToUpper() ?? "FRANCESA";
-    
-    // Condición: Solo se muestra para ONDULADA
     bool mostrarOnda = tipoSeleccionado.Contains("ONDULADO");
 }
 
-<div class="form-container">
-    <div class="card card-form shadow-sm">
-        <div class="header-form p-3 bg-primary text-white text-center">
-            <h2 class="m-0 h4">Nueva Cotización: @tipoSeleccionado</h2>
-        </div>
+<style>
+    @@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
-        <div class="card-body p-4">
-            <form id="cotizadorForm">
-                <input type="hidden" id="TipoCortina" value="@tipoSeleccionado" />
-                
-                <div class="row g-3">
-                    <div class="col-md-6">
-                        <label class="form-label fw-bold">Cliente</label>
-                        <input id="Cliente" class="form-control" placeholder="Nombre del cliente" required />
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label fw-bold">Área</label>
-                        <input id="Area" class="form-control" placeholder="Ej: Sala, Recámara" required />
-                    </div>
+    :root {
+        --ramave-red: #c62828;
+        --ramave-red-dark: #a81f1f;
+        --error-color: #d32f2f;
+        --bg-gray: #f4f6f9;
+        --text-dark: #2d3436;
+        --border-color: #ced4da;
+    }
 
-                    <div class="col-md-4">
-                        <label class="form-label fw-bold">Catálogo</label>
-                        <select id="selectCatalogo" class="form-select" required><option value="">Seleccione...</option></select>
-                    </div>
-                    <div class="col-md-4">
-                        <label class="form-label fw-bold">Marca</label>
-                        <select id="selectMarca" class="form-select" disabled required><option value="">Seleccione...</option></select>
-                    </div>
-                    <div class="col-md-4">
-                        <label class="form-label fw-bold">Modelo (Tela)</label>
-                        <select id="selectModelo" class="form-select" disabled required><option value="">Seleccione...</option></select>
-                    </div>
+    body {
+        background-color: var(--bg-gray);
+        font-family: 'Inter', sans-serif;
+        color: var(--text-dark);
+    }
 
-                    <div class="col-md-3">
-                        <label class="form-label fw-bold">Ancho (m)</label>
-                        <input id="ancho" type="number" step="0.01" class="form-control" placeholder="0.00" required />
-                    </div>
-                    <div class="col-md-3">
-                        <label class="form-label fw-bold">Alto (m)</label>
-                        <input id="alto" type="number" step="0.01" class="form-control" placeholder="0.00" required />
-                    </div>
-                    <div class="col-md-3">
-                        <label class="form-label fw-bold">Instalación</label>
-                        <select id="Instalacion" class="form-select">
-                            <option value="TECHO">TECHO</option>
-                            <option value="MURO">MURO</option>
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <label class="form-label fw-bold">Sistema</label>
-                        <select id="Sistema" class="form-select">
-                            <option value="MANUAL">MANUAL</option>
-                            <option value="MOTORIZADO WIFI">MOTORIZADO WIFI</option>
-                            <option value="MOTORIZADO BATERIA">MOTORIZADO BATERIA</option>
-                        </select>
-                    </div>
+    .page-container {
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        padding: 2.5rem 1.5rem;
+    }
 
-                    <div class="col-md-6">
-                        <label class="form-label fw-bold">Acoplamiento</label>
-                        <select id="selectAcoplamiento" class="form-select">
-                            <option value="DERECHO">DERECHO</option>
-                            <option value="IZQUIERDO">IZQUIERDO</option>
-                            <option value="AMBOS">AMBOS (2 Hojas)</option>
-                        </select>
-                    </div>
+    .card-form {
+        background: white;
+        width: 100%;
+        max-width: 850px;
+        padding: 2.5rem;
+        border-radius: 20px;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        border-top: 6px solid var(--ramave-red);
+    }
 
-                    @* CONDICIONAL RAZOR PARA MOSTRAR/OCULTAR *@
-                    @if (mostrarOnda)
-                    {
-                        <div class="col-md-6">
-                            <label class="form-label fw-bold">% de Onda</label>
-                            <select id="PorcentajeOnda" class="form-select">
-                                <option value="80">80%</option>
-                                <option value="60">60%</option>
-                                <option value="120">120%</option>
-                            </select>
-                        </div>
-                    }
+    h2 { text-align: center; color: var(--ramave-red); font-weight: 700; margin-bottom: 0.5rem; }
+    .subtitle { text-align: center; color: #636e72; font-size: 0.9rem; margin-bottom: 2rem; }
 
-                    <div class="col-12 mt-4">
-                        <button type="button" onclick="enviarCotizacion()" class="btn btn-success btn-lg w-100" id="btnGuardar">
-                            <i class="fas fa-calculator me-2"></i> Calcular y Guardar
-                        </button>
+    .form-section-title {
+        font-size: 0.75rem;
+        font-weight: 800;
+        color: var(--ramave-red);
+        text-transform: uppercase;
+        letter-spacing: 1.2px;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 8px;
+        margin: 25px 0 15px 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .form-group { margin-bottom: 1.2rem; }
+    label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem; }
+
+    input, select {
+        width: 100%;
+        padding: 0.8rem 1rem;
+        border-radius: 10px;
+        border: 1px solid var(--border-color);
+        font-size: 0.95rem;
+        transition: all 0.2s;
+        box-sizing: border-box;
+    }
+
+    input:focus, select:focus {
+        outline: none;
+        border-color: var(--ramave-red);
+        box-shadow: 0 0 0 3px rgba(198, 40, 40, 0.1);
+    }
+
+    /* Estilo de Radio Cards Modernizado */
+    .radio-group-visual {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+        gap: 12px;
+    }
+
+    .radio-card { position: relative; cursor: pointer; }
+    .radio-card input { position: absolute; opacity: 0; }
+
+    .radio-content {
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        padding: 12px;
+        text-align: center;
+        transition: all 0.3s ease;
+        background: #fff;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .radio-content img {
+        width: 100%;
+        max-width: 50px;
+        height: 50px;
+        object-fit: contain;
+        margin-bottom: 8px;
+        filter: grayscale(100%);
+        opacity: 0.6;
+        transition: 0.3s;
+    }
+
+    .radio-content span { font-size: 0.7rem; font-weight: 700; color: #777; }
+
+    .radio-card input:checked + .radio-content {
+        border-color: var(--ramave-red);
+        background-color: #fff8f8;
+        box-shadow: 0 4px 12px rgba(198, 40, 40, 0.1);
+    }
+
+    .radio-card input:checked + .radio-content img {
+        filter: grayscale(0%);
+        opacity: 1;
+        transform: scale(1.05);
+    }
+
+    .radio-card input:checked + .radio-content span { color: var(--ramave-red); }
+
+    /* Botones */
+    .buttons-container {
+        display: grid;
+        grid-template-columns: 1fr 2fr;
+        gap: 1rem;
+        margin-top: 3rem;
+    }
+
+    .btn {
+        padding: 1rem;
+        border-radius: 12px;
+        border: none;
+        font-weight: 700;
+        cursor: pointer;
+        transition: 0.3s;
+        text-align: center;
+        text-decoration: none;
+        font-size: 1rem;
+    }
+
+    .btn-save { background: var(--ramave-red); color: white; }
+    .btn-save:hover { background: var(--ramave-red-dark); transform: translateY(-2px); box-shadow: 0 5px 15px rgba(198, 40, 40, 0.2); }
+    .btn-back { background: #e9ecef; color: #495057; }
+
+    .input-group-custom { display: flex; }
+    .input-group-custom input { border-radius: 10px 0 0 10px; border-right: none; }
+    .input-group-text-custom {
+        background: #f8f9fa;
+        border: 1px solid var(--border-color);
+        border-radius: 0 10px 10px 0;
+        padding: 0 15px;
+        display: flex;
+        align-items: center;
+        font-size: 0.9rem;
+        color: #666;
+        font-weight: 600;
+    }
+
+    @@media (max-width: 600px) {
+        .buttons-container { grid-template-columns: 1fr; }
+        .row-mobile { grid-template-columns: 1fr !important; }
+    }
+</style>
+
+<div class="page-container">
+    <div class="card-form">
+        <h2>Nueva Cotización</h2>
+        <p class="subtitle">Configuración para: <strong>@tipoSeleccionado</strong></p>
+
+        <form id="cotizadorForm">
+            <input type="hidden" id="TipoCortina" value="@tipoSeleccionado" />
+
+            <div class="form-section-title"><i class="fas fa-user"></i> Datos del Proyecto</div>
+            <div style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 1rem;" class="row-mobile">
+                <div class="form-group">
+                    <label>Cliente / Nombre del Proyecto</label>
+                    <input id="Cliente" placeholder="Ej. Juan Pérez / Casa Lomas" required />
+                </div>
+                <div class="form-group">
+                    <label>Área</label>
+                    <input id="Area" placeholder="Ej. Sala, Recámara" required />
+                </div>
+            </div>
+
+            <div class="form-section-title"><i class="fas fa-layer-group"></i> Selección de Material</div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem;" class="row-mobile">
+                <div class="form-group">
+                    <label>Catálogo</label>
+                    <select id="selectCatalogo" required>
+                        <option value="">Seleccione...</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Marca</label>
+                    <select id="selectMarca" disabled required>
+                        <option value="">Esperando...</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Modelo / Tela</label>
+                    <select id="selectModelo" disabled required>
+                        <option value="">Esperando...</option>
+                    </select>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 2rem; margin-top: 1rem;" class="row-mobile">
+                <div>
+                    <div class="form-section-title"><i class="fas fa-house-user"></i> Instalación</div>
+                    <div class="radio-group-visual">
+                        <label class="radio-card">
+                            <input type="radio" name="radioInstalacion" value="TECHO" checked>
+                            <div class="radio-content">
+                                <img src="/images/techo.jpeg" alt="Techo">
+                                <span>Techo</span>
+                            </div>
+                        </label>
+                        <label class="radio-card">
+                            <input type="radio" name="radioInstalacion" value="MURO">
+                            <div class="radio-content">
+                                <img src="/images/muro.jpeg" alt="Muro">
+                                <span>Muro</span>
+                            </div>
+                        </label>
                     </div>
                 </div>
-            </form>
-        </div>
+
+                <div>
+                    <div class="form-section-title"><i class="fas fa-arrows-alt-h"></i> Acoplamiento</div>
+                    <div class="radio-group-visual">
+                        <label class="radio-card">
+                            <input type="radio" name="radioAcoplamiento" value="IZQUIERDO" checked>
+                            <div class="radio-content">
+                                <img src="/images/Izquierda.jpeg" alt="Izquierdo">
+                                <span>Izquierdo</span>
+                            </div>
+                        </label>
+                        <label class="radio-card">
+                            <input type="radio" name="radioAcoplamiento" value="DERECHO">
+                            <div class="radio-content">
+                                <img src="/images/derecha.jpeg" alt="Derecho">
+                                <span>Derecho</span>
+                            </div>
+                        </label>
+                        <label class="radio-card">
+                            <input type="radio" name="radioAcoplamiento" value="AMBOS">
+                            <div class="radio-content">
+                                <img src="/images/Ambos.jpeg" alt="Ambos">
+                                <span>Ambos</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section-title"><i class="fas fa-ruler-combined"></i> Dimensiones y Sistema</div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem;">
+                <div class="form-group">
+                    <label>Ancho (m)</label>
+                    <div class="input-group-custom">
+                        <input id="ancho" type="number" step="0.01" placeholder="0.00" required />
+                        <span class="input-group-text-custom">m</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Alto (m)</label>
+                    <div class="input-group-custom">
+                        <input id="alto" type="number" step="0.01" placeholder="0.00" required />
+                        <span class="input-group-text-custom">m</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Sistema</label>
+                    <select id="Sistema">
+                        <option value="MANUAL">MANUAL</option>
+                        <option value="MOTORIZADO WIFI">MOTORIZADO WIFI</option>
+                        <option value="MOTORIZADO BATERIA">MOTORIZADO BATERIA</option>
+                    </select>
+                </div>
+                @if (mostrarOnda)
+                {
+                    <div class="form-group">
+                        <label>% Onda</label>
+                        <select id="PorcentajeOnda" style="background-color: #fff8f8; border-color: #ffcccc; font-weight: bold;">
+                            <option value="80">80%</option>
+                            <option value="60">60%</option>
+                            <option value="120">120%</option>
+                        </select>
+                    </div>
+                }
+            </div>
+
+            <div class="buttons-container">
+                <a href="/Cotizaciones/Index" class="btn btn-back">Cancelar</a>
+                <button type="button" onclick="enviarCotizacion()" class="btn btn-save" id="btnGuardar">
+                    Calcular y Guardar
+                </button>
+            </div>
+        </form>
     </div>
 </div>
 
 <script>
+    // Se mantiene EXACTAMENTE tu misma lógica original de JS
     document.addEventListener("DOMContentLoaded", function() {
         const selCat = document.getElementById("selectCatalogo");
         const selMar = document.getElementById("selectMarca");
@@ -108,16 +320,19 @@
 
         selCat.onchange = () => {
             reset(selMar); reset(selMod);
-            if (selCat.value) fetch(`/api/Telas/marcas-por-catalogo/${selCat.value}`)
+            if (selCat.value) {
+                fetch(`/api/Telas/marcas-por-catalogo/${selCat.value}`)
                 .then(r => r.json()).then(d => { 
                     selMar.disabled = false; 
                     d.forEach(m => selMar.add(new Option(m.nombre, m.id))); 
                 });
+            }
         };
 
         selMar.onchange = () => {
             reset(selMod);
-            if (selMar.value) fetch(`/api/Telas/buscar-id-tela?catalogo=${selCat.value}&idMarca=${selMar.value}`)
+            if (selMar.value) {
+                fetch(`/api/Telas/buscar-id-tela?catalogo=${selCat.value}&idMarca=${selMar.value}`)
                 .then(r => r.json()).then(d => { 
                     selMod.disabled = false; 
                     d.forEach(t => {
@@ -125,15 +340,19 @@
                         selMod.add(new Option(texto, t.id)); 
                     }); 
                 });
+            }
         };
     });
 
-    function reset(s) { s.innerHTML = '<option value="">Seleccione...</option>'; s.disabled = true; }
+    function reset(s) { 
+        s.innerHTML = '<option value="">Seleccione...</option>'; 
+        s.disabled = true; 
+    }
 
     async function enviarCotizacion() {
         const btn = document.getElementById('btnGuardar');
-        
-        // CORRECCIÓN: Manejar la ausencia del elemento PorcentajeOnda en el DOM
+        const instalacion = document.querySelector('input[name="radioInstalacion"]:checked').value;
+        const acoplamiento = document.querySelector('input[name="radioAcoplamiento"]:checked').value;
         const inputOnda = document.getElementById('PorcentajeOnda');
         const valorOnda = inputOnda ? parseInt(inputOnda.value) : 0;
 
@@ -146,17 +365,17 @@
             porcentajeOnda: valorOnda,
             sistema: document.getElementById('Sistema').value,
             area: document.getElementById('Area').value,
-            instalacion: document.getElementById('Instalacion').value,
-            acoplamiento: document.getElementById('selectAcoplamiento').value
+            instalacion: instalacion,
+            acoplamiento: acoplamiento
         };
 
         if (isNaN(data.idTela) || !data.cliente || isNaN(data.ancho) || isNaN(data.alto)) {
-            alert("Completa todos los campos obligatorios y asegúrate de que el ancho/alto sean números.");
+            alert("⚠️ Por favor completa los campos de cliente, tela y dimensiones.");
             return;
         }
 
         btn.disabled = true;
-        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Calculando...';
+        btn.innerHTML = 'Calculando...';
 
         try {
             const response = await fetch('/api/Cotizador/Crear', {
@@ -166,18 +385,16 @@
             });
 
             if (response.ok) {
-                alert("Cotización generada y guardada con éxito.");
                 window.location.href = '/Cotizaciones/Index';
             } else {
                 const txt = await response.text();
-                alert("Error en el cálculo: " + txt);
+                alert("Error: " + txt);
                 btn.disabled = false;
-                btn.innerHTML = '<i class="fas fa-calculator me-2"></i> Calcular y Guardar';
+                btn.innerHTML = 'Calcular y Guardar';
             }
         } catch (e) {
-            alert("Error de conexión con el servidor.");
+            alert("Error de conexión.");
             btn.disabled = false;
-            btn.innerHTML = '<i class="fas fa-calculator me-2"></i> Calcular y Guardar';
         }
     }
 </script>

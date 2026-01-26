@@ -1,145 +1,313 @@
 @model IEnumerable<RAMAVE_Cotizador.Models.Cotizaciones>
 
-<div class="container-fluid py-4">
-    <div class="d-flex justify-content-between align-items-center mb-4 bg-white p-3 rounded shadow-sm">
-        <div>
-            <h2 class="fw-bold m-0 text-dark">
-                <i class="fas fa-file-invoice-dollar me-2 text-danger"></i>Cotizaciones
-            </h2>
-            <p class="text-muted m-0 small">Listado técnico y financiero con recálculo automático.</p>
-        </div>
+@{
+    ViewData["Title"] = "Historial Técnico de Cotizaciones";
+}
 
-        <div class="d-flex gap-3 align-items-center">
-            <div class="input-group shadow-sm" style="width: 400px;">
-                <span class="input-group-text bg-white border-end-0 text-muted">
-                    <i class="fas fa-search"></i>
-                </span>
-                <input type="text" id="inputBusquedaCot" class="form-control border-start-0 ps-0"
-                    placeholder="Buscar por cliente, sistema o marca..." onkeyup="filtrarCotizaciones()">
+<style>
+    @@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+    :root {
+        --ramave-red: #c62828;
+        --ramave-dark: #8e0000;
+        --bg-body: #f0f2f5;
+        --text-main: #1a1a1a;
+        --border-color: #e0e0e0;
+    }
+
+    body {
+        background-color: var(--bg-body);
+        font-family: 'Inter', sans-serif;
+        color: var(--text-main);
+        font-size: 0.85rem;
+    }
+
+    .wrapper {
+        width: 100%;
+        padding: 10px;
+        box-sizing: border-box;
+        padding-bottom: 120px;
+    }
+
+    /* Panel Superior */
+    .header-panel {
+        background: white;
+        padding: 1rem;
+        border-radius: 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-bottom: 15px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .header-top-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .header-panel h2 {
+        margin: 0;
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: var(--ramave-red);
+    }
+
+    .search-input {
+        width: 100%;
+        padding: 10px 15px;
+        border-radius: 8px;
+        border: 1px solid var(--border-color);
+        background: #f8f9fa;
+        font-size: 0.9rem;
+        outline: none;
+        box-sizing: border-box;
+    }
+
+    .btn-main {
+        padding: 8px 12px;
+        border-radius: 6px;
+        font-weight: 600;
+        cursor: pointer;
+        border: none;
+        font-size: 0.75rem;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .btn-red { background: var(--ramave-red); color: white; }
+    .btn-gray { background: #e0e0e0; color: #333; }
+
+    /* Tabla */
+    .table-card {
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        overflow: hidden;
+    }
+
+    table { width: 100%; border-collapse: collapse; }
+
+    th {
+        background: #f8f9fa;
+        padding: 10px 15px;
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        color: #666;
+        border-bottom: 2px solid var(--border-color);
+        text-align: left;
+    }
+
+    td {
+        padding: 10px 15px;
+        border-bottom: 1px solid var(--border-color);
+        font-size: 0.85rem;
+    }
+
+    .field-label {
+        font-size: 0.6rem;
+        font-weight: 700;
+        color: #888;
+        width: 65px;
+        display: inline-block;
+        text-transform: uppercase;
+    }
+
+    /* Estilo de precios apilados */
+    .price-group {
+        display: flex;
+        flex-direction: column;
+        line-height: 1.2;
+    }
+    .price-sub { font-size: 0.75rem; color: #777; }
+    .price-total { font-weight: 700; margin-top: 2px; }
+
+    /* Menú Desplegable */
+    .action-menu { position: relative; text-align: right; }
+    .dot-btn { 
+        background: #f1f1f1; 
+        border: 1px solid #ddd; 
+        border-radius: 4px; 
+        padding: 5px 12px; 
+        cursor: pointer;
+        font-size: 1.1rem;
+    }
+
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        right: 0;
+        top: 100%;
+        background: white;
+        min-width: 140px;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+        z-index: 100;
+        border-radius: 6px;
+        border: 1px solid var(--border-color);
+    }
+
+    .dropdown-up { top: auto !important; bottom: 100% !important; margin-bottom: 5px; }
+    .show { display: block; }
+
+    .dropdown-content a, .dropdown-content button {
+        padding: 10px 15px;
+        width: 100%;
+        border: none;
+        background: none;
+        text-align: left;
+        font-size: 0.85rem;
+        cursor: pointer;
+        display: block;
+        text-decoration: none;
+        color: #333;
+    }
+    .dropdown-content a:hover { background: #f8f9fa; }
+
+    /* RESPONSIVO */
+    @@media (max-width: 992px) {
+        table thead { display: none; }
+        table, tbody, tr, td { display: block; width: 100%; box-sizing: border-box; }
+        tr { margin-bottom: 15px; border: 1px solid var(--border-color); border-radius: 10px; padding: 5px; background: white; }
+        td { display: flex; flex-direction: column; border-bottom: 1px solid #f8f9fa; padding: 8px 12px; }
+        td:last-child { border-bottom: none; align-items: flex-start; }
+        .action-menu { text-align: left; width: 100%; }
+        .dropdown-content { left: 0; right: auto; }
+        td::before {
+            content: attr(data-label);
+            font-weight: 700;
+            color: var(--ramave-red);
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+    }
+</style>
+
+<div class="wrapper">
+    <div class="header-panel">
+        <div class="header-top-row">
+            <h2>Historial de Cotizaciones</h2>
+            <div class="btn-actions-top">
+                <button class="btn-main btn-gray" onclick="location.href='@Url.Action("Administrador", "Home")'">Menú</button>
             </div>
-            <a href="@Url.Content("~/Administrador/Cotizaciones/Home")" class="btn btn-danger px-4 shadow-sm fw-bold">
-                <i class="fas fa-plus me-2"></i>Nueva Cotización
-            </a>
         </div>
+        <input type="text" id="txtBuscar" class="search-input" placeholder="🔍 Buscar por cliente, marca, modelo, catálogo, sistema..." onkeyup="filtrarTabla()">
     </div>
 
-    <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
-        <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0" style="min-width: 1600px;">
-                <thead class="bg-dark text-white text-center small">
-                    <tr>
-                        <th rowspan="2" class="align-middle ps-4 text-start">Cliente</th>
-                        <th rowspan="2" class="align-middle">Tipo</th>
-                        <th rowspan="2" class="align-middle">Marca</th>
-                        <th rowspan="2" class="align-middle">Ancho (m)</th>
-                        <th rowspan="2" class="align-middle">Alto (m)</th>
-                        <th colspan="3" class="bg-primary border-bottom border-primary">COSTOS</th>
-                        <th colspan="3" class="bg-danger border-bottom border-danger">PÚBLICO</th>
-                        <th colspan="3" class="bg-secondary border-bottom border-light">DISTRIBUIDOR</th>
-                        <th rowspan="2" class="align-middle text-center px-4">Acciones</th>
-                    </tr>
-                    <tr class="small text-uppercase" style="font-size: 0.65rem;">
-                        <th class="bg-primary opacity-75">Cortina</th>
-                        <th class="bg-primary opacity-75">Cortinero</th>
-                        <th class="bg-primary fw-bold">Total</th>
-                        <th class="bg-danger opacity-75">Cortina</th>
-                        <th class="bg-danger opacity-75">Cortinero</th>
-                        <th class="bg-danger fw-bold">Total</th>
-                        <th class="bg-secondary opacity-75">Cortina</th>
-                        <th class="bg-secondary opacity-75">Cortinero</th>
-                        <th class="bg-secondary fw-bold">Total</th>
-                    </tr>
-                </thead>
-                <tbody id="listaCotizaciones">
-                    @foreach (var item in Model)
-                    {
-                        var totalCosto = item.CostoTotalCortina + item.CostoTotalCortinero;
-                        var totalPublico = item.PrecioCortinaPublico + item.PrecioCortineroPublico;
-                        var totalDistribuidor = item.PrecioCortinaDistribuidor + item.PrecioCortineroDistribuidor;
+    <div class="table-card">
+        <table>
+            <thead>
+                <tr>
+                    <th>Información Técnica</th>
+                    <th>Detalles Producto</th>
+                    <th>Medidas</th>
+                    <th>Costo</th>
+                    <th>Público</th>
+                    <th>Distribuidor</th>
+                    <th style="width: 50px;">Acción</th>
+                </tr>
+            </thead>
+            <tbody id="listaCotizaciones">
+                @foreach (var item in Model)
+                {
+                    var totalCosto = item.CostoTotalCortina + item.CostoTotalCortinero;
+                    var totalPublico = item.PrecioCortinaPublico + item.PrecioCortineroPublico;
+                    var totalDistribuidor = item.PrecioCortinaDistribuidor + item.PrecioCortineroDistribuidor;
 
-                        <tr class="fila-cotizacion">
-                            <td class="ps-4 fw-bold text-uppercase busqueda-cliente">@item.Cliente</td>
-                            <td class="busqueda-tipo text-center">
-                                <span class="badge bg-light text-dark border">@item.TipoCortina</span>
-                            </td>
-                            <td class="busqueda-marca text-center">@item.Marca</td>
-                            <td class="text-center fw-bold">@item.Ancho.ToString("N2")</td>
-                            <td class="text-center fw-bold">@item.Alto.ToString("N2")</td>
-
-                            <td class="text-center small text-muted">@item.CostoTotalCortina.ToString("C")</td>
-                            <td class="text-center small text-muted">@item.CostoTotalCortinero.ToString("C")</td>
-                            <td class="text-center fw-bold bg-light text-primary">@totalCosto.ToString("C")</td>
-
-                            <td class="text-center small text-muted">@item.PrecioCortinaPublico.ToString("C")</td>
-                            <td class="text-center small text-muted">@item.PrecioCortineroPublico.ToString("C")</td>
-                            <td class="text-center fw-bold bg-light text-danger">@totalPublico.ToString("C")</td>
-
-                            <td class="text-center small text-muted">@item.PrecioCortinaDistribuidor.ToString("C")</td>
-                            <td class="text-center small text-muted">@item.PrecioCortineroDistribuidor.ToString("C")</td>
-                            <td class="text-center fw-bold bg-light text-dark">@totalDistribuidor.ToString("C")</td>
-
-                            <td class="text-center px-4">
-                                <div class="d-flex gap-2 justify-content-center">
-                                    <a href="@Url.Action("Detalle", "Cotizaciones", new { area = "Administrador", id = item.Id })"
-                                       class="btn btn-sm btn-outline-dark rounded-pill px-3 shadow-sm">
-                                        <i class="fas fa-eye"></i>
-                                    </a>
-                                    <a href="@Url.Action("Editar", "Cotizaciones", new { area = "Administrador", id = item.Id })"
-                                       class="btn btn-sm btn-warning rounded-pill px-3 shadow-sm fw-bold">
-                                        <i class="fas fa-edit"></i> Editar
-                                    </a>
+                    <tr class="fila-cotizacion">
+                        <td data-label="Información Técnica">
+                            <div><span class="field-label">Cliente:</span> <strong>@item.Cliente</strong></div>
+                            <div><span class="field-label">Sistema:</span> <strong>@item.Sistema</strong></div>
+                            <div><span class="field-label">Tipo:</span> <strong>@item.TipoCortina</strong></div>
+                        </td>
+                        <td data-label="Detalles Producto">
+                            <div><span class="field-label">Marca:</span> @item.Marca</div>
+                            <div><span class="field-label">Modelo:</span> @item.Modelo</div>
+                            <div><span class="field-label">Catálogo:</span> @item.Catalogo</div>
+                        </td>
+                        <td data-label="Medidas">
+                            <strong>@item.Ancho.ToString("N2") x @item.Alto.ToString("N2")</strong>
+                        </td>
+                        <td data-label="Costo">
+                            <div class="price-group">
+                                <span class="price-sub">Cor: @item.CostoTotalCortina.ToString("C")</span>
+                                <span class="price-sub">Ctn: @item.CostoTotalCortinero.ToString("C")</span>
+                                <span class="price-total" style="color:#1976d2">@totalCosto.ToString("C")</span>
+                            </div>
+                        </td>
+                        <td data-label="Público">
+                            <div class="price-group">
+                                <span class="price-sub">Cor: @item.PrecioCortinaPublico.ToString("C")</span>
+                                <span class="price-sub">Ctn: @item.PrecioCortineroPublico.ToString("C")</span>
+                                <span class="price-total" style="color:var(--ramave-red)">@totalPublico.ToString("C")</span>
+                            </div>
+                        </td>
+                        <td data-label="Distribuidor">
+                            <div class="price-group">
+                                <span class="price-sub">Cor: @item.PrecioCortinaDistribuidor.ToString("C")</span>
+                                <span class="price-sub">Ctn: @item.PrecioCortineroDistribuidor.ToString("C")</span>
+                                <span class="price-total" style="color:#333">@totalDistribuidor.ToString("C")</span>
+                            </div>
+                        </td>
+                        <td data-label="Acción">
+                            <div class="action-menu">
+                                <button class="dot-btn" onclick="toggleMenu(event, @item.Id)">⋮</button>
+                                <div id="dropdown-@item.Id" class="dropdown-content">
+                                    <a href="@Url.Action("Detalle", "Cotizaciones", new { area = "Administrador", id = item.Id })">👁️ Ver Detalle</a>
+                                    <a href="@Url.Action("Editar", "Cotizaciones", new { area = "Administrador", id = item.Id })">✏️ Editar</a>
+                                    <button onclick="eliminar(@item.Id)" style="color: #d32f2f;">❌ Eliminar</button>
                                 </div>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-            <div id="sinResultados" class="text-center py-5 d-none">
-                <i class="fas fa-folder-open fa-3x text-muted mb-3"></i>
-                <h5 class="text-muted">No se encontraron cotizaciones coincidentes</h5>
-            </div>
-        </div>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
     </div>
 </div>
 
-<style>
-    .table td { padding: 10px 4px !important; font-size: 0.85rem; white-space: nowrap; }
-    .table thead th { padding: 8px 5px !important; border: 1px solid rgba(255,255,255,0.1); }
-    .bg-light { background-color: #f8f9fa !important; }
-    .btn-warning { background-color: #ffc107; border: none; transition: all 0.2s; }
-    .btn-warning:hover { transform: scale(1.05); background-color: #e0a800; }
-    #inputBusquedaCot:focus { border-color: #dc3545; box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.15); outline: none; }
-</style>
-
 <script>
-    /**
-     * Filtra las filas de la tabla según el input de búsqueda
-     * Busca en Cliente, Tipo y Marca
-     */
-    function filtrarCotizaciones() {
-        const query = document.getElementById('inputBusquedaCot').value.toLowerCase().trim();
+    function toggleMenu(event, id) {
+        event.stopPropagation();
+        const el = document.getElementById('dropdown-' + id);
+        const wasShowing = el.classList.contains('show');
+        
+        // Cerrar todos los demás
+        document.querySelectorAll('.dropdown-content').forEach(d => d.classList.remove('show'));
+        
+        // Si no estaba mostrado, mostrarlo y verificar posición
+        if (!wasShowing) {
+            el.classList.add('show');
+            const rect = el.getBoundingClientRect();
+            if (rect.bottom > window.innerHeight) {
+                el.classList.add('dropdown-up');
+            }
+        }
+    }
+
+    window.onclick = () => {
+        document.querySelectorAll('.dropdown-content').forEach(d => d.classList.remove('show'));
+    }
+
+    function filtrarTabla() {
+        const query = document.getElementById('txtBuscar').value.toLowerCase().trim();
         const filas = document.querySelectorAll('.fila-cotizacion');
-        const divMensaje = document.getElementById('sinResultados');
-        let contador = 0;
 
         filas.forEach(fila => {
-            const cliente = fila.querySelector('.busqueda-cliente').textContent.toLowerCase();
-            const tipo = fila.querySelector('.busqueda-tipo').textContent.toLowerCase();
-            const marca = fila.querySelector('.busqueda-marca').textContent.toLowerCase();
-
-            if (cliente.includes(query) || tipo.includes(query) || marca.includes(query)) {
-                fila.style.display = "";
-                contador++;
-            } else {
-                fila.style.display = "none";
-            }
+            const texto = fila.innerText.toLowerCase();
+            fila.style.display = texto.includes(query) ? "" : "none";
         });
+    }
 
-        // Mostrar mensaje si no hay resultados
-        if (contador === 0) {
-            divMensaje.classList.remove('d-none');
-        } else {
-            divMensaje.classList.add('d-none');
+    function eliminar(id) {
+        if (confirm("¿Estás seguro de eliminar esta cotización?")) {
+            // Aquí iría tu lógica de eliminación (Fetch o redirección)
+            console.log("Eliminando cotización:", id);
         }
     }
 </script>
