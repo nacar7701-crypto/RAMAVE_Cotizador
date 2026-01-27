@@ -1388,7 +1388,6 @@ namespace RAMAVE_Cotizador.Controllers
         [HttpGet("PresupuestoCompleto/{id}")]
         public async Task<IActionResult> GetPresupuestoCompleto(int id)
         {
-            // Buscamos el presupuesto e incluimos las partidas
             var presupuesto = await _context.Presupuestos
                 .Include(p => p.Partidas) 
                 .FirstOrDefaultAsync(p => p.Id == id);
@@ -1396,7 +1395,6 @@ namespace RAMAVE_Cotizador.Controllers
             if (presupuesto == null) 
                 return NotFound(new { mensaje = "Presupuesto no encontrado" });
 
-            // Recalculamos el total global sumando las partidas actuales
             presupuesto.TotalPresupuesto = presupuesto.Partidas.Sum(c => c.TotalPublico);
 
             return Ok(new {
@@ -1405,54 +1403,104 @@ namespace RAMAVE_Cotizador.Controllers
                 totalGlobal = presupuesto.TotalPresupuesto,
                 observaciones = presupuesto.Observaciones,
                 detalleCortinas = presupuesto.Partidas.Select(c => new {
-                    // Datos Generales
+                    // 1. DATOS GENERALES Y DISEÑO
                     c.Id,
                     c.Area,
+                    c.Cliente,
                     c.TipoCortina,
                     c.Sistema,
                     c.Modelo,
                     c.Marca,
                     c.Catalogo,
-                    
-                    // Medidas y Áreas
+                    c.Acoplamiento,
+                    c.TipoApertura,
+                    c.Instalacion,
+
+                    // 2. MEDIDAS Y ÁREAS
                     c.Ancho,
                     c.Alto,
                     c.M2,
                     c.AnchoCM,
                     c.AlturaCM,
-                    
-                    // Ingeniería de Confección
-                    c.PorcentajeOnda,
-                    c.NumLienzos,
-                    c.TotalAnchoLienzo,
-                    c.MLComprar,
-                    c.TotalML,
                     c.AnchoRollo,
-                    
-                    // Componentes del Cortinero/Riel
+
+                    // 3. INGENIERÍA Y COMPONENTES (Cantidades)
+                    c.PorcentajeOnda,
                     c.CantidadBroches,
                     c.CintaBroches,
+                    c.TotalAnchoLienzo,
+                    c.TotalAltura,
+                    c.AlturaExacta,
+                    c.CintaPlomo,
+                    c.CarroMaestro,
                     c.CorrederasRipple,
+                    c.NumLienzos,
+                    c.TotalML,
+                    c.MLComprar,
+                    c.Riel,
+                    c.Tapon,
                     c.Baston,
                     c.Soportes,
-                    c.Riel,
+                    c.UnionRiel,
+                    c.Tarlatana,
+                    c.CarroEmbaladoFrances,
                     c.Ganchos,
+                    c.TopeCarritoSujecion,
+                    c.TopeMecanismoCortinero,
+                    c.Engrane,
+                    c.TapasEngrane,
                     c.Hebilla,
                     c.CorrederaGoma,
                     c.GomaVerde,
-                    c.CarroMaestro,
-                    
-                    // Desglose de Costos (Para revisión interna)
+                    c.PesaPlomo,
+                    c.CarritoCortinero,
+                    c.GanchoFinal,
+
+                    // 4. COSTOS DE COMPONENTES (Precios Unitarios/Totales Material)
+                    c.CostoRiel,
+                    c.CostoCarroMaestro,
+                    c.CostoCorredera,
+                    c.CostoCintaBroches,
+                    c.CostoTapon,
+                    c.CostoBaston,
+                    c.CostoSoportes,
+                    c.CostoUnionRiel,
+                    c.CostoEmpaque,
+                    c.CostoTarlatana,
+                    c.CostoCarroEmbaladoFrances,
+                    c.CostoGanchos,
+                    c.CostoTopeCarritoSujecion,
+                    c.CostoTopeMecanismoCortinero,
+                    c.CostoEngrane,
+                    c.CostoTapasEngrane,
+                    c.CostoHebilla,
+                    c.CostoCorreaGoma,
+                    c.CostoGomaVerde,
+                    c.CostoPesaPlomo,
+                    c.CostoCarritos,
+                    c.CostoCarritoCortinero,
+                    c.CostoGanchoFinal,
+                    c.Motor,
                     c.PrecioTelaML,
                     c.CostoTotalTela,
+
+                    // 5. TOTALES DE COSTO INTERNO
                     c.CostoTotalCortinero,
-                    c.Motor,
-                    
-                    // Totales Finales por Partida
-                    c.PrecioCortinaPublico,
+                    c.CostoTotalCortina,
+                    c.CostoTotalGeneral,
+
+                    // 6. PRECIOS DE VENTA (PÚBLICO)
                     c.PrecioCortineroPublico,
-                    totalPartida = c.TotalPublico,
-                    totalDistribuidor = c.TotalDistribuidor
+                    c.PrecioCortinaPublico,
+                    c.TotalPublico,
+
+                    // 7. PRECIOS DE VENTA (DISTRIBUIDOR)
+                    c.PrecioCortineroDistribuidor,
+                    c.PrecioCortinaDistribuidor,
+                    c.TotalDistribuidor,
+                    
+                    // Campo de validación
+                    totalPartidaVerificacion = c.TotalPublico 
                 })
             });
         }
