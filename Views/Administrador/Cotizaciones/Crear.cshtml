@@ -16,69 +16,212 @@
         --border-color: #dee2e6;
     }
 
-    body { background-color: var(--bg-gray); font-family: 'Inter', sans-serif; color: var(--text-dark); }
-    .page-container { padding: 2rem 1rem; display: flex; justify-content: center; }
+    body {
+        background-color: var(--bg-gray);
+        font-family: 'Inter', sans-serif;
+        color: var(--text-dark);
+    }
+
+    .page-container {
+        padding: 2rem 1rem;
+        display: flex;
+        justify-content: center;
+    }
 
     .card-form {
-        background: white; width: 100%; max-width: 850px; padding: 2.5rem;
-        border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        background: white;
+        width: 100%;
+        max-width: 850px;
+        padding: 2.5rem;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
         border-top: 5px solid var(--ramave-red);
     }
 
-    h2 { text-align: center; color: var(--ramave-red); font-weight: 800; margin-bottom: 1.5rem; text-transform: uppercase; letter-spacing: -0.5px; }
-
-    .form-section-title {
-        font-size: 0.7rem; font-weight: 800; color: var(--ramave-red);
-        text-transform: uppercase; letter-spacing: 1px; border-bottom: 2px solid #fceaea;
-        padding-bottom: 5px; margin: 20px 0 15px 0; display: flex; align-items: center; gap: 8px;
+    h2 {
+        text-align: center;
+        color: var(--ramave-red);
+        font-weight: 800;
+        margin-bottom: 1.5rem;
+        text-transform: uppercase;
+        letter-spacing: -0.5px;
     }
 
-    .form-group { margin-bottom: 1rem; position: relative; }
-    label { display: block; font-size: 0.8rem; font-weight: 700; margin-bottom: 0.4rem; color: #444; }
+    .form-section-title {
+        font-size: 0.7rem;
+        font-weight: 800;
+        color: var(--ramave-red);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        border-bottom: 2px solid #fceaea;
+        padding-bottom: 5px;
+        margin: 20px 0 15px 0;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
 
-    input, select {
-        width: 100%; padding: 0.7rem 0.9rem; border-radius: 8px;
-        border: 1px solid var(--border-color); font-size: 0.9rem; transition: 0.2s;
+    .form-group {
+        margin-bottom: 1rem;
+        position: relative;
+    }
+
+    label {
+        display: block;
+        font-size: 0.8rem;
+        font-weight: 700;
+        margin-bottom: 0.4rem;
+        color: #444;
+    }
+
+    input,
+    select {
+        width: 100%;
+        padding: 0.7rem 0.9rem;
+        border-radius: 8px;
+        border: 1px solid var(--border-color);
+        font-size: 0.9rem;
+        transition: 0.2s;
         background-color: #fff;
     }
 
-    .input-compact { padding: 0.6rem 0.6rem; font-size: 0.85rem; }
-    
+    .input-compact {
+        padding: 0.6rem 0.6rem;
+        font-size: 0.85rem;
+    }
+
     /* Validaciones */
-    .error-text { color: var(--ramave-red); font-size: 0.7rem; font-weight: 600; margin-top: 4px; display: none; }
-    .invalid { border-color: var(--ramave-red) !important; box-shadow: 0 0 0 2px rgba(198, 40, 40, 0.1); }
+    .error-text {
+        color: var(--ramave-red);
+        font-size: 0.7rem;
+        font-weight: 600;
+        margin-top: 4px;
+        display: none;
+    }
+
+    .invalid {
+        border-color: var(--ramave-red) !important;
+        box-shadow: 0 0 0 2px rgba(198, 40, 40, 0.1);
+    }
 
     /* Radio Cards */
-    .radio-group-visual { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 10px; }
-    .radio-card { position: relative; cursor: pointer; }
-    .radio-card input { position: absolute; opacity: 0; }
+    .radio-group-visual {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+        gap: 10px;
+    }
+
+    .radio-card {
+        position: relative;
+        cursor: pointer;
+    }
+
+    .radio-card input {
+        position: absolute;
+        opacity: 0;
+    }
+
     .radio-content {
-        border: 2px solid #eee; border-radius: 12px; padding: 10px;
-        text-align: center; transition: 0.3s; background: #fff; height: 100%;
-        display: flex; flex-direction: column; align-items: center; justify-content: center;
+        border: 2px solid #eee;
+        border-radius: 12px;
+        padding: 10px;
+        text-align: center;
+        transition: 0.3s;
+        background: #fff;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
     }
-    .radio-card input:checked + .radio-content { border-color: var(--ramave-red); background-color: #fff5f5; }
-    .radio-content img { width: 100%; max-width: 50px; height: 50px; object-fit: contain; margin-bottom: 8px; }
-    .radio-content span { font-size: 0.65rem; font-weight: 800; text-transform: uppercase; color: #666; }
-    
+
+    .radio-card input:checked+.radio-content {
+        border-color: var(--ramave-red);
+        background-color: #fff5f5;
+    }
+
+    .radio-content img {
+        width: 100%;
+        max-width: 50px;
+        height: 50px;
+        object-fit: contain;
+        margin-bottom: 8px;
+    }
+
+    .radio-content span {
+        font-size: 0.65rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        color: #666;
+    }
+
     .buttons-container {
-        display: grid; grid-template-columns: 1fr 1.5fr 1fr;
-        gap: 1rem; margin-top: 2.5rem;
+        display: grid;
+        grid-template-columns: 1fr 1.5fr 1fr;
+        gap: 1rem;
+        margin-top: 2.5rem;
     }
-    .btn { padding: 0.9rem; border-radius: 10px; border: none; font-weight: 700; cursor: pointer; text-align: center; text-decoration: none; font-size: 0.85rem; transition: 0.3s; }
-    .btn-add { background: #2d3436; color: white; }
-    .btn-finish { background: var(--ramave-red); color: white; }
-    .btn-back { background: #eee; color: #666; }
 
-    .input-group-custom { display: flex; }
-    .input-group-custom input { border-radius: 8px 0 0 8px; border-right: none; }
+    .btn {
+        padding: 0.9rem;
+        border-radius: 10px;
+        border: none;
+        font-weight: 700;
+        cursor: pointer;
+        text-align: center;
+        text-decoration: none;
+        font-size: 0.85rem;
+        transition: 0.3s;
+    }
+
+    .btn-add {
+        background: #2d3436;
+        color: white;
+    }
+
+    .btn-finish {
+        background: var(--ramave-red);
+        color: white;
+    }
+
+    .btn-back {
+        background: #eee;
+        color: #666;
+    }
+
+    .input-group-custom {
+        display: flex;
+    }
+
+    .input-group-custom input {
+        border-radius: 8px 0 0 8px;
+        border-right: none;
+    }
+
     .input-group-text-custom {
-        background: #f1f3f5; border: 1px solid var(--border-color);
-        border-radius: 0 8px 8px 0; padding: 0 12px; display: flex; align-items: center; font-size: 0.8rem; font-weight: bold; color: #777;
+        background: #f1f3f5;
+        border: 1px solid var(--border-color);
+        border-radius: 0 8px 8px 0;
+        padding: 0 12px;
+        display: flex;
+        align-items: center;
+        font-size: 0.8rem;
+        font-weight: bold;
+        color: #777;
     }
 
-    #sectionOnda { display: none; }
-    .presupuesto-info { background: #fff5f5; padding: 12px; border-radius: 10px; margin-bottom: 20px; display: none; border: 1px solid #f8d7da; }
+    #sectionOnda {
+        display: none;
+    }
+
+    .presupuesto-info {
+        background: #fff5f5;
+        padding: 12px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        display: none;
+        border: 1px solid #f8d7da;
+    }
 </style>
 
 <div class="page-container">
@@ -95,15 +238,18 @@
             <div class="form-section-title"><i class="fas fa-cut"></i> 1. Confección</div>
             <div class="radio-group-visual">
                 <label class="radio-card">
-                    <input type="radio" name="TipoCortina" value="OJILLOS" @(tipoInicial == "OJILLOS" ? "checked" : "") onchange="actualizarInterfaz(this.value)">
+                    <input type="radio" name="TipoCortina" value="OJILLOS" @(tipoInicial == "OJILLOS" ? "checked" : "")
+                        onchange="actualizarInterfaz(this.value)">
                     <div class="radio-content"><img src="/images/persiana-ojillos.jpg"><span>Ojillos</span></div>
                 </label>
                 <label class="radio-card">
-                    <input type="radio" name="TipoCortina" value="FRANCESA" @(tipoInicial == "FRANCESA" ? "checked" : "") onchange="actualizarInterfaz(this.value)">
+                    <input type="radio" name="TipoCortina" value="FRANCESA" @(tipoInicial == "FRANCESA" ? "checked" :
+                                                                                                    "") onchange="actualizarInterfaz(this.value)">
                     <div class="radio-content"><img src="/images/persiana-francesa.jpg"><span>Francesa</span></div>
                 </label>
                 <label class="radio-card">
-                    <input type="radio" name="TipoCortina" value="ONDULADO" @(tipoInicial == "ONDULADO" ? "checked" : "") onchange="actualizarInterfaz(this.value)">
+                    <input type="radio" name="TipoCortina" value="ONDULADO" @(tipoInicial == "ONDULADO" ? "checked" :
+                                                                                                    "") onchange="actualizarInterfaz(this.value)">
                     <div class="radio-content"><img src="/images/persiana-ondulada.jpg"><span>Ondulado</span></div>
                 </label>
             </div>
@@ -127,17 +273,23 @@
             <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.8rem;">
                 <div class="form-group">
                     <label>Catálogo</label>
-                    <select id="selectCatalogo"><option value="">Seleccione...</option></select>
+                    <select id="selectCatalogo">
+                        <option value="">Seleccione...</option>
+                    </select>
                     <span id="err-selectCatalogo" class="error-text">Seleccione uno</span>
                 </div>
                 <div class="form-group">
                     <label>Marca</label>
-                    <select id="selectMarca" disabled><option value="">Marca...</option></select>
+                    <select id="selectMarca" disabled>
+                        <option value="">Marca...</option>
+                    </select>
                     <span id="err-selectMarca" class="error-text">Seleccione uno</span>
                 </div>
                 <div class="form-group">
                     <label>Tela</label>
-                    <select id="selectModelo" disabled><option value="">Modelo...</option></select>
+                    <select id="selectModelo" disabled>
+                        <option value="">Modelo...</option>
+                    </select>
                     <span id="err-selectModelo" class="error-text">Seleccione uno</span>
                 </div>
             </div>
@@ -179,12 +331,14 @@
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 0.8rem;">
                 <div class="form-group">
                     <label>Ancho (m)</label>
-                    <div class="input-group-custom"><input id="ancho" type="number" step="0.01" placeholder="0.00" /><span class="input-group-text-custom">m</span></div>
+                    <div class="input-group-custom"><input id="ancho" type="number" step="0.01"
+                            placeholder="0.00" /><span class="input-group-text-custom">m</span></div>
                     <span id="err-ancho" class="error-text">Medida inválida</span>
                 </div>
                 <div class="form-group">
                     <label>Alto (m)</label>
-                    <div class="input-group-custom"><input id="alto" type="number" step="0.01" placeholder="0.00" /><span class="input-group-text-custom">m</span></div>
+                    <div class="input-group-custom"><input id="alto" type="number" step="0.01"
+                            placeholder="0.00" /><span class="input-group-text-custom">m</span></div>
                     <span id="err-alto" class="error-text">Medida inválida</span>
                 </div>
                 <div class="form-group">
@@ -193,14 +347,19 @@
                 </div>
                 <div class="form-group" id="sectionOnda">
                     <label>% Onda</label>
-                    <select id="PorcentajeOnda"><option value="60">60%</option><option value="80">80%</option><option value="120">120%</option></select>
+                    <select id="PorcentajeOnda">
+                        <option value="60">60%</option>
+                        <option value="80">80%</option>
+                        <option value="120">120%</option>
+                    </select>
                 </div>
             </div>
 
             <div class="buttons-container">
                 <a href="/Cotizaciones/Index" class="btn btn-back" onclick="localStorage.removeItem('pId')">CANCELAR</a>
                 <button type="button" onclick="accionAgregar()" class="btn btn-add">AGREGAR OTRA CORTINA</button>
-                <button type="button" onclick="accionGuardarContinuar()" class="btn btn-finish">GUARDAR Y CONTINUAR</button>
+                <button type="button" onclick="accionGuardarContinuar()" class="btn btn-finish">GUARDAR Y
+                    CONTINUAR</button>
             </div>
         </form>
     </div>
@@ -217,17 +376,17 @@
     function validarFormulario() {
         let esValido = true;
         const ids = ['Cliente', 'Area', 'selectCatalogo', 'selectMarca', 'selectModelo', 'ancho', 'alto'];
-        
+
         ids.forEach(id => {
             const el = document.getElementById(id);
             const err = document.getElementById('err-' + id);
             if (!el.value || el.value === "" || (el.type === "number" && el.value <= 0)) {
                 el.classList.add('invalid');
-                if(err) err.style.display = 'block';
+                if (err) err.style.display = 'block';
                 esValido = false;
             } else {
                 el.classList.remove('invalid');
-                if(err) err.style.display = 'none';
+                if (err) err.style.display = 'none';
             }
         });
         return esValido;
@@ -241,7 +400,7 @@
             el.value = "";
             el.classList.remove('invalid');
             const err = document.getElementById('err-' + id);
-            if(err) err.style.display = 'none';
+            if (err) err.style.display = 'none';
         });
         document.getElementById('selectMarca').disabled = true;
         document.getElementById('selectModelo').disabled = true;
@@ -265,7 +424,8 @@
         const exito = await enviarCotizacion();
         if (exito) {
             localStorage.removeItem('pId');
-            window.location.href = '/Cotizaciones/PresupuestoFinal/' + pId;
+            // CORRECCIÓN: Agregar /Administrador antes de /Cotizaciones
+            window.location.href = '/Administrador/Cotizaciones/PresupuestoFinal/' + pId;
         }
     }
 
@@ -324,7 +484,7 @@
         fetch('/api/Telas/catalogos-unicos').then(r => r.json()).then(d => d.forEach(c => selCat.add(new Option(c, c))));
 
         selCat.onchange = () => {
-            if(!selCat.value) return;
+            if (!selCat.value) return;
             fetch(`/api/Telas/marcas-por-catalogo/${selCat.value}`).then(r => r.json()).then(d => {
                 selMar.innerHTML = '<option value="">Marca...</option>'; selMar.disabled = false;
                 d.forEach(m => selMar.add(new Option(m.nombre, m.id)));
@@ -332,7 +492,7 @@
         };
 
         selMar.onchange = () => {
-            if(!selMar.value) return;
+            if (!selMar.value) return;
             fetch(`/api/Telas/buscar-id-tela?catalogo=${selCat.value}&idMarca=${selMar.value}`).then(r => r.json()).then(d => {
                 selMod.innerHTML = '<option value="">Modelo...</option>'; selMod.disabled = false;
                 d.forEach(t => selMod.add(new Option(t.nombre, t.id)));

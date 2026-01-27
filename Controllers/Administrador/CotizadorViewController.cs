@@ -61,7 +61,7 @@ namespace RAMAVE_Cotizador.Controllers
             // 2. RE-CALCULAR LOGICA DE INGENIERÍA
             // Aquí debes pegar el bloque de cálculos (M2, Costos, Precios) 
             // que usas en el método POST para que los totales se actualicen.
-            
+
             model.M2 = model.Ancho * model.Alto;
             // ... (resto de tus cálculos) ...
 
@@ -111,6 +111,13 @@ namespace RAMAVE_Cotizador.Controllers
             if (cotizacion == null) return NotFound();
 
             return View("~/Views/Administrador/Cotizaciones/Detalle.cshtml", cotizacion);
+        }
+
+        [HttpGet("PresupuestoFinal/{id}")]
+        public IActionResult PresupuestoFinal(int id)
+        {
+            ViewBag.PresupuestoId = id;
+            return View("~/Views/Administrador/Cotizaciones/PresupuestoFinal.cshtml");
         }
     }
 }

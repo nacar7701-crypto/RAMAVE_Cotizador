@@ -1,0 +1,285 @@
+@{
+    ViewData["Title"] = "Detalle del Presupuesto";
+}
+
+<style>
+    :root {
+        --ramave-red: #c62828;
+        --ramave-dark: #8e0000;
+        --bg-light: #f4f7f6;
+        --text-muted: #6c757d;
+    }
+
+    body { background-color: var(--bg-light); font-family: 'Inter', sans-serif; }
+
+    .header-presupuesto {
+        background: white;
+        padding: 2rem;
+        border-radius: 15px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        margin-bottom: 2rem;
+        border-top: 5px solid var(--ramave-red);
+    }
+
+    /* Estilos del Panel de Filtros Individuales */
+    .filter-section {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 12px;
+        margin-bottom: 2rem;
+        border: 1px solid #dee2e6;
+        max-height: 400px;
+        overflow-y: auto;
+    }
+
+    .filter-group-title {
+        font-size: 0.7rem;
+        font-weight: 800;
+        color: var(--ramave-red);
+        text-transform: uppercase;
+        margin-bottom: 10px;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 5px;
+        width: 100%;
+    }
+
+    .card-partida {
+        background: white;
+        border-radius: 12px;
+        margin-bottom: 1.5rem;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    .card-partida-header {
+        background: #f8f9fa;
+        padding: 1rem 1.5rem;
+        border-bottom: 1px solid #eee;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .badge-area {
+        background: var(--ramave-red); color: white;
+        padding: 0.5rem 1rem; border-radius: 50px;
+        font-weight: bold; text-transform: uppercase; font-size: 0.8rem;
+    }
+
+    .table-detalle { width: 100%; font-size: 0.85rem; margin-bottom: 0; }
+    .table-detalle th {
+        background: #fdfdfd; color: var(--text-muted);
+        font-weight: 600; text-transform: uppercase;
+        font-size: 0.7rem; width: 45%; border-right: 1px solid #f1f1f1;
+    }
+
+    .section-title {
+        background: #fff5f5; color: var(--ramave-red);
+        padding: 0.5rem 1.5rem; font-weight: 800;
+        font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px;
+    }
+
+    .grid-tablas { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 0; }
+
+    .total-global-card {
+        background: var(--ramave-red); color: white;
+        padding: 1.5rem; border-radius: 12px; text-align: right;
+    }
+
+    .text-valor { font-weight: 700; color: #2d3436; }
+    .d-none-filter { display: none !important; }
+
+    @@media print {
+        .no-print { display: none !important; }
+        .card-partida { box-shadow: none; border: 1px solid #eee; }
+    }
+</style>
+
+<div class="container py-4">
+    <div class="header-presupuesto d-flex justify-content-between align-items-center">
+        <div>
+            <h6 class="text-muted mb-1">FOLIO DE PRESUPUESTO</h6>
+            <h2 id="folioId" class="mb-3" style="color: var(--ramave-red); font-weight: 800;">#0</h2>
+            <p class="mb-1"><strong>Cliente:</strong> <span id="nombreCliente">---</span></p>
+            <p class="mb-0"><strong>Fecha:</strong> <span id="fechaCreacion">---</span></p>
+        </div>
+        <div class="text-end">
+            <button class="btn btn-outline-danger no-print me-2" onclick="window.print()">
+                <i class="fas fa-print"></i> Imprimir PDF
+            </button>
+            <div class="total-global-card mt-3">
+                <small>TOTAL GLOBAL PÚBLICO</small>
+                <h3 id="totalGlobal" class="mb-0 font-weight-bold">$0.00</h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="filter-section no-print">
+        <h6 class="mb-3 fw-bold">CONFIGURACIÓN DE CAMPOS VISIBLES</h6>
+        <div class="row">
+            <div class="col-md-2 mb-3">
+                <div class="filter-group-title">Producto</div>
+                <div class="form-check small"><input class="form-check-input f-check" type="checkbox" data-t="f-tipo" checked><label>Tipo</label></div>
+                <div class="form-check small"><input class="form-check-input f-check" type="checkbox" data-t="f-mod" checked><label>Modelo</label></div>
+                <div class="form-check small"><input class="form-check-input f-check" type="checkbox" data-t="f-marca" checked><label>Marca</label></div>
+                <div class="form-check small"><input class="form-check-input f-check" type="checkbox" data-t="f-cat" checked><label>Catálogo</label></div>
+                <div class="form-check small"><input class="form-check-input f-check" type="checkbox" data-t="f-sis" checked><label>Sistema</label></div>
+            </div>
+            <div class="col-md-2 mb-3">
+                <div class="filter-group-title">Medidas</div>
+                <div class="form-check small"><input class="form-check-input f-check" type="checkbox" data-t="f-dim" checked><label>Dimensiones</label></div>
+                <div class="form-check small"><input class="form-check-input f-check" type="checkbox" data-t="f-m2" checked><label>Área m²</label></div>
+                <div class="form-check small"><input class="form-check-input f-check" type="checkbox" data-t="f-cm" checked><label>Medidas cm</label></div>
+            </div>
+            <div class="col-md-2 mb-3">
+                <div class="filter-group-title">Ingeniería</div>
+                <div class="form-check small"><input class="form-check-input f-check" type="checkbox" data-t="f-onda" checked><label>% Onda</label></div>
+                <div class="form-check small"><input class="form-check-input f-check" type="checkbox" data-t="f-lie" checked><label>Lienzos</label></div>
+                <div class="form-check small"><input class="form-check-input f-check" type="checkbox" data-t="f-ml" checked><label>ML Compra</label></div>
+                <div class="form-check small"><input class="form-check-input f-check" type="checkbox" data-t="f-rol" checked><label>Rollo</label></div>
+            </div>
+            <div class="col-md-2 mb-3">
+                <div class="filter-group-title">Componentes</div>
+                <div class="form-check small"><input class="form-check-input f-check" type="checkbox" data-t="f-riel" checked><label>Riel/Bastón</label></div>
+                <div class="form-check small"><input class="form-check-input f-check" type="checkbox" data-t="f-bro" checked><label>Broches</label></div>
+                <div class="form-check small"><input class="form-check-input f-check" type="checkbox" data-t="f-rip" checked><label>Ripple</label></div>
+                <div class="form-check small"><input class="form-check-input f-check" type="checkbox" data-t="f-sop" checked><label>Soportes</label></div>
+                <div class="form-check small"><input class="form-check-input f-check" type="checkbox" data-t="f-mot" checked><label>Motor</label></div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="filter-group-title">Costos y Totales</div>
+                <div class="d-flex gap-3">
+                    <div>
+                        <div class="form-check small"><input class="form-check-input f-check" type="checkbox" data-t="f-ptela" checked><label>Precio Tela</label></div>
+                        <div class="form-check small"><input class="form-check-input f-check" type="checkbox" data-t="f-ctela" checked><label>Costo Tela</label></div>
+                        <div class="form-check small"><input class="form-check-input f-check" type="checkbox" data-t="f-ccort" checked><label>Costo Cortinero</label></div>
+                    </div>
+                    <div>
+                        <div class="form-check small"><input class="form-check-input f-check" type="checkbox" data-t="f-ppub" checked><label>Púb. Cortina</label></div>
+                        <div class="form-check small"><input class="form-check-input f-check" type="checkbox" data-t="f-ppubc" checked><label>Púb. Cortinero</label></div>
+                        <div class="form-check small"><input class="form-check-input f-check" type="checkbox" data-t="f-dist" checked><label>Distribuidor</label></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="contenedorPartidas"></div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const urlPath = window.location.pathname;
+        const id = urlPath.substring(urlPath.lastIndexOf('/') + 1);
+        cargarDatos(id);
+
+        // Lógica de filtros individuales
+        document.addEventListener('change', function(e) {
+            if (e.target.classList.contains('f-check')) {
+                const targetClass = e.target.getAttribute('data-t');
+                const rows = document.querySelectorAll('.' + targetClass);
+                rows.forEach(row => {
+                    e.target.checked ? row.classList.remove('d-none-filter') : row.classList.add('d-none-filter');
+                });
+            }
+        });
+    });
+
+    async function cargarDatos(id) {
+        try {
+            const response = await fetch(`/api/Cotizador/PresupuestoCompleto/${id}`);
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.mensaje);
+
+            document.getElementById('folioId').innerText = `#${id}`;
+            document.getElementById('nombreCliente').innerText = data.cliente;
+            document.getElementById('fechaCreacion').innerText = new Date(data.fecha).toLocaleDateString();
+            document.getElementById('totalGlobal').innerText = formatoMoneda(data.totalGlobal);
+
+            const contenedor = document.getElementById('contenedorPartidas');
+            
+            data.detalleCortinas.forEach((c, index) => {
+                const card = document.createElement('div');
+                card.className = 'card-partida';
+                card.innerHTML = `
+                    <div class="card-partida-header">
+                        <span class="badge-area">Partida ${index + 1}: ${c.area}</span>
+                        <span class="text-muted small">ID Registro: #${c.id}</span>
+                    </div>
+                    <div class="grid-tablas">
+                        <div>
+                            <div class="section-title">Información del Producto</div>
+                            <table class="table table-detalle">
+                                <tr class="f-tipo"><th>Tipo</th><td class="text-valor">${c.tipoCortina}</td></tr>
+                                <tr class="f-mod"><th>Modelo</th><td class="text-valor">${c.modelo}</td></tr>
+                                <tr class="f-marca"><th>Marca</th><td class="text-valor">${c.marca}</td></tr>
+                                <tr class="f-cat"><th>Catálogo</th><td class="text-valor">${c.catalogo}</td></tr>
+                                <tr class="f-sis"><th>Sistema</th><td class="text-valor">${c.sistema}</td></tr>
+                            </table>
+                            <div class="section-title">Medidas</div>
+                            <table class="table table-detalle">
+                                <tr class="f-dim"><th>Ancho x Alto</th><td class="text-valor">${c.ancho} x ${c.alto} m</td></tr>
+                                <tr class="f-m2"><th>Área (m²)</th><td class="text-valor">${c.m2} m²</td></tr>
+                                <tr class="f-cm"><th>Medidas (cm)</th><td class="text-valor">${c.anchoCM} x ${c.alturaCM} cm</td></tr>
+                            </table>
+                        </div>
+                        <div>
+                            <div class="section-title">Ingeniería</div>
+                            <table class="table table-detalle">
+                                <tr class="f-onda"><th>% Onda</th><td class="text-valor">${c.porcentajeOnda}%</td></tr>
+                                <tr class="f-lie"><th>Lienzos</th><td class="text-valor">${c.numLienzos}</td></tr>
+                                <tr class="f-ml"><th>ML Compra</th><td class="text-valor">${c.mlComprar} m</td></tr>
+                                <tr class="f-rol"><th>Ancho Rollo</th><td class="text-valor">${c.anchoRollo} m</td></tr>
+                            </table>
+                            <div class="section-title">Componentes</div>
+                            <table class="table table-detalle">
+                                <tr class="f-riel"><th>Riel/Bastón</th><td class="text-valor">${c.riel} / ${c.baston}</td></tr>
+                                <tr class="f-bro"><th>Broches/Cinta</th><td class="text-valor">${c.cantidadBroches} uds / ${c.cintaBroches} m</td></tr>
+                                <tr class="f-rip"><th>Ripple</th><td class="text-valor">${c.correderasRipple}</td></tr>
+                                <tr class="f-sop"><th>Soportes/Ganchos</th><td class="text-valor">${c.soportes} / ${c.ganchos}</td></tr>
+                                <tr class="f-mot"><th>Motor</th><td class="text-valor">${c.motor || 'N/A'}</td></tr>
+                            </table>
+                        </div>
+                        <div style="background: #fafafa; border-left: 1px solid #eee;">
+                            <div class="section-title">Análisis Costos</div>
+                            <table class="table table-detalle">
+                                <tr class="f-ptela"><th>P. Tela (ML)</th><td class="text-valor">${formatoMoneda(c.precioTelaML)}</td></tr>
+                                <tr class="f-ctela"><th>Costo Tela</th><td class="text-valor">${formatoMoneda(c.costoTotalTela)}</td></tr>
+                                <tr class="f-ccort"><th>Costo Cortinero</th><td class="text-valor">${formatoMoneda(c.costoTotalCortinero)}</td></tr>
+                            </table>
+                            <div class="section-title" style="background: #e9ecef;">Totales Finales</div>
+                            <table class="table table-detalle">
+                                <tr class="f-ppub"><th>Cortina (Púb)</th><td class="text-valor">${formatoMoneda(c.precioCortinaPublico)}</td></tr>
+                                <tr class="f-ppubc"><th>Cortinero (Púb)</th><td class="text-valor">${formatoMoneda(c.precioCortineroPublico)}</td></tr>
+                                <tr style="background: #fff0f0;">
+                                    <th style="color: var(--ramave-red);">Total Partida</th>
+                                    <td class="text-valor" style="color: var(--ramave-red); font-size: 1.1rem;">${formatoMoneda(c.totalPartida)}</td>
+                                </tr>
+                                <tr class="f-dist"><th>Distribuidor</th><td class="text-muted small">${formatoMoneda(c.totalDistribuidor)}</td></tr>
+                            </table>
+                        </div>
+                    </div>
+                `;
+                contenedor.appendChild(card);
+            });
+
+            aplicarFiltrosActuales();
+
+        } catch (error) {
+            console.error(error);
+            alert("Error: " + error.message);
+        }
+    }
+
+    function aplicarFiltrosActuales() {
+        document.querySelectorAll('.f-check').forEach(input => {
+            const target = input.getAttribute('data-t');
+            const elements = document.querySelectorAll('.' + target);
+            elements.forEach(el => input.checked ? el.classList.remove('d-none-filter') : el.classList.add('d-none-filter'));
+        });
+    }
+
+    function formatoMoneda(v) {
+        return (v || 0).toLocaleString('es-MX', { style: 'currency', currency: 'MXN' });
+    }
+</script>

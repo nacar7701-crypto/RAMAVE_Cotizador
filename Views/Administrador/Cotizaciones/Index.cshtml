@@ -78,7 +78,10 @@
         overflow: hidden;
     }
 
-    table { width: 100%; border-collapse: collapse; }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
 
     th {
         background: #f8f9fa;
@@ -103,15 +106,6 @@
         font-size: 0.8rem;
     }
 
-    .folio-badge {
-        background: var(--ramave-red);
-        color: white;
-        padding: 3px 10px;
-        border-radius: 20px;
-        margin-right: 10px;
-        font-size: 0.75rem;
-    }
-
     .fila-cotizacion td {
         padding: 12px 15px;
         border-bottom: 1px solid var(--border-color);
@@ -132,43 +126,143 @@
         flex-direction: column;
         line-height: 1.2;
     }
-    .price-sub { font-size: 0.75rem; color: #777; }
-    .price-total { font-weight: 700; margin-top: 2px; }
+
+    .price-sub {
+        font-size: 0.75rem;
+        color: #777;
+    }
+
+    .price-total {
+        font-weight: 700;
+        margin-top: 2px;
+    }
 
     /* Menú Desplegable */
-    .action-menu { position: relative; text-align: right; }
-    .dot-btn { 
-        background: #f1f1f1; border: 1px solid #ddd; 
-        border-radius: 4px; padding: 5px 12px; cursor: pointer;
+    .action-menu {
+        position: relative;
+        text-align: right;
+    }
+
+    .dot-btn {
+        background: #f1f1f1;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 5px 12px;
+        cursor: pointer;
     }
 
     .dropdown-content {
-        display: none; position: absolute; right: 0; top: 100%;
-        background: white; min-width: 160px; z-index: 100;
+        display: none;
+        position: absolute;
+        right: 0;
+        top: 100%;
+        background: white;
+        min-width: 160px;
+        z-index: 100;
         box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
-        border-radius: 6px; border: 1px solid var(--border-color);
+        border-radius: 6px;
+        border: 1px solid var(--border-color);
     }
-    .show { display: block; }
-    .dropdown-content a, .dropdown-content button {
-        padding: 10px 15px; width: 100%; border: none; background: none;
-        text-align: left; font-size: 0.85rem; cursor: pointer; display: block;
-        text-decoration: none; color: #333;
+
+    .show {
+        display: block;
     }
-    .dropdown-content a:hover { background: #f8f9fa; }
+
+    .dropdown-content a,
+    .dropdown-content button {
+        padding: 10px 15px;
+        width: 100%;
+        border: none;
+        background: none;
+        text-align: left;
+        font-size: 0.85rem;
+        cursor: pointer;
+        display: block;
+        text-decoration: none;
+        color: #333;
+    }
+
+    .dropdown-content a:hover {
+        background: #f8f9fa;
+    }
 
     .btn-main {
-        padding: 8px 12px; border-radius: 6px; font-weight: 600;
-        cursor: pointer; border: none; font-size: 0.75rem;
-        text-decoration: none; display: inline-flex; align-items: center; gap: 4px;
+        padding: 8px 12px;
+        border-radius: 6px;
+        font-weight: 600;
+        cursor: pointer;
+        border: none;
+        font-size: 0.75rem;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
     }
-    .btn-gray { background: #e0e0e0; color: #333; }
+
+    .btn-gray {
+        background: #e0e0e0;
+        color: #333;
+    }
+
+    .folio-link {
+    text-decoration: none; /* Quita el subrayado del enlace */
+    display: inline-block;
+    }
+
+    .folio-badge {
+        background: var(--ramave-red);
+        color: white;
+        padding: 5px 14px;
+        border-radius: 20px;
+        margin-right: 10px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        border: none;
+        box-shadow: 0 2px 4px rgba(198, 40, 40, 0.2);
+    }
+
+    .folio-badge:hover {
+        background: var(--ramave-dark);
+        transform: scale(1.05); /* Se agranda un poquito al pasar el mouse */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .group-header:hover {
+        background-color: #fce4e4 !important; /* Resalta toda la fila al pasar el mouse */
+    }    
 
     @@media (max-width: 992px) {
-        table thead { display: none; }
-        .group-header td { display: block; width: 100%; }
-        tr.fila-cotizacion { display: block; margin-bottom: 10px; border: 1px solid var(--border-color); }
-        td { display: flex; flex-direction: column; width: 100%; }
-        td::before { content: attr(data-label); font-weight: 700; color: var(--ramave-red); font-size: 0.6rem; text-transform: uppercase; margin-bottom: 2px; }
+        table thead {
+            display: none;
+        }
+
+        .group-header td {
+            display: block;
+            width: 100%;
+        }
+
+        tr.fila-cotizacion {
+            display: block;
+            margin-bottom: 10px;
+            border: 1px solid var(--border-color);
+        }
+
+        td {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+
+        td::before {
+            content: attr(data-label);
+            font-weight: 700;
+            color: var(--ramave-red);
+            font-size: 0.6rem;
+            text-transform: uppercase;
+            margin-bottom: 2px;
+        }
     }
 </style>
 
@@ -182,7 +276,8 @@
                 </button>
             </div>
         </div>
-        <input type="text" id="txtBuscar" class="search-input" placeholder="🔍 Buscar por cliente, folio, sistema, modelo o área..." onkeyup="filtrarTabla()">
+        <input type="text" id="txtBuscar" class="search-input"
+            placeholder="🔍 Buscar por cliente, folio, sistema, modelo o área..." onkeyup="filtrarTabla()">
     </div>
 
     <div class="table-card">
@@ -205,8 +300,20 @@
                     {
                         <tr class="group-header" data-folio="@item.PresupuestoId">
                             <td colspan="7">
-                                <span class="folio-badge">FOLIO #@item.PresupuestoId</span>
-                                <span style="color: #555;">Cliente: <strong>@item.Cliente</strong></span>
+                                <a href="@Url.Action("PresupuestoFinal", "Cotizaciones", new { id = item.PresupuestoId })"
+                                    class="folio-link">
+                                    <span class="folio-badge">
+                                        <i class="fas fa-folder-open"></i> FOLIO #@item.PresupuestoId
+                                    </span>
+                                </a>
+
+                                <span style="color: #555;">
+                                    Cliente: <strong>@item.Cliente</strong>
+                                </span>
+
+                                <small class="text-muted" style="margin-left: 15px; font-weight: normal;">
+                                    (Click en el folio para ver detalles completos)
+                                </small>
                             </td>
                         </tr>
                         ultimoPresupuestoId = item.PresupuestoId;
@@ -255,9 +362,12 @@
                             <div class="action-menu">
                                 <button class="dot-btn" onclick="toggleMenu(event, @item.Id)">⋮</button>
                                 <div id="dropdown-@item.Id" class="dropdown-content">
-                                    <a href="@Url.Action("Detalle", "Cotizaciones", new { id = item.Id })"><i class="fas fa-eye"></i> Ver Detalle</a>
-                                    <a href="@Url.Action("Editar", "Cotizaciones", new { id = item.Id })"><i class="fas fa-edit"></i> Editar</a>
-                                    <button onclick="eliminar(@item.Id)" style="color: #d32f2f;"><i class="fas fa-trash"></i> Eliminar</button>
+                                    <a href="@Url.Action("Detalle", "Cotizaciones", new { id = item.Id })"><i
+                                            class="fas fa-eye"></i> Ver Detalle</a>
+                                    <a href="@Url.Action("Editar", "Cotizaciones", new { id = item.Id })"><i
+                                            class="fas fa-edit"></i> Editar</a>
+                                    <button onclick="eliminar(@item.Id)" style="color: #d32f2f;"><i
+                                            class="fas fa-trash"></i> Eliminar</button>
                                 </div>
                             </div>
                         </td>
@@ -295,7 +405,7 @@
         cabeceras.forEach(header => {
             const folio = header.getAttribute('data-folio');
             let tieneHijosVisibles = false;
-            
+
             // Si el query es el folio directamente, mostrar
             if (query !== "" && folio.includes(query)) {
                 header.style.display = "";
