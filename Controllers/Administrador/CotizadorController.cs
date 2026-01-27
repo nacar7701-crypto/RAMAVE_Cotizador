@@ -1388,7 +1388,7 @@ namespace RAMAVE_Cotizador.Controllers
         [HttpGet("PresupuestoCompleto/{id}")]
         public async Task<IActionResult> GetPresupuestoCompleto(int id)
         {
-            // Buscamos el presupuesto e incluimos todas sus partidas (cortinas)
+            // Buscamos el presupuesto e incluimos las partidas
             var presupuesto = await _context.Presupuestos
                 .Include(p => p.Partidas) 
                 .FirstOrDefaultAsync(p => p.Id == id);
@@ -1396,20 +1396,63 @@ namespace RAMAVE_Cotizador.Controllers
             if (presupuesto == null) 
                 return NotFound(new { mensaje = "Presupuesto no encontrado" });
 
-            // Calculamos el total real sumando todas las partidas en este momento
+            // Recalculamos el total global sumando las partidas actuales
             presupuesto.TotalPresupuesto = presupuesto.Partidas.Sum(c => c.TotalPublico);
 
             return Ok(new {
                 cliente = presupuesto.NombreCliente,
                 fecha = presupuesto.FechaCreacion,
                 totalGlobal = presupuesto.TotalPresupuesto,
+                observaciones = presupuesto.Observaciones,
                 detalleCortinas = presupuesto.Partidas.Select(c => new {
+                    // Datos Generales
                     c.Id,
                     c.Area,
                     c.TipoCortina,
+                    c.Sistema,
+                    c.Modelo,
+                    c.Marca,
+                    c.Catalogo,
+                    
+                    // Medidas y Áreas
                     c.Ancho,
                     c.Alto,
-                    c.TotalPublico
+                    c.M2,
+                    c.AnchoCM,
+                    c.AlturaCM,
+                    
+                    // Ingeniería de Confección
+                    c.PorcentajeOnda,
+                    c.NumLienzos,
+                    c.TotalAnchoLienzo,
+                    c.MLComprar,
+                    c.TotalML,
+                    c.AnchoRollo,
+                    
+                    // Componentes del Cortinero/Riel
+                    c.CantidadBroches,
+                    c.CintaBroches,
+                    c.CorrederasRipple,
+                    c.Baston,
+                    c.Soportes,
+                    c.Riel,
+                    c.Ganchos,
+                    c.Hebilla,
+                    c.CorrederaGoma,
+                    c.GomaVerde,
+                    c.CarroMaestro,
+                    
+                    // Desglose de Costos (Para revisión interna)
+                    c.PrecioTelaML,
+                    c.CostoTotalTela,
+                    c.CostoTotalCortinero,
+                    c.Motor,
+                    
+                    // Totales Finales por Partida
+                    c.PrecioCortinaPublico,
+                    c.PrecioCortineroPublico,
+                    totalPartida = c.TotalPublico,
+                    totalDistribuidor = c.TotalDistribuidor
                 })
             });
         }
