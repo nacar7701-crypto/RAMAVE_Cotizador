@@ -1,5 +1,8 @@
+@model RAMAVE_Cotizador.Models.Cotizaciones
 @{
-    ViewData["Title"] = "Panel de Cotización";
+    ViewData["Title"] = "Nueva Cotización";
+    string tipoQuery = Context.Request.Query["tipo"].ToString().ToUpper();
+    string tipoInicial = string.IsNullOrEmpty(tipoQuery) ? "FRANCESA" : tipoQuery;
 }
 
 <style>
@@ -8,232 +11,503 @@
     :root {
         --ramave-red: #c62828;
         --ramave-red-dark: #a81f1f;
-        --bg-light: #f0f2f5;
-        --text-main: #1a1a1a;
-        --text-muted: #636e72;
+        --bg-gray: #f8f9fa;
+        --text-dark: #2d3436;
+        --border-color: #dee2e6;
     }
 
     body {
-        background-color: var(--bg-light);
+        background-color: var(--bg-gray);
         font-family: 'Inter', sans-serif;
-        margin: 0;
-        color: var(--text-main);
+        color: var(--text-dark);
     }
 
-    /* Navbar Unificada */
-    .header-nav {
+    .page-container {
+        padding: 2rem 1rem;
+        display: flex;
+        justify-content: center;
+    }
+
+    .card-form {
         background: white;
-        padding: 0.75rem 2rem;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        position: sticky;
-        top: 0;
-        z-index: 1000;
+        width: 100%;
+        max-width: 850px;
+        padding: 2.5rem;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        border-top: 5px solid var(--ramave-red);
     }
 
-    .logo-img {
-        height: 45px;
-        width: auto;
-    }
-
-    .btn-logout {
-        color: var(--ramave-red);
-        text-decoration: none;
-        font-weight: 700;
-        font-size: 0.85rem;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        padding: 8px 16px;
-        border-radius: 8px;
-        transition: all 0.2s;
-        border: 1px solid transparent;
-    }
-
-    .btn-logout:hover {
-        background: #fff5f5;
-        border-color: var(--ramave-red);
-    }
-
-    /* Contenedor Principal */
-    .container {
-        max-width: 1100px;
-        margin: 0 auto;
-        padding: 3rem 1.5rem;
-    }
-
-    .welcome-section {
+    h2 {
         text-align: center;
-        margin-bottom: 3.5rem;
-    }
-
-    .welcome-section h1 {
-        font-size: clamp(1.8rem, 5vw, 2.8rem);
+        color: var(--ramave-red);
         font-weight: 800;
-        margin-bottom: 0.8rem;
+        margin-bottom: 1.5rem;
+        text-transform: uppercase;
         letter-spacing: -0.5px;
     }
 
-    .welcome-section h1 span {
+    .form-section-title {
+        font-size: 0.7rem;
+        font-weight: 800;
         color: var(--ramave-red);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        border-bottom: 2px solid #fceaea;
+        padding-bottom: 5px;
+        margin: 20px 0 15px 0;
+        display: flex;
+        align-items: center;
+        gap: 8px;
     }
 
-    .welcome-section p {
-        color: var(--text-muted);
-        font-size: 1.1rem;
+    .form-group {
+        margin-bottom: 1rem;
+        position: relative;
     }
 
-    /* Grid de Selección */
-    .selection-grid {
+    label {
+        display: block;
+        font-size: 0.8rem;
+        font-weight: 700;
+        margin-bottom: 0.4rem;
+        color: #444;
+    }
+
+    input,
+    select {
+        width: 100%;
+        padding: 0.7rem 0.9rem;
+        border-radius: 8px;
+        border: 1px solid var(--border-color);
+        font-size: 0.9rem;
+        transition: 0.2s;
+        background-color: #fff;
+    }
+
+    .input-compact {
+        padding: 0.6rem 0.6rem;
+        font-size: 0.85rem;
+    }
+
+    /* Validaciones */
+    .error-text {
+        color: var(--ramave-red);
+        font-size: 0.7rem;
+        font-weight: 600;
+        margin-top: 4px;
+        display: none;
+    }
+
+    .invalid {
+        border-color: var(--ramave-red) !important;
+        box-shadow: 0 0 0 2px rgba(198, 40, 40, 0.1);
+    }
+
+    /* Radio Cards */
+    .radio-group-visual {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 2rem;
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+        gap: 10px;
     }
 
-    /* Tarjetas Estilo "Catálogo" */
-    .category-card {
-        background: white;
-        border-radius: 20px;
-        overflow: hidden;
-        transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    .radio-card {
+        position: relative;
         cursor: pointer;
+    }
+
+    .radio-card input {
+        position: absolute;
+        opacity: 0;
+    }
+
+    .radio-content {
+        border: 2px solid #eee;
+        border-radius: 12px;
+        padding: 10px;
+        text-align: center;
+        transition: 0.3s;
+        background: #fff;
+        height: 100%;
         display: flex;
         flex-direction: column;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-        border: 1px solid rgba(0,0,0,0.03);
+        align-items: center;
+        justify-content: center;
     }
 
-    .category-card:hover {
-        transform: translateY(-12px);
-        box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+    .radio-card input:checked+.radio-content {
         border-color: var(--ramave-red);
+        background-color: #fff5f5;
     }
 
-    .card-image {
-        position: relative;
+    .radio-content img {
         width: 100%;
-        height: 250px;
-        overflow: hidden;
+        max-width: 50px;
+        height: 50px;
+        object-fit: contain;
+        margin-bottom: 8px;
     }
 
-    .card-image img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        transition: transform 0.6s ease;
+    .radio-content span {
+        font-size: 0.65rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        color: #666;
     }
 
-    .category-card:hover .card-image img {
-        transform: scale(1.1);
+    .buttons-container {
+        display: grid;
+        grid-template-columns: 1fr 1.5fr 1fr;
+        gap: 1rem;
+        margin-top: 2.5rem;
     }
 
-    /* Overlay sutil en la imagen al hacer hover */
-    .card-image::after {
-        content: '';
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(to top, rgba(0,0,0,0.4), transparent);
-        opacity: 0;
+    .btn {
+        padding: 0.9rem;
+        border-radius: 10px;
+        border: none;
+        font-weight: 700;
+        cursor: pointer;
+        text-align: center;
+        text-decoration: none;
+        font-size: 0.85rem;
         transition: 0.3s;
     }
 
-    .category-card:hover .card-image::after {
-        opacity: 1;
-    }
-
-    .card-body {
-        padding: 1.8rem;
-        text-align: center;
-    }
-
-    .card-body h3 {
-        margin: 0 0 1.2rem 0;
-        font-size: 1.5rem;
-        font-weight: 700;
-        color: var(--text-main);
-    }
-
-    /* Botón Unificado */
-    .btn-quote {
-        background-color: var(--ramave-red);
+    .btn-add {
+        background: #2d3436;
         color: white;
-        border: none;
-        padding: 12px 24px;
-        border-radius: 12px;
-        font-weight: 700;
-        font-size: 0.95rem;
-        width: 100%;
-        cursor: pointer;
-        transition: all 0.3s;
-        box-shadow: 0 4px 12px rgba(198, 40, 40, 0.2);
     }
 
-    .category-card:hover .btn-quote {
-        background-color: var(--ramave-red-dark);
-        box-shadow: 0 6px 18px rgba(198, 40, 40, 0.3);
+    .btn-finish {
+        background: var(--ramave-red);
+        color: white;
     }
 
-    /* Media Queries */
-    @@media (max-width: 600px) {
-        .header-nav {
-            padding: 0.5rem 1rem;
-        }
-        .container {
-            padding-top: 2rem;
-        }
-        .welcome-section {
-            margin-bottom: 2rem;
-        }
-        .card-image {
-            height: 200px;
-        }
+    .btn-back {
+        background: #eee;
+        color: #666;
+    }
+
+    .input-group-custom {
+        display: flex;
+    }
+
+    .input-group-custom input {
+        border-radius: 8px 0 0 8px;
+        border-right: none;
+    }
+
+    .input-group-text-custom {
+        background: #f1f3f5;
+        border: 1px solid var(--border-color);
+        border-radius: 0 8px 8px 0;
+        padding: 0 12px;
+        display: flex;
+        align-items: center;
+        font-size: 0.8rem;
+        font-weight: bold;
+        color: #777;
+    }
+
+    #sectionOnda {
+        display: none;
+    }
+
+    .presupuesto-info {
+        background: #fff5f5;
+        padding: 12px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        display: none;
+        border: 1px solid #f8d7da;
     }
 </style>
 
-<header class="header-nav">
-    <img src="~/images/logo_ramave.png" alt="RAMAVE Logo" class="logo-img">
-    <a href="@Url.Action("Logout", "Auth")" class="btn-logout">
-        <span>🚪</span> Cerrar Sesión
-    </a>
-</header>
-
-<div class="container">
-    <div class="welcome-section">
-        <h1>¿Qué quieres <span>cotizar</span> hoy?</h1>
-        <p>Selecciona el tipo de confección para tus persianas.</p>
-    </div>
-
-    <div class="selection-grid">
-        <div class="category-card" onclick="location.href='@Url.Action("Cotizar", "Cotizador", new { tipo = "ojillos" })'">
-            <div class="card-image">
-                <img src="~/images/persiana-ojillos.jpg" alt="Ojillos">
-            </div>
-            <div class="card-body">
-                <h3>Ojillos</h3>
-                <button class="btn-quote">Seleccionar Confección</button>
-            </div>
+<div class="page-container">
+    <div class="card-form">
+        <div id="infoPresupuesto" class="presupuesto-info">
+            <span style="color: var(--ramave-red); font-weight: 800; font-size: 0.8rem;">
+                <i class="fas fa-file-invoice"></i> PRESUPUESTO ACTIVO: <span id="idPresupuestoTexto">#0</span>
+            </span>
         </div>
 
-        <div class="category-card" onclick="location.href='@Url.Action("Cotizar", "Cotizador", new { tipo = "francesa" })'">
-            <div class="card-image">
-                <img src="~/images/persiana-francesa.jpg" alt="Francesa">
-            </div>
-            <div class="card-body">
-                <h3>Francesa</h3>
-                <button class="btn-quote">Seleccionar Confección</button>
-            </div>
-        </div>
+        <h2>Nueva Cotización</h2>
 
-        <div class="category-card" onclick="location.href='@Url.Action("Cotizar", "Cotizador", new { tipo = "ondulada" })'">
-            <div class="card-image">
-                <img src="~/images/persiana-ondulada.jpg" alt="Ondulada">
+        <form id="cotizadorForm">
+            <div class="form-section-title"><i class="fas fa-cut"></i> 1. Confección</div>
+            <div class="radio-group-visual">
+                <label class="radio-card">
+                    <input type="radio" name="TipoCortina" value="OJILLOS" @(tipoInicial == "OJILLOS" ? "checked" : "")
+                        onchange="actualizarInterfaz(this.value)">
+                    <div class="radio-content"><img src="/images/persiana-ojillos.jpg"><span>Ojillos</span></div>
+                </label>
+                <label class="radio-card">
+                    <input type="radio" name="TipoCortina" value="FRANCESA" @(tipoInicial == "FRANCESA" ? "checked" :
+                                                                                                    "") onchange="actualizarInterfaz(this.value)">
+                    <div class="radio-content"><img src="/images/persiana-francesa.jpg"><span>Francesa</span></div>
+                </label>
+                <label class="radio-card">
+                    <input type="radio" name="TipoCortina" value="ONDULADO" @(tipoInicial == "ONDULADO" ? "checked" :
+                                                                                                    "") onchange="actualizarInterfaz(this.value)">
+                    <div class="radio-content"><img src="/images/persiana-ondulada.jpg"><span>Ondulado</span></div>
+                </label>
             </div>
-            <div class="card-body">
-                <h3>Ondulada</h3>
-                <button class="btn-quote">Seleccionar Confección</button>
+
+            <div class="form-section-title"><i class="fas fa-user"></i> 2. Proyecto</div>
+            <div style="display: grid; grid-template-columns: 0.40fr 0.10fr 0.50fr; align-items: start;">
+                <div class="form-group">
+                    <label>Cliente</label>
+                    <input id="Cliente" class="input-compact" placeholder="Nombre completo" />
+                    <span id="err-Cliente" class="error-text">Requerido</span>
+                </div>
+                <div></div>
+                <div class="form-group">
+                    <label>Área</label>
+                    <input id="Area" class="input-compact" placeholder="Ej. Sala Principal" />
+                    <span id="err-Area" class="error-text">Requerido</span>
+                </div>
             </div>
-        </div>
+
+            <div class="form-section-title"><i class="fas fa-layer-group"></i> 3. Material</div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.8rem;">
+                <div class="form-group">
+                    <label>Catálogo</label>
+                    <select id="selectCatalogo">
+                        <option value="">Seleccione...</option>
+                    </select>
+                    <span id="err-selectCatalogo" class="error-text">Seleccione uno</span>
+                </div>
+                <div class="form-group">
+                    <label>Marca</label>
+                    <select id="selectMarca" disabled>
+                        <option value="">Marca...</option>
+                    </select>
+                    <span id="err-selectMarca" class="error-text">Seleccione uno</span>
+                </div>
+                <div class="form-group">
+                    <label>Tela</label>
+                    <select id="selectModelo" disabled>
+                        <option value="">Modelo...</option>
+                    </select>
+                    <span id="err-selectModelo" class="error-text">Seleccione uno</span>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 1.5rem;">
+                <div>
+                    <div class="form-section-title">Instalación</div>
+                    <div class="radio-group-visual">
+                        <label class="radio-card">
+                            <input type="radio" name="radioInstalacion" value="TECHO" checked>
+                            <div class="radio-content"><img src="/images/techo.jpeg"><span>Techo</span></div>
+                        </label>
+                        <label class="radio-card">
+                            <input type="radio" name="radioInstalacion" value="MURO">
+                            <div class="radio-content"><img src="/images/muro.jpeg"><span>Muro</span></div>
+                        </label>
+                    </div>
+                </div>
+                <div>
+                    <div class="form-section-title">Acoplamiento</div>
+                    <div class="radio-group-visual">
+                        <label class="radio-card">
+                            <input type="radio" name="radioAcoplamiento" value="IZQUIERDO" checked>
+                            <div class="radio-content"><img src="/images/Izquierda.jpeg"><span>Izq</span></div>
+                        </label>
+                        <label class="radio-card">
+                            <input type="radio" name="radioAcoplamiento" value="DERECHO">
+                            <div class="radio-content"><img src="/images/derecha.jpeg"><span>Der</span></div>
+                        </label>
+                        <label class="radio-card">
+                            <input type="radio" name="radioAcoplamiento" value="AMBOS">
+                            <div class="radio-content"><img src="/images/Ambos.jpeg"><span>Ambos</span></div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section-title">4. Medidas y Sistema</div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 0.8rem;">
+                <div class="form-group">
+                    <label>Ancho (m)</label>
+                    <div class="input-group-custom"><input id="ancho" type="number" step="0.01"
+                            placeholder="0.00" /><span class="input-group-text-custom">m</span></div>
+                    <span id="err-ancho" class="error-text">Medida inválida</span>
+                </div>
+                <div class="form-group">
+                    <label>Alto (m)</label>
+                    <div class="input-group-custom"><input id="alto" type="number" step="0.01"
+                            placeholder="0.00" /><span class="input-group-text-custom">m</span></div>
+                    <span id="err-alto" class="error-text">Medida inválida</span>
+                </div>
+                <div class="form-group">
+                    <label>Sistema</label>
+                    <select id="Sistema"></select>
+                </div>
+                <div class="form-group" id="sectionOnda">
+                    <label>% Onda</label>
+                    <select id="PorcentajeOnda">
+                        <option value="60">60%</option>
+                        <option value="80">80%</option>
+                        <option value="120">120%</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="buttons-container">
+                <a href="/Cotizaciones/Index" class="btn btn-back" onclick="localStorage.removeItem('pId')">CANCELAR</a>
+                <button type="button" onclick="accionAgregar()" class="btn btn-add">AGREGAR OTRA CORTINA</button>
+                <button type="button" onclick="accionGuardarContinuar()" class="btn btn-finish">GUARDAR Y
+                    CONTINUAR</button>
+            </div>
+        </form>
     </div>
 </div>
+
+<script>
+    let pId = localStorage.getItem('pId') || null;
+    const sistemasMap = {
+        "FRANCESA": ["MANUAL", "MOTORIZADO ESTANDAR", "MOTORIZADO WIFI", "MOTORIZADO BATERIA"],
+        "ONDULADO": ["MANUAL", "MOTORIZADO WIFI", "MOTORIZADO BATERIA"],
+        "OJILLOS": ["MANUAL"]
+    };
+
+    function validarFormulario() {
+        let esValido = true;
+        const ids = ['Cliente', 'Area', 'selectCatalogo', 'selectMarca', 'selectModelo', 'ancho', 'alto'];
+
+        ids.forEach(id => {
+            const el = document.getElementById(id);
+            const err = document.getElementById('err-' + id);
+            if (!el.value || el.value === "" || (el.type === "number" && el.value <= 0)) {
+                el.classList.add('invalid');
+                if (err) err.style.display = 'block';
+                esValido = false;
+            } else {
+                el.classList.remove('invalid');
+                if (err) err.style.display = 'none';
+            }
+        });
+        return esValido;
+    }
+
+    function limpiarCampos() {
+        // Limpiamos todo menos el Cliente
+        const ids = ['Area', 'ancho', 'alto', 'selectCatalogo', 'selectMarca', 'selectModelo'];
+        ids.forEach(id => {
+            const el = document.getElementById(id);
+            el.value = "";
+            el.classList.remove('invalid');
+            const err = document.getElementById('err-' + id);
+            if (err) err.style.display = 'none';
+        });
+        document.getElementById('selectMarca').disabled = true;
+        document.getElementById('selectModelo').disabled = true;
+        document.getElementById('selectMarca').innerHTML = '<option value="">Marca...</option>';
+        document.getElementById('selectModelo').innerHTML = '<option value="">Modelo...</option>';
+    }
+
+    async function accionAgregar() {
+        if (!validarFormulario()) return;
+        if (!pId) await crearPresupuestoBase();
+        const exito = await enviarCotizacion();
+        if (exito) {
+            limpiarCampos();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    }
+
+    async function accionGuardarContinuar() {
+        if (!validarFormulario()) return;
+        if (!pId) await crearPresupuestoBase();
+        const exito = await enviarCotizacion();
+        if (exito) {
+            localStorage.removeItem('pId');
+            // CORRECCIÓN: Agregar /Administrador antes de /Cotizaciones
+            window.location.href = '/Administrador/Cotizaciones/PresupuestoFinal/' + pId;
+        }
+    }
+
+    async function crearPresupuestoBase() {
+        const nombre = document.getElementById('Cliente').value;
+        const res = await fetch('/api/Cotizador/CrearPresupuesto', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(nombre)
+        });
+        const data = await res.json();
+        pId = data.id;
+        localStorage.setItem('pId', pId);
+        actualizarUI();
+    }
+
+    function actualizarUI() {
+        if (pId) {
+            document.getElementById('infoPresupuesto').style.display = 'block';
+            document.getElementById('idPresupuestoTexto').innerText = "#" + pId;
+            document.getElementById('Cliente').disabled = true;
+        }
+    }
+
+    async function enviarCotizacion() {
+        const data = {
+            idTela: parseInt(document.getElementById('selectModelo').value),
+            cliente: document.getElementById('Cliente').value,
+            ancho: parseFloat(document.getElementById('ancho').value),
+            alto: parseFloat(document.getElementById('alto').value),
+            tipoCortina: document.querySelector('input[name="TipoCortina"]:checked').value,
+            porcentajeOnda: (document.getElementById('sectionOnda').style.display === "block") ? parseInt(document.getElementById('PorcentajeOnda').value) : 0,
+            sistema: document.getElementById('Sistema').value,
+            area: document.getElementById('Area').value,
+            instalacion: document.querySelector('input[name="radioInstalacion"]:checked').value,
+            acoplamiento: document.querySelector('input[name="radioAcoplamiento"]:checked').value,
+            PresupuestoId: parseInt(pId)
+        };
+
+        const res = await fetch('/api/Cotizador/Crear', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+        return res.ok;
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        actualizarUI();
+        actualizarInterfaz(document.querySelector('input[name="TipoCortina"]:checked').value);
+
+        const selCat = document.getElementById("selectCatalogo");
+        const selMar = document.getElementById("selectMarca");
+        const selMod = document.getElementById("selectModelo");
+
+        fetch('/api/Telas/catalogos-unicos').then(r => r.json()).then(d => d.forEach(c => selCat.add(new Option(c, c))));
+
+        selCat.onchange = () => {
+            if (!selCat.value) return;
+            fetch(`/api/Telas/marcas-por-catalogo/${selCat.value}`).then(r => r.json()).then(d => {
+                selMar.innerHTML = '<option value="">Marca...</option>'; selMar.disabled = false;
+                d.forEach(m => selMar.add(new Option(m.nombre, m.id)));
+            });
+        };
+
+        selMar.onchange = () => {
+            if (!selMar.value) return;
+            fetch(`/api/Telas/buscar-id-tela?catalogo=${selCat.value}&idMarca=${selMar.value}`).then(r => r.json()).then(d => {
+                selMod.innerHTML = '<option value="">Modelo...</option>'; selMod.disabled = false;
+                d.forEach(t => selMod.add(new Option(t.nombre, t.id)));
+            });
+        };
+    });
+
+    function actualizarInterfaz(tipo) {
+        document.getElementById('sectionOnda').style.display = tipo === "ONDULADO" ? "block" : "none";
+        const selectSist = document.getElementById('Sistema');
+        selectSist.innerHTML = "";
+        (sistemasMap[tipo] || ["MANUAL"]).forEach(opt => {
+            let o = document.createElement("option");
+            o.value = opt; o.text = opt;
+            selectSist.appendChild(o);
+        });
+    }
+</script>

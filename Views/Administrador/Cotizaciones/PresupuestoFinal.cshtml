@@ -1,241 +1,336 @@
 @{
-    ViewData["Title"] = "Detalle Maestro del Presupuesto";
+    ViewData["Title"] = "Presupuesto Maestro Detallado";
 }
 
 <style>
+    /* Importación de tipografía del diseño original */
+    @@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
     :root {
         --ramave-red: #c62828;
         --ramave-dark: #8e0000;
-        --bg-light: #f4f7f6;
-        --text-muted: #6c757d;
+        --bg-body: #f0f2f5;
+        --text-main: #1a1a1a;
+        --border-color: #e0e0e0;
+        --dark-bg: #8e0000;
     }
 
-    body { background-color: var(--bg-light); font-family: 'Inter', sans-serif; font-size: 0.9rem; }
+    body { 
+        background-color: var(--bg-body); 
+        font-family: 'Inter', sans-serif; 
+        color: var(--text-main);
+        font-size: 0.85rem;
+        margin: 0;
+    }
 
-    .header-presupuesto {
-        background: white; padding: 2rem; border-radius: 15px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 1.5rem;
+    .wrapper {
+        width: 100%;
+        padding: 20px;
+        box-sizing: border-box;
+    }
+
+    .budget-container {
+        background: white; 
+        border-radius: 10px; 
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        padding: 25px; 
         border-top: 5px solid var(--ramave-red);
     }
 
-    /* Panel de Control Maestro */
-    .filter-section {
-        background: white; padding: 1.5rem; border-radius: 12px;
-        margin-bottom: 2rem; border: 1px solid #dee2e6;
+    .filter-toolbar {
+        background: #f8f9fa; 
+        border: 1px solid var(--border-color);
+        padding: 15px; 
+        border-radius: 8px; 
+        margin-bottom: 25px;
     }
 
-    .filter-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-        gap: 1rem;
+    .header-top-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
     }
 
-    .filter-group-title {
-        font-size: 0.7rem; font-weight: 800; color: var(--ramave-red);
-        text-transform: uppercase; margin-bottom: 8px; border-bottom: 2px solid #f8f9fa;
+    .header-top-row h2 {
+        margin: 0;
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: var(--ramave-red);
     }
 
-    /* Cards de Partidas */
-    .card-partida {
-        background: white; border-radius: 12px; margin-bottom: 2rem;
-        overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    .btn-main {
+        padding: 8px 16px;
+        border-radius: 6px;
+        font-weight: 600;
+        cursor: pointer;
+        border: none;
+        font-size: 0.8rem;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        transition: all 0.2s;
+    }
+    .btn-red { background: var(--ramave-red); color: white; }
+    .btn-red:hover { background: var(--ramave-dark); }
+    
+    .btn-outline { 
+        background: transparent; 
+        border: 1px solid #ccc; 
+        color: #555; 
+    }
+    .btn-outline:hover { background: #eee; color: #333; }
+
+    .table-main { 
+        width: 100%; 
+        border-collapse: collapse; 
+        table-layout: fixed; 
+        margin-bottom: 30px; 
+        border-radius: 8px;
+        overflow: hidden;
+        border: 1px solid var(--border-color);
+    }
+    
+    .partida-title { 
+        background: var(--dark-bg); 
+        color: white; 
+        padding: 10px 20px; 
+        font-weight: 700; 
+        display: flex; 
+        justify-content: space-between;
+        font-size: 0.9rem;
     }
 
-    .card-partida-header {
-        background: #343a40; color: white; padding: 0.8rem 1.5rem;
-        display: flex; justify-content: space-between; align-items: center;
+    .table-main td { vertical-align: top; border: 1px solid var(--border-color); padding: 0; }
+    
+    .inner-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+    .inner-table th { 
+        background: #f8f9fa; 
+        color: #666; 
+        font-weight: 600; 
+        text-align: left; 
+        padding: 8px 12px; 
+        border-bottom: 1px solid var(--border-color);
+        width: 55%;
+        text-transform: uppercase;
+        font-size: 0.7rem;
+    }
+    .inner-table td { 
+        padding: 8px 12px; 
+        font-weight: 700; 
+        color: #222; 
+        border-bottom: 1px solid var(--border-color); 
+        text-align: right;
     }
 
-    .table-detalle { width: 100%; font-size: 0.8rem; margin-bottom: 0; table-layout: fixed; }
-    .table-detalle th {
-        background: #fdfdfd; color: #555; font-weight: 600;
-        text-transform: uppercase; font-size: 0.65rem; width: 60%; 
-        border-right: 1px solid #eee; padding: 6px 12px;
-    }
-    .table-detalle td { padding: 6px 12px; }
-
-    .section-title {
-        background: #eee; color: #333; padding: 0.4rem 1.2rem;
-        font-weight: 800; font-size: 0.7rem; text-transform: uppercase;
+    .col-header { 
+        background: #f1f1f1; 
+        padding: 8px; 
+        font-weight: 800; 
+        font-size: 0.7rem; 
+        text-transform: uppercase; 
+        color: #444; 
+        text-align: center;
+        border-bottom: 2px solid var(--border-color);
     }
 
-    .grid-maestra { 
-        display: grid; 
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
+    .sub-section-header {
+        background: #eee; 
+        font-size: 0.65rem; 
+        font-weight: 900; 
+        padding: 5px; 
+        text-align: center; 
+        border-bottom: 1px solid #ddd;
+        text-transform: uppercase;
     }
 
-    .text-valor { font-weight: 700; color: #000; word-break: break-all; }
+    .row-subtotal { background-color: #f8f9fa; border-top: 1.5px solid var(--border-color) !important; }
+    .row-subtotal td { color: var(--ramave-red) !important; font-size: 0.85rem !important; }
+
+    .grand-total-section {
+        background: var(--dark-bg); 
+        color: white; 
+        padding: 25px; 
+        border-radius: 10px; 
+        margin-top: 20px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
     .d-none-filter { display: none !important; }
+    .text-red { color: var(--ramave-red); }
 
-    .badge-costo { background: #fff3f3; color: #c62828; padding: 2px 6px; border-radius: 4px; }
-
-    @@media print { .no-print { display: none !important; } .container-fluid { width: 100%; } }
+    @@media print { 
+        .no-print { display: none !important; } 
+        .budget-container { box-shadow: none; border: none; padding: 0; }
+        body { background: white; }
+    }
 </style>
 
-<div class="container-fluid py-4">
-    <div class="header-presupuesto d-flex justify-content-between align-items-start">
-        <div>
-            <h2 id="folioId" class="mb-2" style="color: var(--ramave-red); font-weight: 800;">#0</h2>
-            <p class="mb-1"><strong>Cliente:</strong> <span id="nombreCliente">---</span></p>
-            <p class="mb-0"><strong>Fecha:</strong> <span id="fechaCreacion">---</span></p>
+<div class="wrapper">
+    <div class="budget-container">
+        <div class="header-top-row">
+            <div>
+                <h2>Cotización: <span id="lblCliente" class="text-danger">...</span></h2>
+                <small class="text-muted" id="lblFecha"></small>
+            </div>
+            <div class="no-print d-flex gap-2">
+                <a href="javascript:history.back()" class="btn-main btn-outline">
+                    <span>⬅</span> Regresar
+                </a>
+                <button class="btn-main btn-red" onclick="window.print()">
+                    <span>📄</span> Descargar PDF
+                </button>
+            </div>
         </div>
-        <div class="text-end no-print">
-            <button class="btn btn-danger mb-3" onclick="window.print()">Imprimir PDF</button>
-            <div class="p-3 border rounded">
-                <small class="d-block text-muted">TOTAL PÚBLICO GLOBAL</small>
-                <h3 id="totalGlobal" class="text-danger fw-bold mb-0">$0.00</h3>
+
+        <div class="filter-toolbar no-print">
+            <div class="row g-3">
+                <div class="col-12">
+                    <h6 class="small fw-bold text-uppercase border-bottom pb-2" style="color: var(--ramave-red);">Panel de Control de Presupuesto</h6>
+                </div>
+                
+                <div class="col-md-3 border-end">
+                    <p class="x-small fw-bold text-muted mb-2 text-uppercase" style="font-size: 0.65rem;">Columnas</p>
+                    <div class="form-check form-switch mb-1"><input class="form-check-input f-chk" type="checkbox" data-t="col-base" id="c1" checked> <label class="form-check-label" for="c1">DATOS BASE</label></div>
+                    <div class="form-check form-switch mb-1"><input class="form-check-input f-chk" type="checkbox" data-t="col-herrajes" id="c2" checked> <label class="form-check-label" for="c2">COMPONENTES</label></div>
+                    <div class="form-check form-switch mb-1"><input class="form-check-input f-chk" type="checkbox" data-t="col-precios" id="c3" checked> <label class="form-check-label" for="c3">PRECIOS COMPONENTES</label></div>
+                    <div class="form-check form-switch mb-1"><input class="form-check-input f-chk" type="checkbox" data-t="col-costos" id="c4" checked> <label class="form-check-label" for="c4">COSTOS</label></div>
+                </div>
+
+                <div class="col-md-3 border-end">
+                    <p class="x-small fw-bold text-muted mb-2 text-uppercase" style="font-size: 0.65rem;">1. Fábrica</p>
+                    <div class="form-check mb-1"><input class="form-check-input f-chk sum-trigger" type="checkbox" data-t="f-f-cortinero" id="ff1" checked> <label class="form-check-label" for="ff1">Cortinero</label></div>
+                    <div class="form-check mb-1"><input class="form-check-input f-chk sum-trigger" type="checkbox" data-t="f-f-cortina" id="ff2" checked> <label class="form-check-label" for="ff2">Cortina</label></div>
+                    <div class="form-check mb-1"><input class="form-check-input f-chk sum-trigger" type="checkbox" data-t="sec-fabrica" id="ff3" checked> <label class="form-check-label fw-bold text-danger" for="ff3">MOSTRAR SECCIÓN</label></div>
+                </div>
+
+                <div class="col-md-3 border-end">
+                    <p class="x-small fw-bold text-muted mb-2 text-uppercase" style="font-size: 0.65rem;">2. Público</p>
+                    <div class="form-check mb-1"><input class="form-check-input f-chk sum-trigger" type="checkbox" data-t="f-p-cortinero" id="fp1" checked> <label class="form-check-label" for="fp1">Cortinero</label></div>
+                    <div class="form-check mb-1"><input class="form-check-input f-chk sum-trigger" type="checkbox" data-t="f-p-cortina" id="fp2" checked> <label class="form-check-label" for="fp2">Cortina</label></div>
+                    <div class="form-check mb-1"><input class="form-check-input f-chk sum-trigger" type="checkbox" data-t="sec-publico" id="fp3" checked> <label class="form-check-label fw-bold" for="fp3">MOSTRAR SECCIÓN</label></div>
+                </div>
+
+                <div class="col-md-3">
+                    <p class="x-small fw-bold text-muted mb-2 text-uppercase" style="font-size: 0.65rem;">3. Distribuidor</p>
+                    <div class="form-check mb-1"><input class="form-check-input f-chk sum-trigger" type="checkbox" data-t="f-d-cortinero" id="fd1" checked> <label class="form-check-label" for="fd1">Cortinero</label></div>
+                    <div class="form-check mb-1"><input class="form-check-input f-chk sum-trigger" type="checkbox" data-t="f-d-cortina" id="fd2" checked> <label class="form-check-label" for="fd2">Cortina</label></div>
+                    <div class="form-check mb-1"><input class="form-check-input f-chk sum-trigger" type="checkbox" data-t="sec-distribuidor" id="fd3" checked> <label class="form-check-label fw-bold" for="fd3">MOSTRAR SECCIÓN</label></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="listaPartidas"></div>
+
+        <div class="grand-total-section">
+            <div class="row text-center">
+                <div class="col-md-4 sec-fabrica">
+                    <div class="small fw-bold opacity-75 text-uppercase">Total Fábrica</div>
+                    <h3 id="totalFabricaSum" class="mb-0 fw-bold">$0.00</h3>
+                </div>
+                <div class="col-md-4 sec-publico">
+                    <div class="small fw-bold opacity-75 text-uppercase">Total Público</div>
+                    <h3 id="totalPublicoSum" class="mb-0 fw-bold">$0.00</h3>
+                </div>
+                <div class="col-md-4 sec-distribuidor">
+                    <div class="small fw-bold opacity-75 text-uppercase">Total Distribuidor</div>
+                    <h3 id="totalDistSum" class="mb-0 fw-bold">$0.00</h3>
+                </div>
             </div>
         </div>
     </div>
-
-    <div class="filter-section no-print">
-        <div class="d-flex justify-content-between mb-3">
-            <h6 class="fw-bold"><i class="fas fa-sliders-h"></i> VISIBILIDAD DE CAMPOS (Muestra/Oculta lo que necesites)</h6>
-            <div>
-                <button class="btn btn-sm btn-outline-secondary" onclick="toggleTodos(true)">Mostrar Todo</button>
-                <button class="btn btn-sm btn-outline-danger" onclick="toggleTodos(false)">Ocultar Todo</button>
-            </div>
-        </div>
-        
-        <div class="filter-grid">
-            <div>
-                <div class="filter-group-title">1. Diseño</div>
-                <div class="form-check small"><input class="form-check-input f-chk" type="checkbox" data-t="f-dis-1" checked><label>Datos Base</label></div>
-                <div class="form-check small"><input class="form-check-input f-chk" type="checkbox" data-t="f-dis-2" checked><label>Configuración</label></div>
-            </div>
-            <div>
-                <div class="filter-group-title">2. Medidas</div>
-                <div class="form-check small"><input class="form-check-input f-chk" type="checkbox" data-t="f-med-1" checked><label>Dimensiones m</label></div>
-                <div class="form-check small"><input class="form-check-input f-chk" type="checkbox" data-t="f-med-2" checked><label>Dimensiones cm</label></div>
-            </div>
-            <div>
-                <div class="filter-group-title">3. Ingeniería</div>
-                <div class="form-check small"><input class="form-check-input f-chk" type="checkbox" data-t="f-ing-1" checked><label>Confección</label></div>
-                <div class="form-check small"><input class="form-check-input f-chk" type="checkbox" data-t="f-ing-2" checked><label>Cantidades ML</label></div>
-            </div>
-            <div>
-                <div class="filter-group-title">4. Componentes</div>
-                <div class="form-check small"><input class="form-check-input f-chk" type="checkbox" data-t="f-com-1" checked><label>Herrajes Base</label></div>
-                <div class="form-check small"><input class="form-check-input f-chk" type="checkbox" data-t="f-com-2" checked><label>Mecanismos</label></div>
-                <div class="form-check small"><input class="form-check-input f-chk" type="checkbox" data-t="f-com-3" checked><label>Accesorios</label></div>
-            </div>
-            <div>
-                <div class="filter-group-title">5. Costos Mat.</div>
-                <div class="form-check small"><input class="form-check-input f-chk" type="checkbox" data-t="f-cos-1" checked><label>Costo Herrajes</label></div>
-                <div class="form-check small"><input class="form-check-input f-chk" type="checkbox" data-t="f-cos-2" checked><label>Costo Tela/Motor</label></div>
-            </div>
-            <div>
-                <div class="filter-group-title">6. Venta y Totales</div>
-                <div class="form-check small"><input class="form-check-input f-chk" type="checkbox" data-t="f-tot-1" checked><label>Público</label></div>
-                <div class="form-check small"><input class="form-check-input f-chk" type="checkbox" data-t="f-tot-2" checked><label>Distribuidor</label></div>
-            </div>
-        </div>
-    </div>
-
-    <div id="contenedorPartidas"></div>
 </div>
 
 <script>
-    async function cargarDatos(id) {
-        try {
-            const response = await fetch(`/api/Cotizador/PresupuestoCompleto/${id}`);
-            const data = await response.json();
+    let rawData = [];
 
-            document.getElementById('folioId').innerText = `FOLIO #${id}`;
-            document.getElementById('nombreCliente').innerText = data.cliente;
-            document.getElementById('fechaCreacion').innerText = new Date(data.fecha).toLocaleDateString();
-            document.getElementById('totalGlobal').innerText = fM(data.totalGlobal);
+    async function cargarDatos() {
+        const id = window.location.pathname.split('/').pop();
+        const res = await fetch(`/api/Cotizador/PresupuestoCompleto/${id}`);
+        const data = await res.json();
+        rawData = data.detalleCortinas;
 
-            const contenedor = document.getElementById('contenedorPartidas');
-            
-            data.detalleCortinas.forEach((c, i) => {
-                const div = document.createElement('div');
-                div.className = 'card-partida';
-                div.innerHTML = `
-                    <div class="card-partida-header">
-                        <span class="fw-bold">PARTIDA ${i + 1}: ${c.area}</span>
-                        <span>Cliente: ${c.cliente} | ID Partida: ${c.id}</span>
-                    </div>
-                    <div class="grid-maestra">
-                        <div class="border-end">
-                            <div class="section-title">1. Datos Generales y Diseño</div>
-                            <table class="table table-detalle">
-                                <tr class="f-dis-1"><th>Tipo Cortina</th><td class="text-valor">${c.tipoCortina}</td></tr>
-                                <tr class="f-dis-1"><th>Sistema</th><td class="text-valor">${c.sistema}</td></tr>
-                                <tr class="f-dis-1"><th>Modelo</th><td class="text-valor">${c.modelo}</td></tr>
-                                <tr class="f-dis-1"><th>Marca</th><td class="text-valor">${c.marca}</td></tr>
-                                <tr class="f-dis-1"><th>Catálogo</th><td class="text-valor">${c.catalogo}</td></tr>
-                                <tr class="f-dis-2"><th>Acoplamiento</th><td class="text-valor">${c.acoplamiento}</td></tr>
-                                <tr class="f-dis-2"><th>Apertura</th><td class="text-valor">${c.tipoApertura}</td></tr>
-                                <tr class="f-dis-2"><th>Instalación</th><td class="text-valor">${c.instalacion}</td></tr>
-                            </table>
-                            <div class="section-title">2. Medidas y Áreas</div>
-                            <table class="table table-detalle">
-                                <tr class="f-med-1"><th>Ancho x Alto (m)</th><td class="text-valor">${c.ancho} x ${c.alto}</td></tr>
-                                <tr class="f-med-1"><th>Área Total (m2)</th><td class="text-valor">${c.m2} m2</td></tr>
-                                <tr class="f-med-2"><th>Ancho x Alto (cm)</th><td class="text-valor">${c.anchoCM} x ${c.alturaCM} cm</td></tr>
-                                <tr class="f-med-2"><th>Ancho Rollo</th><td class="text-valor">${c.anchoRollo} m</td></tr>
-                            </table>
-                        </div>
+        document.getElementById('lblCliente').innerText = data.cliente;
+        document.getElementById('lblFecha').innerText = "Generado: " + new Date(data.fecha).toLocaleDateString();
 
-                        <div class="border-end">
-                            <div class="section-title">3. Ingeniería y Confección</div>
-                            <table class="table table-detalle">
-                                <tr class="f-ing-1"><th>% Onda</th><td class="text-valor">${c.porcentajeOnda}%</td></tr>
-                                <tr class="f-ing-1"><th>Num. Lienzos</th><td class="text-valor">${c.numLienzos}</td></tr>
-                                <tr class="f-ing-1"><th>Ancho Lienzo Tot.</th><td class="text-valor">${c.totalAnchoLienzo} m</td></tr>
-                                <tr class="f-ing-1"><th>Altura Exacta</th><td class="text-valor">${c.alturaExacta} m</td></tr>
-                                <tr class="f-ing-2"><th>Total ML</th><td class="text-valor">${c.totalML} m</td></tr>
-                                <tr class="f-ing-2"><th>ML a Comprar</th><td class="text-valor text-danger">${c.mlComprar} m</td></tr>
-                            </table>
-                            <div class="section-title">4. Componentes (Cantidades)</div>
-                            <table class="table table-detalle">
-                                <tr class="f-com-1"><th>Riel / Soportes</th><td class="text-valor">${c.riel} / ${c.soportes}</td></tr>
-                                <tr class="f-com-1"><th>Bastón / Tapón</th><td class="text-valor">${c.baston} / ${c.tapon}</td></tr>
-                                <tr class="f-com-1"><th>Union Riel</th><td class="text-valor">${c.unionRiel}</td></tr>
-                                <tr class="f-com-2"><th>Broches / Cinta</th><td class="text-valor">${c.cantidadBroches} / ${c.cintaBroches} m</td></tr>
-                                <tr class="f-com-2"><th>Correderas Ripple</th><td class="text-valor">${c.correderasRipple}</td></tr>
-                                <tr class="f-com-2"><th>Ganchos / Tarlatana</th><td class="text-valor">${c.ganchos} / ${c.tarlatana} m</td></tr>
-                                <tr class="f-com-3"><th>Carro Maestro</th><td class="text-valor">${c.carroMaestro}</td></tr>
-                                <tr class="f-com-3"><th>Goma Verde / Pesas</th><td class="text-valor">${c.gomaVerde} m / ${c.pesaPlomo}</td></tr>
-                                <tr class="f-com-3"><th>Carrito Cortinero</th><td class="text-valor">${c.carritoCortinero}</td></tr>
-                            </table>
-                        </div>
+        const contenedor = document.getElementById('listaPartidas');
+        contenedor.innerHTML = "";
 
-                        <div style="background: #fcfcfc;">
-                            <div class="section-title">5. Análisis de Costos Mat.</div>
-                            <table class="table table-detalle">
-                                <tr class="f-cos-1"><th>Costo Riel</th><td class="badge-costo">${fM(c.costoRiel)}</td></tr>
-                                <tr class="f-cos-1"><th>Costo Soportes</th><td class="badge-costo">${fM(c.costoSoportes)}</td></tr>
-                                <tr class="f-cos-1"><th>Costo Correderas</th><td class="badge-costo">${fM(c.costoCorredera)}</td></tr>
-                                <tr class="f-cos-2"><th>Precio Tela (ML)</th><td class="badge-costo">${fM(c.precioTelaML)}</td></tr>
-                                <tr class="f-cos-2"><th>Costo Total Tela</th><td class="badge-costo">${fM(c.costoTotalTela)}</td></tr>
-                                <tr class="f-cos-2"><th>Motor</th><td class="badge-costo">${fM(c.motor)}</td></tr>
-                                <tr class="f-cos-2"><th>Costo Tot. Cortinero</th><td class="fw-bold">${fM(c.costoTotalCortinero)}</td></tr>
+        rawData.forEach((c, i) => {
+            const partidaDiv = document.createElement('div');
+            partidaDiv.className = "mb-4 part-container";
+            partidaDiv.innerHTML = `
+                <div class="partida-title">
+                    <span>COTIZACIÓN ${i + 1}</span>
+                    <span class="small opacity-75">Concepto: ${c.area || 'General'}</span>
+                </div>
+                <table class="table-main">
+                    <tr>
+                        <td class="col-base">
+                            <div class="col-header">Datos Base</div>
+                            <table class="inner-table">
+                                <tr><th>Tipo</th><td>${c.tipoCortina}</td></tr>
+                                <tr><th>Modelo</th><td>${c.modelo || 'N/A'}</td></tr>
+                                <tr><th>Onda</th><td>${c.porcentajeOnda || 0}%</td></tr>
+                                <tr><th>Ancho</th><td>${c.ancho} m</td></tr>
+                                <tr><th>Alto</th><td>${c.alto} m</td></tr>
+                                <tr><th>M2</th><td>${c.m2} m²</td></tr>
+                                <tr><th>Sistema</th><td>${c.sistema}</td></tr>
+                                <tr><th>Acoplamiento</th><td>${c.acoplamiento} </td></tr>
+                                <tr><th>instalación</th><td>${c.instalacion} </td></tr>
+                                <tr><th>Apertura</th><td>${c.tipoApertura}</td></tr>
+                                
+
                             </table>
-                            <div class="section-title">6. Precios de Venta</div>
-                            <table class="table table-detalle">
-                                <tr class="f-tot-1"><th>Cortina (Público)</th><td class="text-valor">${fM(c.precioCortinaPublico)}</td></tr>
-                                <tr class="f-tot-1"><th>Cortinero (Público)</th><td class="text-valor">${fM(c.precioCortineroPublico)}</td></tr>
-                                <tr class="f-tot-1" style="background: #fff0f0;">
-                                    <th class="text-danger">TOTAL PÚBLICO</th>
-                                    <td class="text-valor text-danger" style="font-size: 1.1rem;">${fM(c.totalPublico)}</td>
-                                </tr>
-                                <tr class="f-tot-2"><th>Cortina (Dist.)</th><td class="text-muted">${fM(c.precioCortinaDistribuidor)}</td></tr>
-                                <tr class="f-tot-2"><th>Cortinero (Dist.)</th><td class="text-muted">${fM(c.precioCortineroDistribuidor)}</td></tr>
-                                <tr class="f-tot-2"><th>TOTAL DISTRIBUIDOR</th><td class="text-valor text-primary">${fM(c.totalDistribuidor)}</td></tr>
+                        </td>
+                        <td class="col-herrajes">
+                            <div class="col-header">Componentes</div>
+                            <table class="inner-table">
+                                <tr><th>Lienzo</th><td>${c.totalAnchoLienzo}m</td></tr>
+                                <tr><th>ML Compra</th><td class="text-red">${c.mlComprar}m</td></tr>
                             </table>
-                        </div>
-                    </div>
-                `;
-                contenedor.appendChild(div);
-            });
-            aplicarFiltros();
-        } catch (e) { alert("Error cargando datos: " + e); }
+                        </td>
+                        <td class="col-precios">
+                            <div class="col-header">Precio componentes</div>
+                            <table class="inner-table">
+                                <tr><th>Precio</th><td>${fM(c.motor)}</td></tr>
+                            </table>
+                        </td>
+                        <td class="col-costos">
+                            <div class="col-header">Costos</div>
+                            <div class="sec-fabrica border-bottom pb-1 mb-1">
+                                <div class="sub-section-header">FÁBRICA</div>
+                                <table class="inner-table">
+                                    <tr class="f-f-cortinero"><th>Cortinero</th><td class="v-val-f" data-v="${c.costoTotalCortinero}">${fM(c.costoTotalCortinero)}</td></tr>
+                                    <tr class="f-f-cortina"><th>Cortina</th><td class="v-val-f" data-v="${c.costoTotalCortina}">${fM(c.costoTotalCortina)}</td></tr>
+                                    <tr class="row-subtotal"><th>SUBTOTAL</th><td class="part-total-f">$0.00</td></tr>
+                                </table>
+                            </div>
+                            <div class="sec-publico border-bottom pb-1 mb-1">
+                                <div class="sub-section-header" style="background:#fff5f5">PÚBLICO</div>
+                                <table class="inner-table">
+                                    <tr class="f-p-cortinero"><th>Cortinero</th><td class="v-val-p" data-v="${c.precioCortineroPublico}">${fM(c.precioCortineroPublico)}</td></tr>
+                                    <tr class="f-p-cortina"><th>Cortina</th><td class="v-val-p" data-v="${c.precioCortinaPublico}">${fM(c.precioCortinaPublico)}</td></tr>
+                                    <tr class="row-subtotal"><th>SUBTOTAL</th><td class="part-total-p">$0.00</td></tr>
+                                </table>
+                            </div>
+                            <div class="sec-distribuidor">
+                                <div class="sub-section-header" style="background:#f0f4f8">DISTRIBUIDOR</div>
+                                <table class="inner-table">
+                                    <tr class="f-d-cortinero"><th>Cortinero</th><td class="v-val-d" data-v="${c.precioCortineroDistribuidor}">${fM(c.precioCortineroDistribuidor)}</td></tr>
+                                    <tr class="f-d-cortina"><th>Cortina</th><td class="v-val-d" data-v="${c.precioCortinaDistribuidor}">${fM(c.precioCortinaDistribuidor)}</td></tr>
+                                    <tr class="row-subtotal"><th>SUBTOTAL</th><td class="part-total-d">$0.00</td></tr>
+                                </table>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            `;
+            contenedor.appendChild(partidaDiv);
+        });
+        aplicarFiltros();
     }
-
-    // Lógica de Filtros
-    document.addEventListener('change', e => { if(e.target.classList.contains('f-chk')) aplicarFiltros(); });
 
     function aplicarFiltros() {
         document.querySelectorAll('.f-chk').forEach(chk => {
@@ -244,17 +339,40 @@
                 chk.checked ? el.classList.remove('d-none-filter') : el.classList.add('d-none-filter');
             });
         });
+
+        let granF = 0, granP = 0, granD = 0;
+
+        document.querySelectorAll('.part-container').forEach(container => {
+            let partF = 0, partP = 0, partD = 0;
+
+            if(document.getElementById('ff3').checked) {
+                if(document.getElementById('ff1').checked) partF += parseFloat(container.querySelector('.f-f-cortinero .v-val-f').dataset.v || 0);
+                if(document.getElementById('ff2').checked) partF += parseFloat(container.querySelector('.f-f-cortina .v-val-f').dataset.v || 0);
+            }
+            container.querySelector('.part-total-f').innerText = fM(partF);
+            granF += partF;
+
+            if(document.getElementById('fp3').checked) {
+                if(document.getElementById('fp1').checked) partP += parseFloat(container.querySelector('.f-p-cortinero .v-val-p').dataset.v || 0);
+                if(document.getElementById('fp2').checked) partP += parseFloat(container.querySelector('.f-p-cortina .v-val-p').dataset.v || 0);
+            }
+            container.querySelector('.part-total-p').innerText = fM(partP);
+            granP += partP;
+
+            if(document.getElementById('fd3').checked) {
+                if(document.getElementById('fd1').checked) partD += parseFloat(container.querySelector('.f-d-cortinero .v-val-d').dataset.v || 0);
+                if(document.getElementById('fd2').checked) partD += parseFloat(container.querySelector('.f-d-cortina .v-val-d').dataset.v || 0);
+            }
+            container.querySelector('.part-total-d').innerText = fM(partD);
+            granD += partD;
+        });
+
+        document.getElementById('totalFabricaSum').innerText = fM(granF);
+        document.getElementById('totalPublicoSum').innerText = fM(granP);
+        document.getElementById('totalDistSum').innerText = fM(granD);
     }
 
-    function toggleTodos(v) { 
-        document.querySelectorAll('.f-chk').forEach(c => c.checked = v); 
-        aplicarFiltros(); 
-    }
-
+    document.addEventListener('change', e => { if(e.target.classList.contains('f-chk')) aplicarFiltros(); });
     function fM(v) { return (v || 0).toLocaleString('es-MX', { style: 'currency', currency: 'MXN' }); }
-
-    document.addEventListener("DOMContentLoaded", () => {
-        const id = window.location.pathname.split('/').pop();
-        cargarDatos(id);
-    });
+    document.addEventListener("DOMContentLoaded", cargarDatos);
 </script>
