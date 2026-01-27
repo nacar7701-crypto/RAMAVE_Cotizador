@@ -104,12 +104,6 @@ namespace RAMAVE_Cotizador.Controllers
             return View("~/Views/Administrador/Cotizaciones/Crear.cshtml");
         }
 
-        [HttpGet("Home")]
-        public IActionResult Home()
-        {
-            return View("~/Views/Administrador/Cotizaciones/Home.cshtml");
-        }
-
         [HttpGet("Detalle/{id}")]
         public async Task<IActionResult> Detalle(int id)
         {

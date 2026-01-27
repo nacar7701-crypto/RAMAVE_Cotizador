@@ -3,197 +3,212 @@
 @{
     Layout = "_Layout";
     var precioGeneralPublico = Model.PrecioCortineroPublico + Model.PrecioCortinaPublico;
-    var precioGeneralDistribuidor = Model.PrecioCortineroDistribuidor + Model.PrecioCortinaDistribuidor;
-    var costoTotalCalculado = Model.CostoTotalCortinero + Model.CostoTotalCortina;
 }
+
+<style>
+    :root { --primary-dark: #2c3e50; --accent: #e74c3c; }
+    .filter-panel { background: #fdfdfd; border: 1px solid #ddd; display: none; }
+    .filter-group-title { font-size: 0.75rem; font-weight: 800; color: #555; text-transform: uppercase; border-bottom: 2px solid #eee; }
+    .field-hidden { display: none !important; }
+    
+    /* Estilos de Tabla Mejorados */
+    .table-custom { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 0.85rem; }
+    .table-custom th { background: #f8f9fa; color: #333; font-weight: 700; text-transform: uppercase; font-size: 0.7rem; padding: 10px; border-bottom: 2px solid #dee2e6; }
+    .table-custom td { padding: 10px; border-bottom: 1px solid #eee; vertical-align: middle; }
+    .table-section-title { background: #343a40 !important; color: white !important; font-size: 0.8rem !important; letter-spacing: 1px; }
+
+    @@media print {
+        .d-print-none { display: none !important; }
+        .card { border: none !important; box-shadow: none !important; }
+        .table-custom th { background-color: #f8f9fa !important; -webkit-print-color-adjust: exact; }
+    }
+</style>
 
 <div class="container-fluid py-4">
     <div class="d-flex justify-content-between align-items-center mb-4 d-print-none">
-        <a href="@Url.Action("Index")" class="btn btn-dark px-4 shadow-sm">
-            <i class="fas fa-arrow-left me-2"></i>Regresar al Listado
-        </a>
-        <button onclick="window.print()" class="btn btn-danger px-4 shadow-sm">
-            <i class="fas fa-print me-2"></i>Imprimir Ficha Técnica
+        <div>
+            <a href="@Url.Action("Index")" class="btn btn-outline-dark btn-sm rounded-pill px-3">
+                <i class="fas fa-chevron-left me-1"></i> Volver
+            </a>
+            <button class="btn btn-dark btn-sm rounded-pill px-3 ms-2" onclick="$('#megaPanel').slideToggle()">
+                <i class="fas fa-sliders-h me-1"></i> Configurar Columnas
+            </button>
+        </div>
+        <button onclick="window.print()" class="btn btn-danger btn-sm rounded-pill px-4 shadow-sm">
+            <i class="fas fa-print me-1"></i> IMPRIMIR PDF
         </button>
     </div>
 
-    <div class="card shadow-lg border-0 rounded-4 p-4 mb-5">
-        <div class="row align-items-center border-bottom pb-4 mb-4">
-            <div class="col-md-7">
-                <h1 class="fw-bold text-dark mb-1">DETALLE TÉCNICO DE COTIZACIÓN</h1>
-                <p class="text-danger fw-bold mb-0 text-uppercase">ID: #@Model.Id | CLIENTE: @Model.Cliente</p>
+    <div id="megaPanel" class="filter-panel p-4 mb-4 rounded-4 shadow-sm d-print-none">
+        <div class="d-flex justify-content-between mb-3 border-bottom pb-2">
+            <h6 class="fw-bold m-0"><i class="fas fa-eye me-2"></i>Control de Visibilidad de Campos</h6>
+            <div>
+                <button class="btn btn-xs btn-link text-decoration-none" onclick="toggleAll(true)">Marcar todo</button>
+                <button class="btn btn-xs btn-link text-decoration-none text-muted" onclick="toggleAll(false)">Desmarcar todo</button>
             </div>
-            <div class="col-md-5 text-md-end">
-                <div class="p-3 bg-light rounded border border-danger">
-                    <small class="d-block text-muted text-uppercase fw-bold">Total Público (General)</small>
-                    <h2 class="text-danger fw-bold m-0">@precioGeneralPublico.ToString("C")</h2>
+        </div>
+        <div class="row">
+            @{
+                var grupos = new Dictionary<string, string[]> {
+                    { "group-gen", new[] { "Cliente", "Area", "Catalogo", "Marca", "Modelo", "TipoCortina", "Sistema", "Instalacion", "TipoApertura", "Acoplamiento" } },
+                    { "group-med", new[] { "Ancho", "Alto", "AnchoCM", "AlturaCM", "AnchoRollo", "NumLienzos", "TotalAnchoLienzo", "TotalAltura", "AlturaExacta", "TotalML", "MLComprar", "M2", "PorcentajeOnda" } },
+                    { "group-cant", new[] { "Riel", "Tapon", "Baston", "Soportes", "UnionRiel", "Tarlatana", "CarroEmbaladoFrances", "Ganchos", "TopeCarritoSujecion", "Engrane", "TapasEngrane", "Hebilla", "CorrederaGoma", "GomaVerde", "PesaPlomo", "CarritoCortinero", "GanchoFinal", "CintaPlomo", "CarroMaestro", "CorrederasRipple", "CantidadBroches", "CintaBroches" } }
+                };
+            }
+            @foreach (var grupo in grupos) {
+                <div class="col-md-3 border-end">
+                    <p class="filter-group-title">@grupo.Key.Replace("group-", "")</p>
+                    <div class="@grupo.Key" style="max-height: 200px; overflow-y: auto;">
+                        @foreach (var f in grupo.Value) {
+                            <div class="form-check">
+                                <input class="form-check-input f-check" type="checkbox" value="f-@f.ToLower()" id="chk@f" checked>
+                                <label class="form-check-label small" for="chk@f">@f</label>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+            <div class="col-md-3">
+                <p class="filter-group-title">Costos y Totales</p>
+                <div class="form-check"><input class="form-check-input f-check" type="checkbox" value="f-costos-unit" id="chkCU" checked><label class="form-check-label small">Costos Unitarios</label></div>
+                <div class="form-check"><input class="form-check-input f-check" type="checkbox" value="f-total-fab" id="chkTF" checked><label class="form-check-label small">Sección Fábrica</label></div>
+                <div class="form-check"><input class="form-check-input f-check" type="checkbox" value="f-total-dis" id="chkTD" checked><label class="form-check-label small">Sección Distribuidor</label></div>
+                <div class="form-check"><input class="form-check-input f-check" type="checkbox" value="f-total-pub" id="chkTP" checked><label class="form-check-label small">Sección Público</label></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow border-0 rounded-3 overflow-hidden">
+        <div class="bg-dark p-4 text-white">
+            <div class="row align-items-center">
+                <div class="col-8">
+                    <h4 class="mb-0 fw-bold">COTIZACIÓN TÉCNICA DETALLADA</h4>
+                    <span class="badge bg-danger">ID: #@Model.Id</span>
+                </div>
+                <div class="col-4 text-end">
+                    <h5 class="mb-0">RAMAVE</h5>
+                    <small class="text-white-50">@DateTime.Now.ToString("dd/MM/yyyy HH:mm")</small>
                 </div>
             </div>
         </div>
 
-        <div class="row g-4">
-            <div class="col-md-5">
-                <div class="card h-100 border-0 bg-light p-3 shadow-sm">
-                    <h5 class="fw-bold border-bottom pb-2 mb-3 text-primary text-uppercase">Generales</h5>
-                    <dl class="row small mb-0">
-                        <dt class="col-6">cliente:</dt><dd class="col-6 text-uppercase">@Model.Cliente</dd>
-                        <dt class="col-6">area:</dt><dd class="col-6 text-uppercase">@Model.Area</dd>
-                        <dt class="col-6">catalogo:</dt><dd class="col-6">@Model.Catalogo</dd>
-                        <dt class="col-6">marca:</dt><dd class="col-6">@Model.Marca</dd>
-                        <dt class="col-6">modelo:</dt><dd class="col-6">@Model.Modelo</dd>
-                        <dt class="col-6">tipo cortina:</dt><dd class="col-6 fw-bold">@Model.TipoCortina</dd>
-                        <dt class="col-6">sistema:</dt><dd class="col-6 text-primary fw-bold">@Model.Sistema</dd>
-                        <dt class="col-6">ancho / alto:</dt><dd class="col-6">@Model.Ancho m x @Model.Alto m</dd>
-                        <dt class="col-6">ancho / alto (cm):</dt><dd class="col-6">@Model.AnchoCM cm x @Model.AlturaCM cm</dd>
-                        <dt class="col-6">m2:</dt><dd class="col-6">@Model.M2.ToString("N2")</dd>
-                        <dt class="col-6">instalacion:</dt><dd class="col-6">@Model.Instalacion</dd>
-                        <dt class="col-6">apertura:</dt><dd class="col-6">@Model.TipoApertura</dd>
-                        <dt class="col-6">acoplamiento:</dt><dd class="col-6">@Model.Acoplamiento</dd>
-                        @if(Model.AnchoRollo != 0){<dt class="col-6">ancho rollo:</dt><dd class="col-6">@Model.AnchoRollo</dd>}
-                        @if(Model.NumLienzos != 0){<dt class="col-6">num lienzos:</dt><dd class="col-6">@Model.NumLienzos</dd>}
-                        @if(Model.TotalAnchoLienzo != 0){<dt class="col-6">ancho lienzo:</dt><dd class="col-6">@Model.TotalAnchoLienzo</dd>}
-                        @if(Model.TotalAltura != 0){<dt class="col-6">total altura:</dt><dd class="col-6">@Model.TotalAltura</dd>}
-                        @if(Model.AlturaExacta != 0){<dt class="col-6">altura exacta:</dt><dd class="col-6">@Model.AlturaExacta</dd>}
-                        @if(Model.TotalML != 0){<dt class="col-6">total ML:</dt><dd class="col-6">@Model.TotalML</dd>}
-                        @if(Model.MLComprar != 0){<dt class="col-6">ML a comprar:</dt><dd class="col-6 fw-bold text-danger">@Model.MLComprar</dd>}
-                        @if(Model.PorcentajeOnda != 0){<dt class="col-6">onda:</dt><dd class="col-6">@Model.PorcentajeOnda%</dd>}
-                    </dl>
+        <div class="card-body p-0">
+            <table class="table-custom">
+                <thead>
+                    <tr><th colspan="4" class="table-section-title">1. Información del Proyecto</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="f-cliente fw-bold">Cliente:</td><td class="f-cliente">@Model.Cliente</td>
+                        <td class="f-area fw-bold">Área:</td><td class="f-area">@Model.Area</td>
+                    </tr>
+                    <tr>
+                        <td class="f-catalogo fw-bold">Catálogo:</td><td class="f-catalogo">@Model.Catalogo</td>
+                        <td class="f-marca fw-bold">Marca:</td><td class="f-marca">@Model.Marca</td>
+                    </tr>
+                    <tr>
+                        <td class="f-modelo fw-bold">Modelo:</td><td class="f-modelo">@Model.Modelo</td>
+                        <td class="f-tipocortina fw-bold">Tipo Cortina:</td><td class="f-tipocortina">@Model.TipoCortina</td>
+                    </tr>
+                    <tr>
+                        <td class="f-sistema fw-bold text-primary">Sistema:</td><td class="f-sistema text-primary fw-bold">@Model.Sistema</td>
+                        <td class="f-instalacion fw-bold">Instalación:</td><td class="f-instalacion">@Model.Instalacion</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <table class="table-custom">
+                <thead>
+                    <tr><th colspan="6" class="table-section-title text-warning">2. Dimensiones y Manufactura</th></tr>
+                    <tr class="bg-light">
+                        <th class="f-ancho">Ancho (m)</th><th class="f-alto">Alto (m)</th><th class="f-m2">Total M2</th>
+                        <th class="f-totalml">Total ML</th><th class="f-mlcomprar">ML Comprar</th><th class="f-porcentajeonda">Onda %</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="f-ancho">@Model.Ancho.ToString("N2") m</td>
+                        <td class="f-alto">@Model.Alto.ToString("N2") m</td>
+                        <td class="f-m2 fw-bold">@Model.M2.ToString("N2")</td>
+                        <td class="f-totalml">@Model.TotalML.ToString("N2")</td>
+                        <td class="f-mlcomprar text-danger fw-bold">@Model.MLComprar.ToString("N2")</td>
+                        <td class="f-porcentajeonda">@Model.PorcentajeOnda%</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <table class="table-custom">
+                <thead>
+                    <tr><th colspan="4" class="table-section-title text-info">3. Inventario de Componentes y Cantidades</th></tr>
+                </thead>
+                <tbody class="small">
+                    <tr>
+                        <td class="f-riel"><b>Riel:</b> @Model.Riel</td>
+                        <td class="f-tapon"><b>Tapón:</b> @Model.Tapon</td>
+                        <td class="f-baston"><b>Bastón:</b> @Model.Baston</td>
+                        <td class="f-soportes"><b>Soportes:</b> @Model.Soportes</td>
+                    </tr>
+                    <tr>
+                        <td class="f-unionriel"><b>Unión Riel:</b> @Model.UnionRiel</td>
+                        <td class="f-tarlatana"><b>Tarlatana:</b> @Model.Tarlatana</td>
+                        <td class="f-ganchos"><b>Ganchos:</b> @Model.Ganchos</td>
+                        <td class="f-carromaestro"><b>Carro Maestro:</b> @Model.CarroMaestro</td>
+                    </tr>
+                    <tr>
+                        <td class="f-correderasripple"><b>Corr. Ripple:</b> @Model.CorrederasRipple</td>
+                        <td class="f-cintabroches"><b>Cinta Broches:</b> @Model.CintaBroches</td>
+                        <td class="f-pesaplomo"><b>Pesa Plomo:</b> @Model.PesaPlomo</td>
+                        <td class="f-cantidadbroches"><b>Cant. Broches:</b> @Model.CantidadBroches</td>
+                    </tr>
+                    <tr>
+                        <td class="f-carroembaladofrances"><b>Carro Francés:</b> @Model.CarroEmbaladoFrances</td>
+                        <td class="f-topecarritosujecion"><b>Tope Sujeción:</b> @Model.TopeCarritoSujecion</td>
+                        <td class="f-engrane"><b>Engrane:</b> @Model.Engrane</td>
+                        <td class="f-tapasengrane"><b>Tapas Engrane:</b> @Model.TapasEngrane</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="row g-0">
+                <div class="col-md-6 f-total-fab border-end">
+                    <table class="table-custom">
+                        <thead><tr><th class="bg-secondary text-white">Resumen Fábrica</th></tr></thead>
+                        <tbody>
+                            <tr><td class="d-flex justify-content-between"><span>Costo Cortinero:</span> <b>@Model.CostoTotalCortinero.ToString("C")</b></td></tr>
+                            <tr><td class="d-flex justify-content-between"><span>Costo Cortina:</span> <b>@Model.CostoTotalCortina.ToString("C")</b></td></tr>
+                            <tr class="bg-light"><td class="d-flex justify-content-between"><span>TOTAL COSTO:</span> <b class="text-dark">@Model.CostoTotalGeneral.ToString("C")</b></td></tr>
+                        </tbody>
+                    </table>
                 </div>
-            </div>
-
-            <div class="col-md-7">
-                <div class="card h-100 border-0 bg-light p-3 shadow-sm">
-                    <h5 class="fw-bold border-bottom pb-2 mb-3 text-warning text-uppercase">Cantidades de Componentes</h5>
-                    <div class="row small">
-                        <div class="col-6">
-                            <dl class="row mb-0">
-                                @if(Model.Riel != 0){<dt class="col-7">riel:</dt><dd class="col-5">@Model.Riel</dd>}
-                                @if(Model.Tapon != 0){<dt class="col-7">tapon:</dt><dd class="col-5">@Model.Tapon</dd>}
-                                @if(Model.Baston != 0){<dt class="col-7">baston:</dt><dd class="col-5">@Model.Baston</dd>}
-                                @if(Model.Soportes != 0){<dt class="col-7">soportes:</dt><dd class="col-5">@Model.Soportes</dd>}
-                                @if(Model.UnionRiel != 0){<dt class="col-7">union riel:</dt><dd class="col-5">@Model.UnionRiel</dd>}
-                                @if(Model.Tarlatana != 0){<dt class="col-7">tarlatana:</dt><dd class="col-5">@Model.Tarlatana</dd>}
-                                @if(Model.CarroEmbaladoFrances != 0){<dt class="col-7">c. embalado fr:</dt><dd class="col-5">@Model.CarroEmbaladoFrances</dd>}
-                                @if(Model.Ganchos != 0){<dt class="col-7">ganchos:</dt><dd class="col-5">@Model.Ganchos</dd>}
-                                @if(Model.TopeCarritoSujecion != 0){<dt class="col-7">tope sujecion:</dt><dd class="col-5">@Model.TopeCarritoSujecion</dd>}
-                                @if(Model.TopeMecanismoCortinero != 0){<dt class="col-7">tope mecanismo:</dt><dd class="col-5">@Model.TopeMecanismoCortinero</dd>}
-                            </dl>
-                        </div>
-                        <div class="col-6 border-start">
-                            <dl class="row mb-0">
-                                @if(Model.Engrane != 0){<dt class="col-7">engrane:</dt><dd class="col-5">@Model.Engrane</dd>}
-                                @if(Model.TapasEngrane != 0){<dt class="col-7">tapas engrane:</dt><dd class="col-5">@Model.TapasEngrane</dd>}
-                                @if(Model.Hebilla != 0){<dt class="col-7">hebilla:</dt><dd class="col-5">@Model.Hebilla</dd>}
-                                @if(Model.CorrederaGoma != 0){<dt class="col-7">corredera goma:</dt><dd class="col-5">@Model.CorrederaGoma</dd>}
-                                @if(Model.GomaVerde != 0){<dt class="col-7">goma verde:</dt><dd class="col-5">@Model.GomaVerde</dd>}
-                                @if(Model.PesaPlomo != 0){<dt class="col-7">pesa plomo:</dt><dd class="col-5">@Model.PesaPlomo</dd>}
-                                @if(Model.CarritoCortinero != 0){<dt class="col-7">carrito cortin.:</dt><dd class="col-5">@Model.CarritoCortinero</dd>}
-                                @if(Model.GanchoFinal != 0){<dt class="col-7">gancho final:</dt><dd class="col-5">@Model.GanchoFinal</dd>}
-                                @if(Model.CintaPlomo != 0){<dt class="col-7">cinta plomo:</dt><dd class="col-5">@Model.CintaPlomo</dd>}
-                                @if(Model.CarroMaestro != 0){<dt class="col-7">carro maestro:</dt><dd class="col-5">@Model.CarroMaestro</dd>}
-                                @if(Model.CorrederasRipple != 0){<dt class="col-7">corr. ripple:</dt><dd class="col-5">@Model.CorrederasRipple</dd>}
-                                @if(Model.CantidadBroches != 0){<dt class="col-7">cant. broches:</dt><dd class="col-5">@Model.CantidadBroches</dd>}
-                                @if(Model.CintaBroches != 0){<dt class="col-7">cinta broches:</dt><dd class="col-5">@Model.CintaBroches</dd>}
-                            </dl>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-12">
-                <div class="card border-0 bg-dark text-white p-4">
-                    <h6 class="fw-bold border-bottom border-secondary pb-2 mb-3 text-uppercase small">
-                        <i class="fas fa-dollar-sign me-2 text-success"></i>Costos de Componentes
-                    </h6>
-                    <div class="row row-cols-2 row-cols-md-4 g-2 small">
-                        @if(Model.CostoRiel != 0){<div class="col">costoRiel: <b>@Model.CostoRiel.ToString("C")</b></div>}
-                        @if(Model.CostoCarroMaestro != 0){<div class="col">costoCarroMaestro: <b>@Model.CostoCarroMaestro.ToString("C")</b></div>}
-                        @if(Model.CostoCorredera != 0){<div class="col">costoCorredera: <b>@Model.CostoCorredera.ToString("C")</b></div>}
-                        @if(Model.CostoCintaBroches != 0){<div class="col">costoCintaBroches: <b>@Model.CostoCintaBroches.ToString("C")</b></div>}
-                        @if(Model.CostoTapon != 0){<div class="col">costoTapon: <b>@Model.CostoTapon.ToString("C")</b></div>}
-                        @if(Model.CostoBaston != 0){<div class="col">costoBaston: <b>@Model.CostoBaston.ToString("C")</b></div>}
-                        @if(Model.CostoSoportes != 0){<div class="col">costoSoportes: <b>@Model.CostoSoportes.ToString("C")</b></div>}
-                        @if(Model.CostoUnionRiel != 0){<div class="col">costoUnionRiel: <b>@Model.CostoUnionRiel.ToString("C")</b></div>}
-                        @if(Model.CostoEmpaque != 0){<div class="col">costoEmpaque: <b>@Model.CostoEmpaque.ToString("C")</b></div>}
-                        @if(Model.CostoTarlatana != 0){<div class="col">costoTarlatana: <b>@Model.CostoTarlatana.ToString("C")</b></div>}
-                        @if(Model.CostoTotalTela != 0){<div class="col">costoTotalTela: <b>@Model.CostoTotalTela.ToString("C")</b></div>}
-                        @if(Model.CostoCarroEmbaladoFrances != 0){<div class="col">costoCarroEmbalado: <b>@Model.CostoCarroEmbaladoFrances.ToString("C")</b></div>}
-                        @if(Model.CostoGanchos != 0){<div class="col">costoGanchos: <b>@Model.CostoGanchos.ToString("C")</b></div>}
-                        @if(Model.Motor != 0){<div class="col">motor: <b>@Model.Motor.ToString("C")</b></div>}
-                        @if(Model.CostoTopeCarritoSujecion != 0){<div class="col">costoTopeSujecion: <b>@Model.CostoTopeCarritoSujecion.ToString("C")</b></div>}
-                        @if(Model.CostoTopeMecanismoCortinero != 0){<div class="col">costoTopeMecanismo: <b>@Model.CostoTopeMecanismoCortinero.ToString("C")</b></div>}
-                        @if(Model.CostoEngrane != 0){<div class="col">costoEngrane: <b>@Model.CostoEngrane.ToString("C")</b></div>}
-                        @if(Model.CostoTapasEngrane != 0){<div class="col">costoTapasEngrane: <b>@Model.CostoTapasEngrane.ToString("C")</b></div>}
-                        @if(Model.CostoHebilla != 0){<div class="col">costoHebilla: <b>@Model.CostoHebilla.ToString("C")</b></div>}
-                        @if(Model.CostoCorreaGoma != 0){<div class="col">costoCorreaGoma: <b>@Model.CostoCorreaGoma.ToString("C")</b></div>}
-                        @if(Model.CostoGomaVerde != 0){<div class="col">costoGomaVerde: <b>@Model.CostoGomaVerde.ToString("C")</b></div>}
-                        @if(Model.CostoPesaPlomo != 0){<div class="col">costoPesaPlomo: <b>@Model.CostoPesaPlomo.ToString("C")</b></div>}
-                        @if(Model.CostoCarritos != 0){<div class="col">costoCarritos: <b>@Model.CostoCarritos.ToString("C")</b></div>}
-                        @if(Model.CostoCarritoCortinero != 0){<div class="col">costoCarritoCortinero: <b>@Model.CostoCarritoCortinero.ToString("C")</b></div>}
-                        @if(Model.CostoGanchoFinal != 0){<div class="col">costoGanchoFinal: <b>@Model.CostoGanchoFinal.ToString("C")</b></div>}
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-12 mt-2">
-                <div class="row g-3">
-                    <div class="col-md-4">
-                        <div class="card h-100 border-0 shadow-sm p-3 bg-white border-start border-4 border-secondary">
-                            <h6 class="text-secondary fw-bold text-uppercase mb-3 small">Costos Generales (Fábrica)</h6>
-                            <div class="d-flex justify-content-between mb-1 small">
-                                <span>Cortinero:</span>
-                                <span class="fw-bold">@Model.CostoTotalCortinero.ToString("C")</span>
-                            </div>
-                            <div class="d-flex justify-content-between mb-2 small">
-                                <span>Cortina:</span>
-                                <span class="fw-bold">@Model.CostoTotalCortina.ToString("C")</span>
-                            </div>
-                            <div class="border-top pt-2 d-flex justify-content-between align-items-center">
-                                <span class="small fw-bold">TOTAL COSTO:</span>
-                                <span class="h5 m-0 text-secondary fw-bold">@Model.CostoTotalGeneral.ToString("C")</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-4">
-                        <div class="card h-100 border-0 shadow-sm p-3 bg-white border-start border-4 border-danger">
-                            <h6 class="text-danger fw-bold text-uppercase mb-3 small">Precios Público</h6>
-                            <div class="d-flex justify-content-between mb-1 small">
-                                <span>Cortinero:</span>
-                                <span class="fw-bold">@Model.PrecioCortineroPublico.ToString("C")</span>
-                            </div>
-                            <div class="d-flex justify-content-between mb-2 small">
-                                <span>Cortina:</span>
-                                <span class="fw-bold">@Model.PrecioCortinaPublico.ToString("C")</span>
-                            </div>
-                            <div class="border-top pt-2 d-flex justify-content-between align-items-center">
-                                <span class="small fw-bold">TOTAL PÚBLICO:</span>
-                                <span class="h5 m-0 text-danger fw-bold">@Model.TotalPublico.ToString("C")</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-4">
-                        <div class="card h-100 border-0 shadow-sm p-3 bg-white border-start border-4 border-dark">
-                            <h6 class="text-dark fw-bold text-uppercase mb-3 small">Precios Distribuidor</h6>
-                            <div class="d-flex justify-content-between mb-1 small">
-                                <span>Cortinero:</span>
-                                <span class="fw-bold">@Model.PrecioCortineroDistribuidor.ToString("C")</span>
-                            </div>
-                            <div class="d-flex justify-content-between mb-2 small">
-                                <span>Cortina:</span>
-                                <span class="fw-bold">@Model.PrecioCortinaDistribuidor.ToString("C")</span>
-                            </div>
-                            <div class="border-top pt-2 d-flex justify-content-between align-items-center">
-                                <span class="small fw-bold">TOTAL DISTR.:</span>
-                                <span class="h5 m-0 text-dark fw-bold">@Model.TotalDistribuidor.ToString("C")</span>
-                            </div>
-                        </div>
-                    </div>
+                <div class="col-md-6 f-total-pub">
+                    <table class="table-custom">
+                        <thead><tr><th class="bg-danger text-white">Resumen Público</th></tr></thead>
+                        <tbody>
+                            <tr><td class="d-flex justify-content-between"><span>Precio Cortinero:</span> <b>@Model.PrecioCortineroPublico.ToString("C")</b></td></tr>
+                            <tr><td class="d-flex justify-content-between"><span>Precio Cortina:</span> <b>@Model.PrecioCortinaPublico.ToString("C")</b></td></tr>
+                            <tr class="bg-danger text-white"><td class="d-flex justify-content-between"><span>TOTAL PÚBLICO:</span> <b class="fs-5">@Model.TotalPublico.ToString("C")</b></td></tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
-            
-            
     </div>
 </div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('.f-check').on('change', function() {
+            const target = $(this).val();
+            if ($(this).is(':checked')) {
+                $('.' + target).removeClass('field-hidden');
+            } else {
+                $('.' + target).addClass('field-hidden');
+            }
+        });
+    });
+
+    function toggleAll(status) {
+        $('.f-check').prop('checked', status).trigger('change');
+    }
+</script>

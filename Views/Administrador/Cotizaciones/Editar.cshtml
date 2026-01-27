@@ -1,81 +1,206 @@
 @model RAMAVE_Cotizador.Models.Cotizaciones
+@{
+    ViewData["Title"] = "Editar Cotización";
+}
 
-<div class="container py-4">
-    <div class="card shadow border-0 rounded-4">
-        <div class="card-header bg-dark text-white p-3">
-            <h4 class="m-0"><i class="fas fa-edit me-2 text-warning"></i>Editar Cotización</h4>
-        </div>
-        <div class="card-body p-4">
-            <form id="formEditar">
-                <input type="hidden" id="id" value="@Model.Id" />
-                
-                <div class="row g-3">
-                    <div class="col-md-4">
-                        <label class="form-label fw-bold small text-muted">ÁREA</label>
-                        <input type="text" id="area" class="form-control" value="@Model.Area" />
-                    </div>
-                    <div class="col-md-4">
-                        <label class="form-label fw-bold small text-muted">ID TELA</label>
-                        <input type="number" id="idTela" class="form-control" value="@Model.IdTela" />
-                    </div>
-                    <div class="col-md-4">
-                        <label class="form-label fw-bold small text-muted">TIPO CORTINA</label>
-                        <select id="tipoCortina" class="form-select">
-                            <option value="ONDULADO" selected="@(Model.TipoCortina == "ONDULADO")">ONDULADO</option>
-                            <option value="FRANCESA" selected="@(Model.TipoCortina == "FRANCESA")">FRANCESA</option>
-                        </select>
-                    </div>
+<style>
+    @@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
-                    <div class="col-md-3">
-                        <label class="form-label fw-bold small text-muted">ANCHO (m)</label>
-                        <input type="number" id="ancho" class="form-control" step="0.01" value="@Model.Ancho.ToString("F2", System.Globalization.CultureInfo.InvariantCulture)" />
-                    </div>
-                    <div class="col-md-3">
-                        <label class="form-label fw-bold small text-muted">ALTO (m)</label>
-                        <input type="number" id="alto" class="form-control" step="0.01" value="@Model.Alto.ToString("F2", System.Globalization.CultureInfo.InvariantCulture)" />
-                    </div>
+    :root {
+        --ramave-red: #c62828;
+        --ramave-red-dark: #a81f1f;
+        --bg-gray: #f4f6f9;
+        --text-dark: #2d3436;
+        --border-color: #ced4da;
+    }
 
-                    <div class="col-md-3">
-                        <label class="form-label fw-bold small text-muted">SISTEMA</label>
-                        <select id="sistema" class="form-select">
-                            <option value="MANUAL" selected="@(Model.Sistema == "MANUAL")">MANUAL</option>
-                            <option value="MOTORIZADO WIFI" selected="@(Model.Sistema == "MOTORIZADO WIFI")">MOTORIZADO WIFI</option>
-                            <option value="MOTORIZADO BATERIA" selected="@(Model.Sistema == "MOTORIZADO BATERIA")">MOTORIZADO BATERIA</option>
-                        </select>
-                    </div>
+    body {
+        background-color: var(--bg-gray);
+        font-family: 'Inter', sans-serif;
+        color: var(--text-dark);
+    }
 
-                    <div class="col-md-3">
-                        <label class="form-label fw-bold small text-muted">INSTALACIÓN</label>
-                        <select id="instalacion" class="form-select">
-                            <option value="MURO" selected="@(Model.Instalacion == "MURO")">MURO</option>
-                            <option value="TECHO" selected="@(Model.Instalacion == "TECHO")">TECHO</option>
-                        </select>
-                    </div>
+    .page-container {
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        padding: 2.5rem 1.5rem;
+    }
 
-                    <div class="col-md-6">
-                        <label class="form-label fw-bold small text-muted">ACOPLAMIENTO</label>
-                        <select id="acoplamiento" class="form-select">
-                            <option value="DERECHO" selected="@(Model.Acoplamiento == "DERECHO")">DERECHO</option>
-                            <option value="IZQUIERDO" selected="@(Model.Acoplamiento == "IZQUIERDO")">IZQUIERDO</option>
-                            <option value="UNA HOJA" selected="@(Model.Acoplamiento == "UNA HOJA")">UNA HOJA</option>
-                            <option value="DOS HOJAS" selected="@(Model.Acoplamiento == "DOS HOJAS")">DOS HOJAS</option>
-                        </select>
-                    </div>
+    .card-form {
+        background: white;
+        width: 100%;
+        max-width: 850px;
+        padding: 2.5rem;
+        border-radius: 20px;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        border-top: 6px solid var(--ramave-red);
+    }
 
-                    <div class="col-md-6">
-                        <label class="form-label fw-bold small text-muted">PORCENTAJE ONDA</label>
-                        <input type="number" id="porcentajeOnda" class="form-control" value="@Model.PorcentajeOnda" />
+    h2 { text-align: center; color: var(--ramave-red); font-weight: 700; margin-bottom: 0.5rem; }
+    .subtitle { text-align: center; color: #636e72; font-size: 0.9rem; margin-bottom: 2rem; }
+
+    .form-section-title {
+        font-size: 0.75rem;
+        font-weight: 800;
+        color: var(--ramave-red);
+        text-transform: uppercase;
+        letter-spacing: 1.2px;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 8px;
+        margin: 25px 0 15px 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .form-group { margin-bottom: 1.2rem; }
+    label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem; color: #444; }
+
+    input, select {
+        width: 100%;
+        padding: 0.8rem 1rem;
+        border-radius: 10px;
+        border: 1px solid var(--border-color);
+        font-size: 0.95rem;
+        transition: all 0.2s;
+        box-sizing: border-box;
+    }
+
+    input:focus, select:focus {
+        outline: none;
+        border-color: var(--ramave-red);
+        box-shadow: 0 0 0 3px rgba(198, 40, 40, 0.1);
+    }
+
+    .input-group-custom { display: flex; }
+    .input-group-custom input { border-radius: 10px 0 0 10px; border-right: none; }
+    .input-group-text-custom {
+        background: #f8f9fa;
+        border: 1px solid var(--border-color);
+        border-radius: 0 10px 10px 0;
+        padding: 0 15px;
+        display: flex;
+        align-items: center;
+        font-size: 0.9rem;
+        color: #666;
+        font-weight: 600;
+    }
+
+    .buttons-container {
+        display: grid;
+        grid-template-columns: 1fr 2fr;
+        gap: 1rem;
+        margin-top: 3rem;
+    }
+
+    .btn {
+        padding: 1rem;
+        border-radius: 12px;
+        border: none;
+        font-weight: 700;
+        cursor: pointer;
+        transition: 0.3s;
+        text-align: center;
+        text-decoration: none;
+        font-size: 1rem;
+    }
+
+    .btn-save { background: var(--ramave-red); color: white; }
+    .btn-save:hover { background: var(--ramave-red-dark); transform: translateY(-2px); box-shadow: 0 5px 15px rgba(198, 40, 40, 0.2); }
+    .btn-back { background: #e9ecef; color: #495057; }
+
+    @@media (max-width: 600px) {
+        .buttons-container { grid-template-columns: 1fr; }
+        .row-mobile { grid-template-columns: 1fr !important; }
+    }
+</style>
+
+<div class="page-container">
+    <div class="card-form">
+        <h2><i class="fas fa-edit me-2"></i>Editar Cotización</h2>
+        <p class="subtitle">Modifique los valores para actualizar el cálculo</p>
+
+        <form id="formEditar">
+            <input type="hidden" id="id" value="@Model.Id" />
+
+            <div class="form-section-title"><i class="fas fa-info-circle"></i> General</div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem;" class="row-mobile">
+                <div class="form-group">
+                    <label>ÁREA</label>
+                    <input type="text" id="area" value="@Model.Area" placeholder="Ej: Sala" />
+                </div>
+                <div class="form-group">
+                    <label>ID TELA</label>
+                    <input type="number" id="idTela" value="@Model.IdTela" />
+                </div>
+                <div class="form-group">
+                    <label>TIPO CORTINA</label>
+                    <select id="tipoCortina">
+                        <option value="ONDULADO" selected="@(Model.TipoCortina == "ONDULADO")">ONDULADO</option>
+                        <option value="FRANCESA" selected="@(Model.TipoCortina == "FRANCESA")">FRANCESA</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-section-title"><i class="fas fa-ruler-combined"></i> Medidas y Sistema</div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem;" class="row-mobile">
+                <div class="form-group">
+                    <label>ANCHO (m)</label>
+                    <div class="input-group-custom">
+                        <input type="number" id="ancho" step="0.01" value="@Model.Ancho.ToString("F2", System.Globalization.CultureInfo.InvariantCulture)" />
+                        <span class="input-group-text-custom">m</span>
                     </div>
                 </div>
-
-                <div class="mt-4 pt-3 border-top d-flex justify-content-end gap-2">
-                    <a href="/Administrador/Cotizaciones" class="btn btn-outline-secondary px-4">Cancelar</a>
-                    <button type="button" id="btnGuardar" onclick="enviarEdicion()" class="btn btn-danger btn-lg px-5">
-                        GUARDAR Y RECALCULAR
-                    </button>
+                <div class="form-group">
+                    <label>ALTO (m)</label>
+                    <div class="input-group-custom">
+                        <input type="number" id="alto" step="0.01" value="@Model.Alto.ToString("F2", System.Globalization.CultureInfo.InvariantCulture)" />
+                        <span class="input-group-text-custom">m</span>
+                    </div>
                 </div>
-            </form>
-        </div>
+                <div class="form-group">
+                    <label>SISTEMA</label>
+                    <select id="sistema">
+                        <option value="MANUAL" selected="@(Model.Sistema == "MANUAL")">MANUAL</option>
+                        <option value="MOTORIZADO WIFI" selected="@(Model.Sistema == "MOTORIZADO WIFI")">MOTORIZADO WIFI</option>
+                        <option value="MOTORIZADO BATERIA" selected="@(Model.Sistema == "MOTORIZADO BATERIA")">MOTORIZADO BATERIA</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-section-title"><i class="fas fa-cog"></i> Configuración Extra</div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem;" class="row-mobile">
+                <div class="form-group">
+                    <label>INSTALACIÓN</label>
+                    <select id="instalacion">
+                        <option value="MURO" selected="@(Model.Instalacion == "MURO")">MURO</option>
+                        <option value="TECHO" selected="@(Model.Instalacion == "TECHO")">TECHO</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>ACOPLAMIENTO</label>
+                    <select id="acoplamiento">
+                        <option value="DERECHO" selected="@(Model.Acoplamiento == "DERECHO")">DERECHO</option>
+                        <option value="IZQUIERDO" selected="@(Model.Acoplamiento == "IZQUIERDO")">IZQUIERDO</option>
+                        <option value="UNA HOJA" selected="@(Model.Acoplamiento == "UNA HOJA")">UNA HOJA</option>
+                        <option value="DOS HOJAS" selected="@(Model.Acoplamiento == "DOS HOJAS")">DOS HOJAS</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>% ONDA</label>
+                    <input type="number" id="porcentajeOnda" value="@Model.PorcentajeOnda" />
+                </div>
+            </div>
+
+            <div class="buttons-container">
+                <a href="/Administrador/Cotizaciones" class="btn btn-back">Cancelar</a>
+                <button type="button" id="btnGuardar" onclick="enviarEdicion()" class="btn btn-save">
+                    GUARDAR Y RECALCULAR
+                </button>
+            </div>
+        </form>
     </div>
 </div>
 
@@ -84,7 +209,6 @@
         const btn = document.getElementById('btnGuardar');
         const idVal = document.getElementById('id').value;
         
-        // Bloqueamos el botón para evitar doble clic
         btn.disabled = true;
         btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Calculando...';
 
@@ -101,11 +225,7 @@
             porcentajeOnda: parseInt(document.getElementById('porcentajeOnda').value) || 0
         };
 
-        console.log("Enviando a API:", data);
-
         try {
-            // CAMBIO CLAVE: Usamos la ruta completa empezando desde la raíz /
-            // Asegúrate que el puerto coincida con el de tu proyecto
             const response = await fetch(`/api/Cotizador/${idVal}`, { 
                 method: 'PUT',
                 headers: { 
@@ -116,20 +236,15 @@
             });
 
             const result = await response.json();
-            console.log("Respuesta del servidor:", result);
 
             if (response.ok) {
-                // Si el backend devuelve camelCase, usamos result.data.totalPublico
-                // Si devuelve PascalCase, usamos result.data.TotalPublico
                 const costo = result.data.totalPublico || result.data.TotalPublico || "0.00";
-                
                 alert(`¡Éxito!\n${result.mensaje}\nNuevo Total: $${costo}`);
                 window.location.href = '/Administrador/Cotizaciones';
             } else {
                 throw new Error(result.mensaje || "Error en el servidor");
             }
         } catch (error) {
-            console.error("Error técnico:", error);
             alert("Ocurrió un error: " + error.message);
         } finally {
             btn.disabled = false;
