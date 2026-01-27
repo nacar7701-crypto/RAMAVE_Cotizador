@@ -2,6 +2,8 @@
 
 @{
     ViewData["Title"] = "Historial Técnico de Cotizaciones";
+    // Variable para controlar la agrupación por PresupuestoId
+    int? ultimoPresupuestoId = null;
 }
 
 <style>
@@ -13,6 +15,7 @@
         --bg-body: #f0f2f5;
         --text-main: #1a1a1a;
         --border-color: #e0e0e0;
+        --group-bg: #fdf2f2;
     }
 
     body {
@@ -67,23 +70,7 @@
         box-sizing: border-box;
     }
 
-    .btn-main {
-        padding: 8px 12px;
-        border-radius: 6px;
-        font-weight: 600;
-        cursor: pointer;
-        border: none;
-        font-size: 0.75rem;
-        text-decoration: none;
-        display: inline-flex;
-        align-items: center;
-        gap: 4px;
-    }
-
-    .btn-red { background: var(--ramave-red); color: white; }
-    .btn-gray { background: #e0e0e0; color: #333; }
-
-    /* Tabla */
+    /* Tabla y Agrupación */
     .table-card {
         background: white;
         border-radius: 10px;
@@ -95,7 +82,7 @@
 
     th {
         background: #f8f9fa;
-        padding: 10px 15px;
+        padding: 12px 15px;
         font-size: 0.7rem;
         text-transform: uppercase;
         color: #666;
@@ -103,12 +90,34 @@
         text-align: left;
     }
 
-    td {
-        padding: 10px 15px;
-        border-bottom: 1px solid var(--border-color);
-        font-size: 0.85rem;
+    /* Fila de Encabezado de Grupo (Folio) */
+    .group-header {
+        background-color: var(--group-bg) !important;
+        border-left: 5px solid var(--ramave-red);
     }
 
+    .group-header td {
+        padding: 10px 15px !important;
+        font-weight: 800;
+        color: var(--ramave-red);
+        font-size: 0.8rem;
+    }
+
+    .folio-badge {
+        background: var(--ramave-red);
+        color: white;
+        padding: 3px 10px;
+        border-radius: 20px;
+        margin-right: 10px;
+        font-size: 0.75rem;
+    }
+
+    .fila-cotizacion td {
+        padding: 12px 15px;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    /* Estilos de contenido */
     .field-label {
         font-size: 0.6rem;
         font-weight: 700;
@@ -118,7 +127,6 @@
         text-transform: uppercase;
     }
 
-    /* Estilo de precios apilados */
     .price-group {
         display: flex;
         flex-direction: column;
@@ -130,61 +138,37 @@
     /* Menú Desplegable */
     .action-menu { position: relative; text-align: right; }
     .dot-btn { 
-        background: #f1f1f1; 
-        border: 1px solid #ddd; 
-        border-radius: 4px; 
-        padding: 5px 12px; 
-        cursor: pointer;
-        font-size: 1.1rem;
+        background: #f1f1f1; border: 1px solid #ddd; 
+        border-radius: 4px; padding: 5px 12px; cursor: pointer;
     }
 
     .dropdown-content {
-        display: none;
-        position: absolute;
-        right: 0;
-        top: 100%;
-        background: white;
-        min-width: 140px;
+        display: none; position: absolute; right: 0; top: 100%;
+        background: white; min-width: 160px; z-index: 100;
         box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
-        z-index: 100;
-        border-radius: 6px;
-        border: 1px solid var(--border-color);
+        border-radius: 6px; border: 1px solid var(--border-color);
     }
-
-    .dropdown-up { top: auto !important; bottom: 100% !important; margin-bottom: 5px; }
     .show { display: block; }
-
     .dropdown-content a, .dropdown-content button {
-        padding: 10px 15px;
-        width: 100%;
-        border: none;
-        background: none;
-        text-align: left;
-        font-size: 0.85rem;
-        cursor: pointer;
-        display: block;
-        text-decoration: none;
-        color: #333;
+        padding: 10px 15px; width: 100%; border: none; background: none;
+        text-align: left; font-size: 0.85rem; cursor: pointer; display: block;
+        text-decoration: none; color: #333;
     }
     .dropdown-content a:hover { background: #f8f9fa; }
 
-    /* RESPONSIVO */
+    .btn-main {
+        padding: 8px 12px; border-radius: 6px; font-weight: 600;
+        cursor: pointer; border: none; font-size: 0.75rem;
+        text-decoration: none; display: inline-flex; align-items: center; gap: 4px;
+    }
+    .btn-gray { background: #e0e0e0; color: #333; }
+
     @@media (max-width: 992px) {
         table thead { display: none; }
-        table, tbody, tr, td { display: block; width: 100%; box-sizing: border-box; }
-        tr { margin-bottom: 15px; border: 1px solid var(--border-color); border-radius: 10px; padding: 5px; background: white; }
-        td { display: flex; flex-direction: column; border-bottom: 1px solid #f8f9fa; padding: 8px 12px; }
-        td:last-child { border-bottom: none; align-items: flex-start; }
-        .action-menu { text-align: left; width: 100%; }
-        .dropdown-content { left: 0; right: auto; }
-        td::before {
-            content: attr(data-label);
-            font-weight: 700;
-            color: var(--ramave-red);
-            font-size: 0.65rem;
-            text-transform: uppercase;
-            margin-bottom: 4px;
-        }
+        .group-header td { display: block; width: 100%; }
+        tr.fila-cotizacion { display: block; margin-bottom: 10px; border: 1px solid var(--border-color); }
+        td { display: flex; flex-direction: column; width: 100%; }
+        td::before { content: attr(data-label); font-weight: 700; color: var(--ramave-red); font-size: 0.6rem; text-transform: uppercase; margin-bottom: 2px; }
     }
 </style>
 
@@ -193,10 +177,12 @@
         <div class="header-top-row">
             <h2>Historial de Cotizaciones</h2>
             <div class="btn-actions-top">
-                <button class="btn-main btn-gray" onclick="location.href='@Url.Action("Administrador", "Home")'">Menú</button>
+                <button class="btn-main btn-gray" onclick="location.href='@Url.Action("Administrador", "Home")'">
+                    <i class="fas fa-home"></i> Menú
+                </button>
             </div>
         </div>
-        <input type="text" id="txtBuscar" class="search-input" placeholder="🔍 Buscar por cliente, marca, modelo, catálogo, sistema..." onkeyup="filtrarTabla()">
+        <input type="text" id="txtBuscar" class="search-input" placeholder="🔍 Buscar por cliente, folio, sistema, modelo o área..." onkeyup="filtrarTabla()">
     </div>
 
     <div class="table-card">
@@ -213,17 +199,28 @@
                 </tr>
             </thead>
             <tbody id="listaCotizaciones">
-                @foreach (var item in Model)
+                @foreach (var item in Model.OrderByDescending(x => x.PresupuestoId))
                 {
+                    if (ultimoPresupuestoId != item.PresupuestoId)
+                    {
+                        <tr class="group-header" data-folio="@item.PresupuestoId">
+                            <td colspan="7">
+                                <span class="folio-badge">FOLIO #@item.PresupuestoId</span>
+                                <span style="color: #555;">Cliente: <strong>@item.Cliente</strong></span>
+                            </td>
+                        </tr>
+                        ultimoPresupuestoId = item.PresupuestoId;
+                    }
+
                     var totalCosto = item.CostoTotalCortina + item.CostoTotalCortinero;
                     var totalPublico = item.PrecioCortinaPublico + item.PrecioCortineroPublico;
                     var totalDistribuidor = item.PrecioCortinaDistribuidor + item.PrecioCortineroDistribuidor;
 
-                    <tr class="fila-cotizacion">
+                    <tr class="fila-cotizacion" data-folio="@item.PresupuestoId">
                         <td data-label="Información Técnica">
-                            <div><span class="field-label">Cliente:</span> <strong>@item.Cliente</strong></div>
-                            <div><span class="field-label">Sistema:</span> <strong>@item.Sistema</strong></div>
-                            <div><span class="field-label">Tipo:</span> <strong>@item.TipoCortina</strong></div>
+                            <div><span class="field-label">Área:</span> <strong>@item.Area</strong></div>
+                            <div><span class="field-label">Sistema:</span> @item.Sistema</div>
+                            <div><span class="field-label">Tipo:</span> @item.TipoCortina</div>
                         </td>
                         <td data-label="Detalles Producto">
                             <div><span class="field-label">Marca:</span> @item.Marca</div>
@@ -231,7 +228,7 @@
                             <div><span class="field-label">Catálogo:</span> @item.Catalogo</div>
                         </td>
                         <td data-label="Medidas">
-                            <strong>@item.Ancho.ToString("N2") x @item.Alto.ToString("N2")</strong>
+                            <strong>@item.Ancho.ToString("N2") x @item.Alto.ToString("N2") m</strong>
                         </td>
                         <td data-label="Costo">
                             <div class="price-group">
@@ -258,9 +255,9 @@
                             <div class="action-menu">
                                 <button class="dot-btn" onclick="toggleMenu(event, @item.Id)">⋮</button>
                                 <div id="dropdown-@item.Id" class="dropdown-content">
-                                    <a href="@Url.Action("Detalle", "Cotizaciones", new { area = "Administrador", id = item.Id })">👁️ Ver Detalle</a>
-                                    <a href="@Url.Action("Editar", "Cotizaciones", new { area = "Administrador", id = item.Id })">✏️ Editar</a>
-                                    <button onclick="eliminar(@item.Id)" style="color: #d32f2f;">❌ Eliminar</button>
+                                    <a href="@Url.Action("Detalle", "Cotizaciones", new { id = item.Id })"><i class="fas fa-eye"></i> Ver Detalle</a>
+                                    <a href="@Url.Action("Editar", "Cotizaciones", new { id = item.Id })"><i class="fas fa-edit"></i> Editar</a>
+                                    <button onclick="eliminar(@item.Id)" style="color: #d32f2f;"><i class="fas fa-trash"></i> Eliminar</button>
                                 </div>
                             </div>
                         </td>
@@ -276,38 +273,51 @@
         event.stopPropagation();
         const el = document.getElementById('dropdown-' + id);
         const wasShowing = el.classList.contains('show');
-        
-        // Cerrar todos los demás
         document.querySelectorAll('.dropdown-content').forEach(d => d.classList.remove('show'));
-        
-        // Si no estaba mostrado, mostrarlo y verificar posición
-        if (!wasShowing) {
-            el.classList.add('show');
-            const rect = el.getBoundingClientRect();
-            if (rect.bottom > window.innerHeight) {
-                el.classList.add('dropdown-up');
-            }
-        }
+        if (!wasShowing) el.classList.add('show');
     }
 
-    window.onclick = () => {
-        document.querySelectorAll('.dropdown-content').forEach(d => d.classList.remove('show'));
-    }
+    window.onclick = () => document.querySelectorAll('.dropdown-content').forEach(d => d.classList.remove('show'));
 
     function filtrarTabla() {
         const query = document.getElementById('txtBuscar').value.toLowerCase().trim();
         const filas = document.querySelectorAll('.fila-cotizacion');
+        const cabeceras = document.querySelectorAll('.group-header');
 
+        // Filtrar registros
         filas.forEach(fila => {
-            const texto = fila.innerText.toLowerCase();
-            fila.style.display = texto.includes(query) ? "" : "none";
+            const contenido = fila.innerText.toLowerCase();
+            const folio = fila.getAttribute('data-folio');
+            fila.style.display = (contenido.includes(query) || folio.includes(query)) ? "" : "none";
+        });
+
+        // Filtrar cabeceras: Solo se muestran si tienen al menos un registro visible debajo
+        cabeceras.forEach(header => {
+            const folio = header.getAttribute('data-folio');
+            let tieneHijosVisibles = false;
+            
+            // Si el query es el folio directamente, mostrar
+            if (query !== "" && folio.includes(query)) {
+                header.style.display = "";
+                return;
+            }
+
+            let siguiente = header.nextElementSibling;
+            while (siguiente && siguiente.classList.contains('fila-cotizacion')) {
+                if (siguiente.style.display !== "none") {
+                    tieneHijosVisibles = true;
+                    break;
+                }
+                siguiente = siguiente.nextElementSibling;
+            }
+            header.style.display = tieneHijosVisibles ? "" : "none";
         });
     }
 
     function eliminar(id) {
-        if (confirm("¿Estás seguro de eliminar esta cotización?")) {
-            // Aquí iría tu lógica de eliminación (Fetch o redirección)
-            console.log("Eliminando cotización:", id);
+        if (confirm("¿Estás seguro de eliminar esta partida del presupuesto?")) {
+            // Lógica para llamar a tu API de eliminación
+            console.log("Eliminar ID:", id);
         }
     }
 </script>
