@@ -1351,6 +1351,7 @@ namespace RAMAVE_Cotizador.Controllers
             // 4. Guardar cambios en la base de datos
             try
             {
+                model.PresupuestoId = modelInput.PresupuestoId;
                 _context.Entry(model).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
             }
@@ -1360,6 +1361,57 @@ namespace RAMAVE_Cotizador.Controllers
             }
 
             return Ok(new { mensaje = "Cotización actualizada y recalculada con éxito", data = model });
+        }
+        [HttpPost("CrearPresupuesto")]
+        public async Task<IActionResult> CrearPresupuesto([FromBody] string nombre)
+        {
+            var p = new Presupuesto { 
+                NombreCliente = nombre, 
+                FechaCreacion = DateTime.Now 
+            };
+            _context.Presupuestos.Add(p);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { id = p.Id, mensaje = "Ya puedes agregar cortinas a este cliente" });
+        }
+        [HttpGet("Reporte/{presupuestoId}")]
+        public async Task<IActionResult> GetReporte(int presupuestoId)
+        {
+            var reporte = await _context.Presupuestos
+                .Include(p => p.Partidas) // Esto trae todas las cortinas asociadas
+                .FirstOrDefaultAsync(p => p.Id == presupuestoId);
+
+            if (reporte == null) return NotFound("No existe ese presupuesto");
+
+            return Ok(reporte);
+        }
+        [HttpGet("PresupuestoCompleto/{id}")]
+        public async Task<IActionResult> GetPresupuestoCompleto(int id)
+        {
+            // Buscamos el presupuesto e incluimos todas sus partidas (cortinas)
+            var presupuesto = await _context.Presupuestos
+                .Include(p => p.Partidas) 
+                .FirstOrDefaultAsync(p => p.Id == id);
+
+            if (presupuesto == null) 
+                return NotFound(new { mensaje = "Presupuesto no encontrado" });
+
+            // Calculamos el total real sumando todas las partidas en este momento
+            presupuesto.TotalPresupuesto = presupuesto.Partidas.Sum(c => c.TotalPublico);
+
+            return Ok(new {
+                cliente = presupuesto.NombreCliente,
+                fecha = presupuesto.FechaCreacion,
+                totalGlobal = presupuesto.TotalPresupuesto,
+                detalleCortinas = presupuesto.Partidas.Select(c => new {
+                    c.Id,
+                    c.Area,
+                    c.TipoCortina,
+                    c.Ancho,
+                    c.Alto,
+                    c.TotalPublico
+                })
+            });
         }
     }
 }

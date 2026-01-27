@@ -17,5 +17,6 @@ namespace RAMAVE_Cotizador.Data
         public DbSet<Tela> Telas { get; set; }
         public DbSet<Cotizaciones> Cotizaciones { get; set; }
         public DbSet<ConfigSoportes> ConfigSoportes { get; set; }
+        public DbSet<Presupuesto> Presupuestos { get; set; }
     }
 }

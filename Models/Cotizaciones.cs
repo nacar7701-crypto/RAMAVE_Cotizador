@@ -97,5 +97,10 @@ namespace RAMAVE_Cotizador.Models
         public decimal CostoCarritos { get; set; } = 0m;
         public decimal CostoCarritoCortinero { get; set; } = 0m;
         public decimal CostoGanchoFinal { get; set; } = 0m;
+
+        public int? PresupuestoId { get; set; }
+
+        [ForeignKey("PresupuestoId")]
+        public virtual Presupuesto? Presupuesto { get; set; }
     }
 }
