@@ -43,7 +43,8 @@ namespace RAMAVE_Cotizador.Controllers
 
             // 🔥 CLAVE: GUARDAR ROL EN SESIÓN
             var rol = usuario.rol.Trim();
-            HttpContext.Session.SetInt32("UsuarioId", usuario.id);
+            HttpContext.Session.SetString("UsuarioRol", rol);
+
             Console.WriteLine($"ROL LOGUEADO = '{rol}'");
 
             // 🔥 CLAVE: NOMBRES CORRECTOS
