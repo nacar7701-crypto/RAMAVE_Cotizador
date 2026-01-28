@@ -280,6 +280,7 @@
                                 <tr><th>Acoplamiento</th><td>${c.acoplamiento} </td></tr>
                                 <tr><th>instalación</th><td>${c.instalacion} </td></tr>
                                 <tr><th>Apertura</th><td>${c.tipoApertura}</td></tr>
+                                <tr><th>Tipo</th><td>${c.tipo}</td></tr>
                                 
 
                             </table>
@@ -287,14 +288,15 @@
                         <td class="col-herrajes">
                             <div class="col-header">Componentes</div>
                             <table class="inner-table">
-                                <tr><th>Lienzo</th><td>${c.totalAnchoLienzo}m</td></tr>
+                                <tr><th>Ancho de Lienzo</th><td>${c.totalAnchoLienzo}m</td></tr>
                                 <tr><th>ML Compra</th><td class="text-red">${c.mlComprar}m</td></tr>
+                                <tr><th>Altura Exacta</th><td class="text-red">${c.totalAltura}m</td></tr>
                             </table>
                         </td>
                         <td class="col-precios">
                             <div class="col-header">Precio componentes</div>
                             <table class="inner-table">
-                                <tr><th>Precio</th><td>${fM(c.motor)}</td></tr>
+                                <tr><th>Motor</th><td>${fM(c.motor)}</td></tr>
                             </table>
                         </td>
                         <td class="col-costos">

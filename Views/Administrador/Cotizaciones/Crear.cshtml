@@ -306,7 +306,8 @@
             </div>
 
             <div class="form-section-title"><i class="fas fa-layer-group"></i> 3. Material</div>
-            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.8rem;">
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.8rem; margin-bottom: 0.5rem;">
                 <div class="form-group">
                     <label>Catálogo</label>
                     <select id="selectCatalogo">
@@ -328,12 +329,18 @@
                     </select>
                     <span id="err-selectModelo" class="error-text">Seleccione uno</span>
                 </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 0.40fr 0.10fr 0.50fr; align-items: start;">
                 <div class="form-group">
                     <label>Tipo de Tela</label>
                     <input id="inputTipoTela" class="input-compact" readonly
                         style="background-color: #f1f3f5; font-weight: bold; color: var(--ramave-red);"
                         placeholder="Tipo..." />
                 </div>
+
+                <div></div>
+
                 <div class="form-group">
                     <label>Color</label>
                     <select id="selectColor" disabled>
@@ -513,9 +520,9 @@
             instalacion: document.querySelector('input[name="radioInstalacion"]:checked').value,
             acoplamiento: document.querySelector('input[name="radioAcoplamiento"]:checked').value,
             PresupuestoId: parseInt(pId),
-            colorSeleccionado: document.getElementById('selectColor').value, 
+            colorSeleccionado: document.getElementById('selectColor').value,
             tipo: document.getElementById('inputTipoTela').value
-            
+
         };
 
         const res = await fetch('/api/Cotizador/Crear', {
