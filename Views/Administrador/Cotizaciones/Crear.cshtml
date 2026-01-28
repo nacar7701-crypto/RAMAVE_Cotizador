@@ -292,6 +292,13 @@
                     </select>
                     <span id="err-selectModelo" class="error-text">Seleccione uno</span>
                 </div>
+                <div class="form-group">
+                    <label>Color</label>
+                    <select id="selectColor" disabled>
+                        <option value="">Color...</option>
+                    </select>
+                    <span id="err-selectColor" class="error-text">Seleccione uno</span>
+                </div>
             </div>
 
             <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 1.5rem;">
@@ -356,7 +363,8 @@
             </div>
 
             <div class="buttons-container">
-                <a href="/Administrador/Administrador" class="btn btn-back" onclick="localStorage.removeItem('pId')">CANCELAR</a>
+                <a href="/Administrador/Administrador" class="btn btn-back"
+                    onclick="localStorage.removeItem('pId')">CANCELAR</a>
                 <button type="button" onclick="accionAgregar()" class="btn btn-add">AGREGAR OTRA CORTINA</button>
                 <button type="button" onclick="accionGuardarContinuar()" class="btn btn-finish">GUARDAR Y
                     CONTINUAR</button>
@@ -480,23 +488,74 @@
         const selCat = document.getElementById("selectCatalogo");
         const selMar = document.getElementById("selectMarca");
         const selMod = document.getElementById("selectModelo");
+        const selCol = document.getElementById("selectColor");
 
-        fetch('/api/Telas/catalogos-unicos').then(r => r.json()).then(d => d.forEach(c => selCat.add(new Option(c, c))));
+        // Variable para guardar las telas y sus colores temporalmente
+        let listaTelasLocal = [];
 
+        // 1. Cargar Catálogos
+        fetch('/api/Telas/catalogos-unicos')
+            .then(r => r.json())
+            .then(d => d.forEach(c => selCat.add(new Option(c, c))));
+
+        // 2. Al cambiar Catálogo -> Cargar Marcas
         selCat.onchange = () => {
+            selMar.innerHTML = '<option value="">Marca...</option>';
+            selMod.innerHTML = '<option value="">Modelo...</option>';
+            selCol.innerHTML = '<option value="">Color...</option>';
+            selMar.disabled = selMod.disabled = selCol.disabled = true;
+
             if (!selCat.value) return;
-            fetch(`/api/Telas/marcas-por-catalogo/${selCat.value}`).then(r => r.json()).then(d => {
-                selMar.innerHTML = '<option value="">Marca...</option>'; selMar.disabled = false;
-                d.forEach(m => selMar.add(new Option(m.nombre, m.id)));
-            });
+            fetch(`/api/Telas/marcas-por-catalogo/${selCat.value}`)
+                .then(r => r.json())
+                .then(d => {
+                    selMar.disabled = false;
+                    d.forEach(m => selMar.add(new Option(m.nombre, m.id)));
+                });
         };
 
+        // 3. Al cambiar Marca -> Cargar Modelos (y guardar sus datos)
         selMar.onchange = () => {
+            selMod.innerHTML = '<option value="">Modelo...</option>';
+            selCol.innerHTML = '<option value="">Color...</option>';
+            selMod.disabled = selCol.disabled = true;
+
             if (!selMar.value) return;
-            fetch(`/api/Telas/buscar-id-tela?catalogo=${selCat.value}&idMarca=${selMar.value}`).then(r => r.json()).then(d => {
-                selMod.innerHTML = '<option value="">Modelo...</option>'; selMod.disabled = false;
-                d.forEach(t => selMod.add(new Option(t.nombre, t.id)));
-            });
+            fetch(`/api/Telas/buscar-id-tela?catalogo=${selCat.value}&idMarca=${selMar.value}`)
+                .then(r => r.json())
+                .then(d => {
+                    listaTelasLocal = d; // Guardamos el array completo que trae el color_nombre
+                    selMod.disabled = false;
+                    d.forEach(t => selMod.add(new Option(t.nombre, t.id)));
+                });
+        };
+
+        // 4. Al cambiar Modelo -> Desglosar colores en el Select
+        selMod.onchange = () => {
+            selCol.innerHTML = '<option value="">Color...</option>';
+
+            if (!selMod.value) {
+                selCol.disabled = true;
+                return;
+            }
+
+            // Buscamos la tela seleccionada en nuestra lista local
+            const tela = listaTelasLocal.find(t => t.id == selMod.value);
+
+            if (tela && tela.color_nombre) {
+                selCol.disabled = false;
+                // Separamos por coma, limpiamos espacios y creamos opciones
+                const colores = tela.color_nombre.split(',');
+                colores.forEach(c => {
+                    const nombreLimpio = c.trim();
+                    if (nombreLimpio) {
+                        selCol.add(new Option(nombreLimpio, nombreLimpio));
+                    }
+                });
+            } else {
+                selCol.add(new Option("ÚNICO", "ÚNICO"));
+                selCol.disabled = false;
+            }
         };
     });
 

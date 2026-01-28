@@ -362,12 +362,10 @@
                             <div class="action-menu">
                                 <button class="dot-btn" onclick="toggleMenu(event, @item.Id)">⋮</button>
                                 <div id="dropdown-@item.Id" class="dropdown-content">
-                                    <a href="@Url.Action("Detalle", "Cotizaciones", new { id = item.Id })"><i
-                                            class="fas fa-eye"></i> Ver Detalle</a>
                                     <a href="@Url.Action("Editar", "Cotizaciones", new { id = item.Id })"><i
-                                            class="fas fa-edit"></i> Editar</a>
+                                            class="fas fa-edit"></i>✏️ Editar</a>
                                     <button onclick="eliminar(@item.Id)" style="color: #d32f2f;"><i
-                                            class="fas fa-trash"></i> Eliminar</button>
+                                            class="fas fa-trash"></i>❌ Eliminar</button>
                                 </div>
                             </div>
                         </td>
