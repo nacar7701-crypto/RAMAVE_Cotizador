@@ -14,6 +14,7 @@ namespace RAMAVE_Cotizador.Models
         public string? Modelo { get; set; } = string.Empty;
         public string? Cliente { get; set; } = string.Empty;
         public string? ColorSeleccionado { get; set; } = string.Empty;
+        public string? tipo { get; set; } = string.Empty;
         
         // Campos de medida inicializados en 0
         public decimal Ancho { get; set; } = 0m;
