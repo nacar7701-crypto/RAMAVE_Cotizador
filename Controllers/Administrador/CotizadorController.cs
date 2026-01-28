@@ -1415,6 +1415,7 @@ namespace RAMAVE_Cotizador.Controllers
                     c.Modelo,
                     c.Marca,
                     c.Catalogo,
+                    c.tipo,
                     c.Acoplamiento,
                     c.TipoApertura,
                     c.Instalacion,
