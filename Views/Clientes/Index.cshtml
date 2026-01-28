@@ -1,0 +1,200 @@
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Mi Panel | RAMAVE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --ramave-red: #c62828;
+            --ramave-dark: #8e0000;
+            --bg-gray: #f8fafc;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        * { box-sizing: border-box; font-family: 'Inter', sans-serif; }
+
+        body {
+            margin: 0;
+            background: var(--bg-gray);
+            color: var(--text-main);
+            min-height: 100vh;
+        }
+
+        /* HEADER */
+        header {
+            background: white;
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-left { display: flex; align-items: center; gap: 15px; }
+        header img { height: 40px; width: auto; }
+        header h1 { margin: 0; font-size: 1rem; font-weight: 700; color: var(--ramave-red); text-transform: uppercase; }
+
+        .btn-logout {
+            color: #ef4444;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* CONTENEDOR */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+
+        .welcome-msg { margin-bottom: 40px; }
+        .welcome-msg h2 { 
+            margin: 0; font-size: 2rem; font-weight: 800; 
+            letter-spacing: -1px; color: #0f172a;
+        }
+        .welcome-msg span#clienteNombre { color: var(--ramave-red); }
+        .welcome-msg p { color: var(--text-muted); margin-top: 8px; font-size: 1.1rem; }
+
+        /* GRID */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            text-decoration: none;
+            color: inherit;
+            transition: var(--transition);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+            border-color: rgba(198, 40, 40, 0.2);
+        }
+
+        .icon-circle {
+            width: 60px;
+            height: 60px;
+            background: #f1f5f9;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            font-size: 24px;
+            transition: var(--transition);
+        }
+
+        .card:hover .icon-circle {
+            background: var(--ramave-red);
+            color: white;
+        }
+
+        .card h3 { margin: 0; font-size: 1.5rem; font-weight: 700; }
+        .card p { font-size: 1rem; color: var(--text-muted); margin: 15px 0 25px; line-height: 1.5; }
+
+        .card-footer {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--ramave-red);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        @@media (max-width: 600px) {
+            .welcome-msg h2 { font-size: 1.6rem; }
+            .container { padding: 30px 20px; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="header-left">
+            <img src="/images/logoramave.jpg" alt="RAMAVE" />
+            <h1>Portal de Clientes</h1>
+        </div>
+        <a href="@Url.Action("Logout", "Auth")" class="btn-logout">
+            <span>🚪</span> Salir
+        </a>
+    </header>
+
+    <div class="container">
+        <div class="welcome-msg">
+           <h2>¡Hola, <span>@Context.Session.GetString("UsuarioNombre")</span>!</h2>
+            <p>Bienvenido a tu panel personal de persianas.</p>
+        </div>
+
+        <div class="grid">
+
+            <a href="@Url.Action("Home", "Clientes")" class="card">
+                <div class="icon-circle">➕</div>
+                <h3>Nueva Cotización</h3>
+                <p>Calcula el presupuesto para tus nuevas persianas de forma inmediata.</p>
+                <div class="card-footer">Empezar a cotizar →</div>
+            </a>
+
+            <a href="@Url.Action("Historial", "Clientes")" class="card">
+                <div class="icon-circle">📑</div>
+                <h3>Mis Proyectos</h3>
+                <p>Consulta el historial de tus cotizaciones anteriores y descarga tus PDF.</p>
+                <div class="card-footer">Ver mi historial →</div>
+            </a>
+
+        </div>
+    </div>
+
+    <script>
+        async function obtenerNombreCliente() {
+            try {
+                // Intentamos obtener el ID de la URL si existe, 
+                // o podrías llamar a un endpoint de "MiPerfil"
+                const pathParts = window.location.pathname.split('/');
+                const id = pathParts.pop();
+                
+                // Si tienes un endpoint que devuelva la info del usuario logueado:
+                const res = await fetch(`/api/Cotizador/PresupuestoCompleto/${id}`);
+                if(res.ok) {
+                    const data = await res.json();
+                    document.getElementById('clienteNombre').innerText = data.cliente;
+                } else {
+                    document.getElementById('clienteNombre').innerText = "Cliente";
+                }
+            } catch (error) {
+                document.getElementById('clienteNombre').innerText = "Bienvenido";
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", obtenerNombreCliente);
+    </script>
+</body>
+</html>
