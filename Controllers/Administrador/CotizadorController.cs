@@ -34,6 +34,7 @@ namespace RAMAVE_Cotizador.Controllers
             model.Marca = tela.modelo?.marca?.nombre ?? "N/A";
             model.Modelo = tela.modelo?.nombre ?? "N/A";
             model.AnchoRollo = tela.ancho;
+            model.ColorSeleccionado = model.ColorSeleccionado;
             model.AnchoCM = model.Ancho * 100;
             model.AlturaCM = model.Alto * 100;
             model.M2 = model.Ancho * model.Alto;
@@ -739,6 +740,7 @@ namespace RAMAVE_Cotizador.Controllers
             model.Catalogo = tela.catalogo;
             model.Marca = tela.modelo?.marca?.nombre ?? "N/A";
             model.Modelo = tela.modelo?.nombre ?? "N/A";
+            model.ColorSeleccionado = model.ColorSeleccionado;
             model.AnchoRollo = tela.ancho;
             model.AnchoCM = model.Ancho * 100;
             model.AlturaCM = model.Alto * 100;
