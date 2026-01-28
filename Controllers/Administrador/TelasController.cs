@@ -316,6 +316,7 @@ public async Task<IActionResult> GetIdTela(string catalogo, int idMarca)
             t.id,
             t.modelo.nombre,
             t.color_nombre,
+            t.tipo,
             t.ancho // Importante para tus cálculos futuros
         })
         .ToListAsync();
