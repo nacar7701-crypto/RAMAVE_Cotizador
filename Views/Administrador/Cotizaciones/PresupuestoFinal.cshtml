@@ -3,8 +3,8 @@
 }
 
 <style>
-    /* Importación de tipografía del diseño original */
-    @@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    /* ... (Mantenemos tus estilos anteriores) ... */
+    @@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
     :root {
         --ramave-red: #c62828;
@@ -15,166 +15,118 @@
         --dark-bg: #8e0000;
     }
 
-    body { 
-        background-color: var(--bg-body); 
-        font-family: 'Inter', sans-serif; 
+    body {
+        background-color: var(--bg-body);
+        font-family: 'Inter', sans-serif;
         color: var(--text-main);
         font-size: 0.85rem;
         margin: 0;
     }
 
-    .wrapper {
-        width: 100%;
-        padding: 20px;
-        box-sizing: border-box;
+    .wrapper { width: 100%; padding: 20px; box-sizing: border-box; }
+    .budget-container { background: white; border-radius: 10px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); padding: 25px; border-top: 5px solid var(--ramave-red); }
+
+    /* ESTILOS DEL ENCABEZADO PDF (Oculto en web) */
+    .pdf-header { display: none; border-bottom: 2px solid var(--ramave-red); padding-bottom: 15px; margin-bottom: 25px; }
+    .header-logo-row { display: flex; justify-content: space-between; align-items: center; }
+    .logo-img { max-width: 150px; height: auto; }
+    .company-info { text-align: right; }
+    .company-info h1 { color: var(--ramave-red); margin: 0; font-size: 1.5rem; font-weight: 800; text-transform: uppercase; }
+
+    .client-data-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        margin-top: 20px;
+        padding: 15px;
+        background: #fdfdfd;
+        border: 1px solid #eee;
+        border-radius: 8px;
     }
 
-    .budget-container {
-        background: white; 
-        border-radius: 10px; 
-        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-        padding: 25px; 
-        border-top: 5px solid var(--ramave-red);
+    .data-label { font-size: 0.7rem; font-weight: 800; color: #777; text-transform: uppercase; display: block; }
+    .data-value { font-size: 1rem; font-weight: 700; color: #222; }
+
+    /* ESTILOS DE INTERFAZ WEB */
+    .filter-toolbar { background: #f8f9fa; border: 1px solid var(--border-color); padding: 15px; border-radius: 8px; margin-bottom: 25px; }
+    .header-top-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .header-top-row h2 { margin: 0; font-size: 1.4rem; font-weight: 700; color: var(--ramave-red); }
+    
+    .folio-badge {
+        background: #eee;
+        color: #555;
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-size: 0.9rem;
+        vertical-align: middle;
+        margin-right: 10px;
     }
 
-    .filter-toolbar {
-        background: #f8f9fa; 
-        border: 1px solid var(--border-color);
-        padding: 15px; 
-        border-radius: 8px; 
-        margin-bottom: 25px;
-    }
-
-    .header-top-row {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 20px;
-    }
-
-    .header-top-row h2 {
-        margin: 0;
-        font-size: 1.4rem;
-        font-weight: 700;
-        color: var(--ramave-red);
-    }
-
-    .btn-main {
-        padding: 8px 16px;
-        border-radius: 6px;
-        font-weight: 600;
-        cursor: pointer;
-        border: none;
-        font-size: 0.8rem;
-        text-decoration: none;
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        transition: all 0.2s;
-    }
+    .btn-main { padding: 8px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; border: none; font-size: 0.8rem; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s; }
     .btn-red { background: var(--ramave-red); color: white; }
     .btn-red:hover { background: var(--ramave-dark); }
-    
-    .btn-outline { 
-        background: transparent; 
-        border: 1px solid #ccc; 
-        color: #555; 
-    }
-    .btn-outline:hover { background: #eee; color: #333; }
+    .btn-outline { background: transparent; border: 1px solid #ccc; color: #555; }
 
-    .table-main { 
-        width: 100%; 
-        border-collapse: collapse; 
-        table-layout: fixed; 
-        margin-bottom: 30px; 
-        border-radius: 8px;
-        overflow: hidden;
-        border: 1px solid var(--border-color);
-    }
-    
-    .partida-title { 
-        background: var(--dark-bg); 
-        color: white; 
-        padding: 10px 20px; 
-        font-weight: 700; 
-        display: flex; 
-        justify-content: space-between;
-        font-size: 0.9rem;
-    }
-
+    /* TABLAS */
+    .table-main { width: 100%; border-collapse: collapse; table-layout: fixed; margin-bottom: 30px; border-radius: 8px; overflow: hidden; border: 1px solid var(--border-color); }
+    .partida-title { background: var(--dark-bg); color: white; padding: 10px 20px; font-weight: 700; display: flex; justify-content: space-between; font-size: 0.9rem; }
     .table-main td { vertical-align: top; border: 1px solid var(--border-color); padding: 0; }
-    
     .inner-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
-    .inner-table th { 
-        background: #f8f9fa; 
-        color: #666; 
-        font-weight: 600; 
-        text-align: left; 
-        padding: 8px 12px; 
-        border-bottom: 1px solid var(--border-color);
-        width: 55%;
-        text-transform: uppercase;
-        font-size: 0.7rem;
-    }
-    .inner-table td { 
-        padding: 8px 12px; 
-        font-weight: 700; 
-        color: #222; 
-        border-bottom: 1px solid var(--border-color); 
-        text-align: right;
-    }
-
-    .col-header { 
-        background: #f1f1f1; 
-        padding: 8px; 
-        font-weight: 800; 
-        font-size: 0.7rem; 
-        text-transform: uppercase; 
-        color: #444; 
-        text-align: center;
-        border-bottom: 2px solid var(--border-color);
-    }
-
-    .sub-section-header {
-        background: #eee; 
-        font-size: 0.65rem; 
-        font-weight: 900; 
-        padding: 5px; 
-        text-align: center; 
-        border-bottom: 1px solid #ddd;
-        text-transform: uppercase;
-    }
-
+    .inner-table th { background: #f8f9fa; color: #666; font-weight: 600; text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--border-color); width: 55%; text-transform: uppercase; font-size: 0.65rem; }
+    .inner-table td { padding: 8px 12px; font-weight: 700; color: #222; border-bottom: 1px solid var(--border-color); text-align: right; }
+    .col-header { background: #f1f1f1; padding: 8px; font-weight: 800; font-size: 0.7rem; text-transform: uppercase; color: #444; text-align: center; border-bottom: 2px solid var(--border-color); }
+    .sub-section-header { background: #eee; font-size: 0.65rem; font-weight: 900; padding: 5px; text-align: center; border-bottom: 1px solid #ddd; text-transform: uppercase; }
     .row-subtotal { background-color: #f8f9fa; border-top: 1.5px solid var(--border-color) !important; }
     .row-subtotal td { color: var(--ramave-red) !important; font-size: 0.85rem !important; }
-
-    .grand-total-section {
-        background: var(--dark-bg); 
-        color: white; 
-        padding: 25px; 
-        border-radius: 10px; 
-        margin-top: 20px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    }
-
+    .grand-total-section { background: var(--dark-bg); color: white; padding: 25px; border-radius: 10px; margin-top: 20px; }
     .d-none-filter { display: none !important; }
     .text-red { color: var(--ramave-red); }
 
-    @@media print { 
-        .no-print { display: none !important; } 
-        .budget-container { box-shadow: none; border: none; padding: 0; }
-        body { background: white; }
+    @@media print {
+        @@page { margin-top: 0; margin-bottom: 0; }
+        body { background: white !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; padding: 1.5cm 1cm; }
+        .no-print, .filter-toolbar, .header-top-row { display: none !important; }
+        .pdf-header { display: block !important; }
+        .budget-container { box-shadow: none !important; border: none !important; padding: 0 !important; }
+        .wrapper { padding: 0 !important; }
+        .table-main { page-break-inside: avoid; margin-bottom: 20px; }
     }
 </style>
 
 <div class="wrapper">
-    <div class="budget-container">
-        <div class="header-top-row">
+    <div class="pdf-header">
+        <div class="header-logo-row">
+            <img src="/images/logoramave.jpg" alt="RAMAVE" class="logo-img" onerror="this.style.display='none'">
+            <div class="company-info">
+                <h1>Fábrica de Persianas RAMAVE</h1>
+            </div>
+        </div>
+        <div class="client-data-grid">
             <div>
-                <h2>Cotización: <span id="lblCliente" class="text-danger">...</span></h2>
+                <span class="data-label">Folio de Cotización</span>
+                <span class="data-value" id="pdf-folio">#00000</span>
+                <div style="margin-top:10px">
+                    <span class="data-label">Cliente</span>
+                    <span class="data-value" id="pdf-cliente">...</span>
+                </div>
+            </div>
+            <div style="text-align: right;">
+                <span class="data-label">Fecha de Generación</span>
+                <span class="data-value" id="pdf-fecha">--/--/----</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="budget-container">
+        <div class="header-top-row no-print">
+            <div>
+                <h2>
+                    <span id="lblFolio" class="folio-badge">#00000</span>
+                    Cotización: <span id="lblCliente" class="text-danger">...</span>
+                </h2>
                 <small class="text-muted" id="lblFecha"></small>
             </div>
-            <div class="no-print d-flex gap-2">
+            <div class="d-flex gap-2">
                 <a href="javascript:history.back()" class="btn-main btn-outline">
                     <span>⬅</span> Regresar
                 </a>
@@ -189,29 +141,25 @@
                 <div class="col-12">
                     <h6 class="small fw-bold text-uppercase border-bottom pb-2" style="color: var(--ramave-red);">Panel de Control de Presupuesto</h6>
                 </div>
-                
                 <div class="col-md-3 border-end">
                     <p class="x-small fw-bold text-muted mb-2 text-uppercase" style="font-size: 0.65rem;">Columnas</p>
                     <div class="form-check form-switch mb-1"><input class="form-check-input f-chk" type="checkbox" data-t="col-base" id="c1" checked> <label class="form-check-label" for="c1">DATOS BASE</label></div>
                     <div class="form-check form-switch mb-1"><input class="form-check-input f-chk" type="checkbox" data-t="col-herrajes" id="c2" checked> <label class="form-check-label" for="c2">COMPONENTES</label></div>
-                    <div class="form-check form-switch mb-1"><input class="form-check-input f-chk" type="checkbox" data-t="col-precios" id="c3" checked> <label class="form-check-label" for="c3">PRECIOS COMPONENTES</label></div>
+                    <div class="form-check form-switch mb-1"><input class="form-check-input f-chk" type="checkbox" data-t="col-precios" id="c3" checked> <label class="form-check-label" for="c3">PRECIOS</label></div>
                     <div class="form-check form-switch mb-1"><input class="form-check-input f-chk" type="checkbox" data-t="col-costos" id="c4" checked> <label class="form-check-label" for="c4">COSTOS</label></div>
                 </div>
-
                 <div class="col-md-3 border-end">
                     <p class="x-small fw-bold text-muted mb-2 text-uppercase" style="font-size: 0.65rem;">1. Fábrica</p>
                     <div class="form-check mb-1"><input class="form-check-input f-chk sum-trigger" type="checkbox" data-t="f-f-cortinero" id="ff1" checked> <label class="form-check-label" for="ff1">Cortinero</label></div>
                     <div class="form-check mb-1"><input class="form-check-input f-chk sum-trigger" type="checkbox" data-t="f-f-cortina" id="ff2" checked> <label class="form-check-label" for="ff2">Cortina</label></div>
                     <div class="form-check mb-1"><input class="form-check-input f-chk sum-trigger" type="checkbox" data-t="sec-fabrica" id="ff3" checked> <label class="form-check-label fw-bold text-danger" for="ff3">MOSTRAR SECCIÓN</label></div>
                 </div>
-
                 <div class="col-md-3 border-end">
                     <p class="x-small fw-bold text-muted mb-2 text-uppercase" style="font-size: 0.65rem;">2. Público</p>
                     <div class="form-check mb-1"><input class="form-check-input f-chk sum-trigger" type="checkbox" data-t="f-p-cortinero" id="fp1" checked> <label class="form-check-label" for="fp1">Cortinero</label></div>
                     <div class="form-check mb-1"><input class="form-check-input f-chk sum-trigger" type="checkbox" data-t="f-p-cortina" id="fp2" checked> <label class="form-check-label" for="fp2">Cortina</label></div>
                     <div class="form-check mb-1"><input class="form-check-input f-chk sum-trigger" type="checkbox" data-t="sec-publico" id="fp3" checked> <label class="form-check-label fw-bold" for="fp3">MOSTRAR SECCIÓN</label></div>
                 </div>
-
                 <div class="col-md-3">
                     <p class="x-small fw-bold text-muted mb-2 text-uppercase" style="font-size: 0.65rem;">3. Distribuidor</p>
                     <div class="form-check mb-1"><input class="form-check-input f-chk sum-trigger" type="checkbox" data-t="f-d-cortinero" id="fd1" checked> <label class="form-check-label" for="fd1">Cortinero</label></div>
@@ -251,8 +199,22 @@
         const data = await res.json();
         rawData = data.detalleCortinas;
 
+        const fechaObj = new Date(data.fecha);
+        const fechaFormateada = fechaObj.toLocaleDateString('es-MX', {
+            day: '2-digit', month: 'long', year: 'numeric'
+        });
+
+        const folioTexto = "#" + id.toString().padStart(5, '0');
+
+        // Asignación a elementos Web
+        document.getElementById('lblFolio').innerText = folioTexto;
         document.getElementById('lblCliente').innerText = data.cliente;
-        document.getElementById('lblFecha').innerText = "Generado: " + new Date(data.fecha).toLocaleDateString();
+        document.getElementById('lblFecha').innerText = "Generado: " + fechaFormateada;
+
+        // Asignación a elementos PDF
+        document.getElementById('pdf-cliente').innerText = data.cliente;
+        document.getElementById('pdf-folio').innerText = folioTexto;
+        document.getElementById('pdf-fecha').innerText = fechaFormateada;
 
         const contenedor = document.getElementById('listaPartidas');
         contenedor.innerHTML = "";
@@ -263,7 +225,6 @@
             partidaDiv.innerHTML = `
                 <div class="partida-title">
                     <span>COTIZACIÓN ${i + 1}</span>
-                    <span class="small opacity-75">Concepto: ${c.area || 'General'}</span>
                 </div>
                 <table class="table-main">
                     <tr>
@@ -271,36 +232,34 @@
                             <div class="col-header">Datos Base</div>
                             <table class="inner-table">
                                 <tr><th>Tipo</th><td>${c.tipoCortina}</td></tr>
+                                <tr><th>Porcentaje de Onda</th><td>${c.porcentajeOnda}%</td></tr>
+                                <tr><th>Tipo</th><td>${c.tipo}</td></tr>
                                 <tr><th>Modelo</th><td>${c.modelo || 'N/A'}</td></tr>
-                                <tr><th>Onda</th><td>${c.porcentajeOnda || 0}%</td></tr>
                                 <tr><th>Ancho</th><td>${c.ancho} m</td></tr>
                                 <tr><th>Alto</th><td>${c.alto} m</td></tr>
                                 <tr><th>M2</th><td>${c.m2} m²</td></tr>
                                 <tr><th>Sistema</th><td>${c.sistema}</td></tr>
-                                <tr><th>Acoplamiento</th><td>${c.acoplamiento} </td></tr>
-                                <tr><th>instalación</th><td>${c.instalacion} </td></tr>
-                                <tr><th>Apertura</th><td>${c.tipoApertura}</td></tr>
-                                <tr><th>Tipo</th><td>${c.tipo}</td></tr>
-                                
-
+                                <tr><th>Acoplamiento</th><td>${c.acoplamiento}</td></tr>
+                                <tr><th>Instalación</th><td>${c.instalacion} </td></tr>
+                                <tr><th>Tipo de apertura</th><td>${c.tipoApertura}</td></tr>
                             </table>
                         </td>
                         <td class="col-herrajes">
                             <div class="col-header">Componentes</div>
                             <table class="inner-table">
-                                <tr><th>Ancho de Lienzo</th><td>${c.totalAnchoLienzo}m</td></tr>
-                                <tr><th>ML Compra</th><td class="text-red">${c.mlComprar}m</td></tr>
-                                <tr><th>Altura Exacta</th><td class="text-red">${c.totalAltura}m</td></tr>
+                                <tr><th>Lienzos</th><td>${c.totalAnchoLienzo}</td></tr>
+                                <tr><th>ML Compra</th><td class="text-red">${c.mlComprar} m</td></tr>
+                                <tr><th>Altura Exacta</th><td class="text-red">${c.totalAltura} m</td></tr>
                             </table>
                         </td>
                         <td class="col-precios">
-                            <div class="col-header">Precio componentes</div>
+                            <div class="col-header">Precios Unit.</div>
                             <table class="inner-table">
                                 <tr><th>Motor</th><td>${fM(c.motor)}</td></tr>
                             </table>
                         </td>
                         <td class="col-costos">
-                            <div class="col-header">Costos</div>
+                            <div class="col-header">Costos / Precios</div>
                             <div class="sec-fabrica border-bottom pb-1 mb-1">
                                 <div class="sub-section-header">FÁBRICA</div>
                                 <table class="inner-table">
@@ -346,24 +305,23 @@
 
         document.querySelectorAll('.part-container').forEach(container => {
             let partF = 0, partP = 0, partD = 0;
-
-            if(document.getElementById('ff3').checked) {
-                if(document.getElementById('ff1').checked) partF += parseFloat(container.querySelector('.f-f-cortinero .v-val-f').dataset.v || 0);
-                if(document.getElementById('ff2').checked) partF += parseFloat(container.querySelector('.f-f-cortina .v-val-f').dataset.v || 0);
+            if (document.getElementById('ff3').checked) {
+                if (document.getElementById('ff1').checked) partF += parseFloat(container.querySelector('.f-f-cortinero .v-val-f').dataset.v || 0);
+                if (document.getElementById('ff2').checked) partF += parseFloat(container.querySelector('.f-f-cortina .v-val-f').dataset.v || 0);
             }
             container.querySelector('.part-total-f').innerText = fM(partF);
             granF += partF;
 
-            if(document.getElementById('fp3').checked) {
-                if(document.getElementById('fp1').checked) partP += parseFloat(container.querySelector('.f-p-cortinero .v-val-p').dataset.v || 0);
-                if(document.getElementById('fp2').checked) partP += parseFloat(container.querySelector('.f-p-cortina .v-val-p').dataset.v || 0);
+            if (document.getElementById('fp3').checked) {
+                if (document.getElementById('fp1').checked) partP += parseFloat(container.querySelector('.f-p-cortinero .v-val-p').dataset.v || 0);
+                if (document.getElementById('fp2').checked) partP += parseFloat(container.querySelector('.f-p-cortina .v-val-p').dataset.v || 0);
             }
             container.querySelector('.part-total-p').innerText = fM(partP);
             granP += partP;
 
-            if(document.getElementById('fd3').checked) {
-                if(document.getElementById('fd1').checked) partD += parseFloat(container.querySelector('.f-d-cortinero .v-val-d').dataset.v || 0);
-                if(document.getElementById('fd2').checked) partD += parseFloat(container.querySelector('.f-d-cortina .v-val-d').dataset.v || 0);
+            if (document.getElementById('fd3').checked) {
+                if (document.getElementById('fd1').checked) partD += parseFloat(container.querySelector('.f-d-cortinero .v-val-d').dataset.v || 0);
+                if (document.getElementById('fd2').checked) partD += parseFloat(container.querySelector('.f-d-cortina .v-val-d').dataset.v || 0);
             }
             container.querySelector('.part-total-d').innerText = fM(partD);
             granD += partD;
@@ -374,7 +332,7 @@
         document.getElementById('totalDistSum').innerText = fM(granD);
     }
 
-    document.addEventListener('change', e => { if(e.target.classList.contains('f-chk')) aplicarFiltros(); });
+    document.addEventListener('change', e => { if (e.target.classList.contains('f-chk')) aplicarFiltros(); });
     function fM(v) { return (v || 0).toLocaleString('es-MX', { style: 'currency', currency: 'MXN' }); }
     document.addEventListener("DOMContentLoaded", cargarDatos);
 </script>
