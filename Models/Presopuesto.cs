@@ -7,17 +7,17 @@ public class Presupuesto
     public int Id { get; set; }
 
     [Required]
-    [StringLength(150)]
-    public string NombreCliente { get; set; } // La persona a la que le cotizas
+    public string NombreCliente { get; set; } = string.Empty;
 
     public DateTime FechaCreacion { get; set; } = DateTime.Now;
 
-    [StringLength(200)]
     public string? Observaciones { get; set; }
 
-    // El TotalGeneral se puede calcular sumando las cotizaciones ligadas
+    [Column(TypeName = "decimal(18,2)")]
     public decimal TotalPresupuesto { get; set; }
 
-    // Relación: Un presupuesto tiene muchas cotizaciones (partidas)
-    public virtual ICollection<Cotizaciones> Partidas { get; set; } = new List<Cotizaciones>();
+    public int? UsuarioId { get; set; }
+
+    // USA SOLO ESTA. Borra la que dice "Partidas".
+    public virtual ICollection<Cotizaciones> Cotizaciones { get; set; } = new List<Cotizaciones>();
 }

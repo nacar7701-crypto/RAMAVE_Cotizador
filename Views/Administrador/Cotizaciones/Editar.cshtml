@@ -226,7 +226,7 @@
         };
 
         try {
-            const response = await fetch(`/api/Cotizador/${idVal}`, { 
+            const response = await fetch(/api/Cotizador/${idVal}, { 
                 method: 'PUT',
                 headers: { 
                     'Content-Type': 'application/json',
@@ -239,7 +239,7 @@
 
             if (response.ok) {
                 const costo = result.data.totalPublico || result.data.TotalPublico || "0.00";
-                alert(`¡Éxito!\n${result.mensaje}\nNuevo Total: $${costo}`);
+                alert(¡Éxito!\n${result.mensaje}\nNuevo Total: $${costo});
                 window.location.href = '/Administrador/Cotizaciones';
             } else {
                 throw new Error(result.mensaje || "Error en el servidor");

@@ -1365,13 +1365,25 @@ namespace RAMAVE_Cotizador.Controllers
 
             return Ok(new { mensaje = "Cotización actualizada y recalculada con éxito", data = model });
         }
-        [HttpPost("CrearPresupuesto")]
-        public async Task<IActionResult> CrearPresupuesto([FromBody] string nombre)
+        // Clase de apoyo para recibir los datos del Front-end
+        public class PresupuestoRequest
         {
+            public string Nombre { get; set; } = string.Empty;
+            public int UsuarioId { get; set; }
+        }
+
+        [HttpPost("CrearPresupuesto")]
+        public async Task<IActionResult> CrearPresupuesto([FromBody] PresupuestoRequest request)
+        {
+            if (string.IsNullOrEmpty(request.Nombre) || request.Nombre == "string")
+                return BadRequest("El nombre del cliente es obligatorio.");
+
             var p = new Presupuesto { 
-                NombreCliente = nombre, 
-                FechaCreacion = DateTime.Now 
+                NombreCliente = request.Nombre, 
+                FechaCreacion = DateTime.Now,
+                UsuarioId = request.UsuarioId // <--- Aquí ya guardamos quién lo hizo
             };
+
             _context.Presupuestos.Add(p);
             await _context.SaveChangesAsync();
 
@@ -1381,7 +1393,8 @@ namespace RAMAVE_Cotizador.Controllers
         public async Task<IActionResult> GetReporte(int presupuestoId)
         {
             var reporte = await _context.Presupuestos
-                .Include(p => p.Partidas) // Esto trae todas las cortinas asociadas
+            
+                .Include(p => p.Cotizaciones) // Esto trae todas las cortinas asociadas
                 .FirstOrDefaultAsync(p => p.Id == presupuestoId);
 
             if (reporte == null) return NotFound("No existe ese presupuesto");
@@ -1392,20 +1405,20 @@ namespace RAMAVE_Cotizador.Controllers
         public async Task<IActionResult> GetPresupuestoCompleto(int id)
         {
             var presupuesto = await _context.Presupuestos
-                .Include(p => p.Partidas) 
+                .Include(p => p.Cotizaciones) // Esto trae todas las cortinas asociadas         
                 .FirstOrDefaultAsync(p => p.Id == id);
 
             if (presupuesto == null) 
                 return NotFound(new { mensaje = "Presupuesto no encontrado" });
 
-            presupuesto.TotalPresupuesto = presupuesto.Partidas.Sum(c => c.TotalPublico);
+            presupuesto.TotalPresupuesto = presupuesto.Cotizaciones.Sum(c => c.TotalPublico);
 
             return Ok(new {
                 cliente = presupuesto.NombreCliente,
                 fecha = presupuesto.FechaCreacion,
                 totalGlobal = presupuesto.TotalPresupuesto,
                 observaciones = presupuesto.Observaciones,
-                detalleCortinas = presupuesto.Partidas.Select(c => new {
+                detalleCortinas = presupuesto.Cotizaciones.Select(c => new {
                     // 1. DATOS GENERALES Y DISEÑO
                     c.Id,
                     c.Area,
@@ -1507,6 +1520,28 @@ namespace RAMAVE_Cotizador.Controllers
                     totalPartidaVerificacion = c.TotalPublico 
                 })
             });
+        }
+        [HttpGet("HistorialCompleto")]
+        public async Task<IActionResult> GetHistorialCompleto([FromQuery] int usuarioId, [FromQuery] string rol)
+        {
+            // 1. Iniciamos la consulta en Presupuestos e INCLUIMOS sus Cotizaciones
+            var query = _context.Presupuestos
+                .Include(p => p.Cotizaciones) // Esto trae la lista de cortinas de cada presupuesto
+                .AsQueryable();
+
+            // 2. Filtro de Seguridad para Tienda y Distribuidor
+            // El Administrador se salta esto y ve todo.
+            if (rol == "Tienda" || rol == "Distribuidor")
+            {
+                query = query.Where(p => p.UsuarioId == usuarioId);
+            }
+
+            // 3. Ejecutamos y ordenamos
+            var resultados = await query
+                .OrderByDescending(p => p.FechaCreacion)
+                .ToListAsync();
+
+            return Ok(resultados);
         }
     }
 }

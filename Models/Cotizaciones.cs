@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 
 namespace RAMAVE_Cotizador.Models
@@ -99,10 +100,13 @@ namespace RAMAVE_Cotizador.Models
         public decimal CostoCarritos { get; set; } = 0m;
         public decimal CostoCarritoCortinero { get; set; } = 0m;
         public decimal CostoGanchoFinal { get; set; } = 0m;
+        [NotMapped] // Esto le dice a EF: "No busques esta columna en la tabla Cotizaciones"
+        public string? NombreCliente { get; set; }
 
-        public int? PresupuestoId { get; set; }
+        public int PresupuestoId { get; set; } 
 
         [ForeignKey("PresupuestoId")]
+        [JsonIgnore]
         public virtual Presupuesto? Presupuesto { get; set; }
     }
 }

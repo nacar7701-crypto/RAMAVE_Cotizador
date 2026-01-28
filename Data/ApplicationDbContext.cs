@@ -18,5 +18,16 @@ namespace RAMAVE_Cotizador.Data
         public DbSet<Cotizaciones> Cotizaciones { get; set; }
         public DbSet<ConfigSoportes> ConfigSoportes { get; set; }
         public DbSet<Presupuesto> Presupuestos { get; set; }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+{
+    base.OnModelCreating(modelBuilder);
+
+    // Esto le explica a EF exactamente cómo se llevan estas dos tablas
+modelBuilder.Entity<Cotizaciones>()
+    .HasOne(c => c.Presupuesto)
+    .WithMany(p => p.Cotizaciones)
+    .HasForeignKey(c => c.PresupuestoId); // Esto obliga a usar la columna que YA existe
+}
     }
+    
 }

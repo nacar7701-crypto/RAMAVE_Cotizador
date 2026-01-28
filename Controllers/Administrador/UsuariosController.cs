@@ -28,7 +28,7 @@ namespace RAMAVE_Cotizador.Controllers
                 return Unauthorized(new { mensaje = "Correo o contraseña incorrectos" });
             }
 
-            return Ok(new { mensaje = "¡Bienvenido!", usuario = usuario.nombre, rol = usuario.rol });
+            return Ok(new { mensaje = "¡Bienvenido!", usuario = usuario.nombre, rol = usuario.rol, id = usuario.id });
         }
 
         // 2. REGISTRAR 
