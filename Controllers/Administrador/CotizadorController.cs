@@ -418,6 +418,7 @@ namespace RAMAVE_Cotizador.Controllers
 
                 // COSTO TOTAL CORTINERO FIJO
                 model.CostoTotalCortinero = 2335.00m;
+                model.Motor = 2335.00m;
 
                 // --- 4. CÁLCULOS COMERCIALES (TELA Y TOTALES) ---
                 model.PrecioTelaML = tela.precio_ml_corte * 1.16m;
