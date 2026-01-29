@@ -9,7 +9,7 @@ namespace RAMAVE_Cotizador.Models
     public class Cotizaciones 
     {
         [Key] public int Id { get; set; }
-        public int IdTela { get; set; }
+        public int? IdTela { get; set; }
         public string? Catalogo { get; set; } = string.Empty;
         public string? Marca { get; set; } = string.Empty;
         public string? Modelo { get; set; } = string.Empty;
@@ -103,7 +103,7 @@ namespace RAMAVE_Cotizador.Models
         [NotMapped] // Esto le dice a EF: "No busques esta columna en la tabla Cotizaciones"
         public string? NombreCliente { get; set; }
 
-        public int PresupuestoId { get; set; } 
+        public int? PresupuestoId { get; set; } 
 
         [ForeignKey("PresupuestoId")]
         [JsonIgnore]

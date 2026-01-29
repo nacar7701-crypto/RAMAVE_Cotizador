@@ -488,15 +488,30 @@
 
     async function crearPresupuestoBase() {
         const nombre = document.getElementById('Cliente').value;
+
+        // Suponiendo que guardas el UsuarioId en SessionStorage al hacer login
+        // Si no, puedes pasarlo desde el ViewBag en el HTML a una variable global
+        const userId = @(Context.Session.GetInt32("UsuarioId") ?? 0);
+
+        const requestBody = {
+            Nombre: nombre,
+            UsuarioId: userId
+        };
+
         const res = await fetch('/api/Cotizador/CrearPresupuesto', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(nombre)
+            body: JSON.stringify(requestBody) // Enviamos el objeto completo
         });
-        const data = await res.json();
-        pId = data.id;
-        localStorage.setItem('pId', pId);
-        actualizarUI();
+
+        if (res.ok) {
+            const data = await res.json();
+            pId = data.id;
+            localStorage.setItem('pId', pId);
+            actualizarUI();
+        } else {
+            alert("Error al crear el folio del presupuesto");
+        }
     }
 
     function actualizarUI() {

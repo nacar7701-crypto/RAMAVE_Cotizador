@@ -19,8 +19,22 @@ namespace RAMAVE_Cotizador.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var lista = await _context.Cotizaciones
-                .OrderByDescending(c => c.Id)
+            var rol = HttpContext.Session.GetString("UsuarioRol")?.Trim();
+            var usuarioId = HttpContext.Session.GetInt32("UsuarioId");
+
+            if (string.IsNullOrEmpty(rol)) return RedirectToAction("Login", "Auth");
+
+            // Cargamos cotizaciones e incluimos la tabla Presupuesto para saber quién es el dueño
+            IQueryable<Cotizaciones> query = _context.Cotizaciones.Include(c => c.Presupuesto);
+
+            // FILTRO LÓGICO: Si no es Admin, solo ve lo que su UsuarioId creó en Presupuestos
+            if (rol != "Administrador")
+            {
+                query = query.Where(x => x.Presupuesto != null && x.Presupuesto.UsuarioId == usuarioId);
+            }
+
+            var lista = await query
+                .OrderByDescending(x => x.PresupuestoId)
                 .ToListAsync();
 
             return View("~/Views/Administrador/Cotizaciones/Index.cshtml", lista);

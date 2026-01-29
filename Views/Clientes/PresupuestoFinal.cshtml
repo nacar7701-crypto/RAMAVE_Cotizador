@@ -1,0 +1,170 @@
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    ViewData["Title"] = "Presupuesto Maestro Detallado";
+    var usuarioRol = HttpContextAccessor.HttpContext.Session.GetString("UsuarioRol") ?? "Publico";
+}
+
+<style>
+    @@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+    :root {
+        --ramave-red: #c62828;
+        --ramave-dark: #8e0000;
+        --bg-body: #f0f2f5;
+        --text-main: #1a1a1a;
+        --border-color: #e0e0e0;
+    }
+
+    body { background-color: var(--bg-body); font-family: 'Inter', sans-serif; color: var(--text-main); font-size: 0.85rem; margin: 0; }
+    .wrapper { width: 100%; padding: 20px; box-sizing: border-box; }
+    .budget-container { background: white; border-radius: 10px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); padding: 25px; border-top: 5px solid var(--ramave-red); }
+
+    .header-logo-row { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--ramave-red); padding-bottom: 15px; margin-bottom: 20px; }
+    .logo-img { max-width: 150px; height: auto; }
+    .company-info h1 { color: var(--ramave-red); margin: 0; font-size: 1.5rem; font-weight: 800; text-transform: uppercase; }
+
+    .client-data-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding: 15px; background: #fdf2f2; border-radius: 8px; margin-bottom: 25px; }
+    .data-label { font-size: 0.7rem; font-weight: 800; color: #777; text-transform: uppercase; display: block; }
+    .data-value { font-size: 1rem; font-weight: 700; color: #222; }
+
+    /* DISEÑO DE PARTIDAS EN DOS COLUMNAS */
+    .partida-card { border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; margin-bottom: 30px; background: white; }
+    .partida-title { background: var(--ramave-red); color: white; padding: 10px 15px; font-weight: 700; font-size: 0.9rem; text-transform: uppercase; }
+    
+    .grid-info { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+    .info-column { border-right: 1px solid var(--border-color); }
+    .info-column:last-child { border-right: none; }
+
+    .inner-table { width: 100%; border-collapse: collapse; }
+    .inner-table th { background: #f8f9fa; color: #666; font-weight: 600; text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--border-color); width: 50%; text-transform: uppercase; font-size: 0.65rem; }
+    .inner-table td { padding: 8px 12px; font-weight: 700; color: #222; border-bottom: 1px solid var(--border-color); text-align: right; font-size: 0.8rem; }
+
+    .row-highlight { background: #fff5f5; }
+    .row-total { background: #333 !important; }
+    .row-total th, .row-total td { color: white !important; font-size: 0.9rem !important; padding: 12px !important; }
+
+    .grand-total-section { background: var(--ramave-dark); color: white; padding: 25px; border-radius: 10px; margin-top: 20px; text-align: center; }
+    .btn-main { padding: 8px 16px; border-radius: 6px; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; background: #eee; color: #333; border: none; }
+    
+    @@media print {
+        .no-print { display: none !important; }
+        .budget-container { box-shadow: none !important; border: none !important; padding: 0 !important; }
+        .partida-card { page-break-inside: avoid; }
+    }
+</style>
+
+<div class="wrapper">
+    <div class="budget-container">
+        <div class="header-logo-row">
+            <img src="/images/logoramave.jpg" alt="RAMAVE" class="logo-img">
+            <div class="company-info">
+                <h1>Detalle de Presupuesto</h1>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center mb-4 no-print">
+            <a href="javascript:history.back()" class="btn-main"><span>⬅</span> Regresar</a>
+            <button class="btn-main" style="background: var(--ramave-red); color: white;" onclick="window.print()"><span>📄</span> Descargar PDF</button>
+        </div>
+
+        <div class="client-data-grid">
+            <div>
+                <span class="data-label">Folio</span>
+                <span class="data-value" id="pdf-folio">...</span>
+                <div style="margin-top:10px">
+                    <span class="data-label">Cliente</span>
+                    <span class="data-value" id="pdf-cliente">...</span>
+                </div>
+            </div>
+            <div style="text-align: right;">
+                <span class="data-label">Fecha Emisión</span>
+                <span class="data-value" id="pdf-fecha">...</span>
+                <div style="margin-top:10px">
+                    <span class="data-label">Tipo de Tarifa Aplicada</span>
+                    <span class="data-value" style="color: var(--ramave-red)">@usuarioRol</span>
+                </div>
+            </div>
+        </div>
+
+        <div id="listaPartidas"></div>
+
+        <div class="grand-total-section">
+            <div class="small fw-bold opacity-75 text-uppercase">Total General Neto</div>
+            <h2 id="totalFinal" class="mb-0 fw-bold" style="font-size: 2.2rem;">$0.00</h2>
+        </div>
+    </div>
+</div>
+
+<script>
+    const ROL = "@usuarioRol";
+
+    async function cargarDatos() {
+        const id = window.location.pathname.split('/').pop();
+        const res = await fetch(`/api/Cotizador/PresupuestoCompleto/${id}`);
+        const data = await res.json();
+        
+        document.getElementById('pdf-folio').innerText = "#" + id.toString().padStart(5, '0');
+        document.getElementById('pdf-cliente').innerText = data.cliente;
+        document.getElementById('pdf-fecha').innerText = new Date(data.fecha).toLocaleDateString('es-MX', { day: '2-digit', month: 'long', year: 'numeric' });
+
+        const contenedor = document.getElementById('listaPartidas');
+        let sumaTotalPresupuesto = 0;
+
+        data.detalleCortinas.forEach((c, i) => {
+            let pCortinero = 0;
+            let pCortina = 0;
+
+            // Selección de precios según ROL
+            if (ROL === "Administrador") {
+                pCortinero = c.costoTotalCortinero;
+                pCortina = c.costoTotalCortina;
+            } else if (ROL === "Distribuidor") {
+                pCortinero = c.precioCortineroDistribuidor;
+                pCortina = c.precioCortinaDistribuidor;
+            } else {
+                pCortinero = c.precioCortineroPublico;
+                pCortina = c.precioCortinaPublico;
+            }
+
+            let subtotal = pCortinero + pCortina;
+            sumaTotalPresupuesto += subtotal;
+
+            const partidaDiv = document.createElement('div');
+            partidaDiv.className = "partida-card";
+            partidaDiv.innerHTML = `
+                <div class="partida-title">Partida ${i + 1} - Área: ${c.area}</div>
+                <div class="grid-info">
+                    <div class="info-column">
+                        <table class="inner-table">
+                            <tr><th>Tipo de Cortina</th><td>${c.tipoCortina}</td></tr>
+                            <tr><th>Modelo / Tela</th><td>${c.modelo || 'N/A'}</td></tr>
+                            <tr><th>% de Onda</th><td>${c.porcentajeOnda}%</td></tr>
+                            <tr><th>Tipo</th><td>${c.tipo}</td></tr>
+                            <tr><th>Ancho</th><td>${c.ancho} m</td></tr>
+                            <tr><th>Alto</th><td>${c.alto} m</td></tr>
+                            <tr><th>Superficie</th><td>${c.m2} m²</td></tr>
+                        </table>
+                    </div>
+                    <div class="info-column">
+                        <table class="inner-table">
+                            <tr><th>Sistema</th><td>${c.sistema}</td></tr>
+                            <tr><th>Acoplamiento</th><td>${c.acoplamiento}</td></tr>
+                            <tr><th>Instalación</th><td>${c.instalacion}</td></tr>
+                            <tr><th>Apertura</th><td>${c.tipoApertura}</td></tr>
+                            <tr class="row-highlight"><th>Costo Cortinero</th><td>${fM(pCortinero)}</td></tr>
+                            <tr class="row-highlight"><th>Costo Cortina</th><td>${fM(pCortina)}</td></tr>
+                            <tr class="row-total"><th>Total Partida</th><td>${fM(subtotal)}</td></tr>
+                        </table>
+                    </div>
+                </div>
+            `;
+            contenedor.appendChild(partidaDiv);
+        });
+
+        document.getElementById('totalFinal').innerText = fM(sumaTotalPresupuesto);
+    }
+
+    function fM(v) { return (v || 0).toLocaleString('es-MX', { style: 'currency', currency: 'MXN' }); }
+    document.addEventListener("DOMContentLoaded", cargarDatos);
+</script>

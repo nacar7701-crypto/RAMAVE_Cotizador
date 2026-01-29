@@ -35,6 +35,8 @@ builder.Services.AddCors(options =>
     });
 });
 
+builder.Services.AddHttpContextAccessor();
+
 var app = builder.Build();
 
 // 🔹 PIPELINE
@@ -68,3 +70,4 @@ app.MapControllerRoute(
     pattern: "{controller=Auth}/{action=Login}/{id?}");
 
 app.Run();
+

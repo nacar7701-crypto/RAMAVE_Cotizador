@@ -231,7 +231,7 @@
                         <td class="col-base">
                             <div class="col-header">Datos Base</div>
                             <table class="inner-table">
-                                <tr><th>Tipo</th><td>${c.tipoCortina}</td></tr>
+                                <tr><th>Tipo de Cortina</th><td>${c.tipoCortina}</td></tr>
                                 <tr><th>Porcentaje de Onda</th><td>${c.porcentajeOnda}%</td></tr>
                                 <tr><th>Tipo</th><td>${c.tipo}</td></tr>
                                 <tr><th>Modelo</th><td>${c.modelo || 'N/A'}</td></tr>
@@ -247,13 +247,13 @@
                         <td class="col-herrajes">
                             <div class="col-header">Componentes</div>
                             <table class="inner-table">
-                                <tr><th>Lienzos</th><td>${c.totalAnchoLienzo}</td></tr>
+                                <tr><th>Ancho de Lienzo</th><td>${c.totalAnchoLienzo}</td></tr>
                                 <tr><th>ML Compra</th><td class="text-red">${c.mlComprar} m</td></tr>
                                 <tr><th>Altura Exacta</th><td class="text-red">${c.totalAltura} m</td></tr>
                             </table>
                         </td>
                         <td class="col-precios">
-                            <div class="col-header">Precios Unit.</div>
+                            <div class="col-header">Motor.</div>
                             <table class="inner-table">
                                 <tr><th>Motor</th><td>${fM(c.motor)}</td></tr>
                             </table>

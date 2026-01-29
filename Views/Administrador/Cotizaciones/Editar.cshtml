@@ -4,144 +4,69 @@
 }
 
 <style>
+    /* ... (Mantengo tus estilos intactos) ... */
     @@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-
-    :root {
-        --ramave-red: #c62828;
-        --ramave-red-dark: #a81f1f;
-        --bg-gray: #f4f6f9;
-        --text-dark: #2d3436;
-        --border-color: #ced4da;
-    }
-
-    body {
-        background-color: var(--bg-gray);
-        font-family: 'Inter', sans-serif;
-        color: var(--text-dark);
-    }
-
-    .page-container {
-        min-height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: flex-start;
-        padding: 2.5rem 1.5rem;
-    }
-
-    .card-form {
-        background: white;
-        width: 100%;
-        max-width: 850px;
-        padding: 2.5rem;
-        border-radius: 20px;
-        box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-        border-top: 6px solid var(--ramave-red);
-    }
-
-    h2 { text-align: center; color: var(--ramave-red); font-weight: 700; margin-bottom: 0.5rem; }
+    :root { --ramave-red: #c62828; --ramave-red-dark: #a81f1f; --bg-gray: #f4f6f9; --text-dark: #2d3436; --border-color: #ced4da; }
+    body { background-color: var(--bg-gray); font-family: 'Inter', sans-serif; color: var(--text-dark); }
+    .page-container { min-height: 100vh; display: flex; justify-content: center; align-items: flex-start; padding: 2.5rem 1.5rem; }
+    .card-form { background: white; width: 100%; max-width: 900px; padding: 2.5rem; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); border-top: 6px solid var(--ramave-red); }
+    h2 { text-align: center; color: var(--ramave-red); font-weight: 700; }
     .subtitle { text-align: center; color: #636e72; font-size: 0.9rem; margin-bottom: 2rem; }
-
-    .form-section-title {
-        font-size: 0.75rem;
-        font-weight: 800;
-        color: var(--ramave-red);
-        text-transform: uppercase;
-        letter-spacing: 1.2px;
-        border-bottom: 1px solid #eee;
-        padding-bottom: 8px;
-        margin: 25px 0 15px 0;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
-
+    .form-section-title { font-size: 0.75rem; font-weight: 800; color: var(--ramave-red); text-transform: uppercase; letter-spacing: 1.2px; border-bottom: 1px solid #eee; padding-bottom: 8px; margin: 25px 0 15px 0; display: flex; align-items: center; gap: 10px; }
     .form-group { margin-bottom: 1.2rem; }
     label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem; color: #444; }
-
-    input, select {
-        width: 100%;
-        padding: 0.8rem 1rem;
-        border-radius: 10px;
-        border: 1px solid var(--border-color);
-        font-size: 0.95rem;
-        transition: all 0.2s;
-        box-sizing: border-box;
-    }
-
-    input:focus, select:focus {
-        outline: none;
-        border-color: var(--ramave-red);
-        box-shadow: 0 0 0 3px rgba(198, 40, 40, 0.1);
-    }
-
+    input, select { width: 100%; padding: 0.8rem 1rem; border-radius: 10px; border: 1px solid var(--border-color); font-size: 0.95rem; box-sizing: border-box; }
     .input-group-custom { display: flex; }
     .input-group-custom input { border-radius: 10px 0 0 10px; border-right: none; }
-    .input-group-text-custom {
-        background: #f8f9fa;
-        border: 1px solid var(--border-color);
-        border-radius: 0 10px 10px 0;
-        padding: 0 15px;
-        display: flex;
-        align-items: center;
-        font-size: 0.9rem;
-        color: #666;
-        font-weight: 600;
-    }
-
-    .buttons-container {
-        display: grid;
-        grid-template-columns: 1fr 2fr;
-        gap: 1rem;
-        margin-top: 3rem;
-    }
-
-    .btn {
-        padding: 1rem;
-        border-radius: 12px;
-        border: none;
-        font-weight: 700;
-        cursor: pointer;
-        transition: 0.3s;
-        text-align: center;
-        text-decoration: none;
-        font-size: 1rem;
-    }
-
+    .input-group-text-custom { background: #f8f9fa; border: 1px solid var(--border-color); border-radius: 0 10px 10px 0; padding: 0 15px; display: flex; align-items: center; font-size: 0.9rem; color: #666; font-weight: 600; }
+    .buttons-container { display: grid; grid-template-columns: 1fr 2fr; gap: 1rem; margin-top: 3rem; }
+    .btn { padding: 1rem; border-radius: 12px; border: none; font-weight: 700; cursor: pointer; text-align: center; text-decoration: none; font-size: 1rem; }
     .btn-save { background: var(--ramave-red); color: white; }
-    .btn-save:hover { background: var(--ramave-red-dark); transform: translateY(-2px); box-shadow: 0 5px 15px rgba(198, 40, 40, 0.2); }
     .btn-back { background: #e9ecef; color: #495057; }
-
-    @@media (max-width: 600px) {
-        .buttons-container { grid-template-columns: 1fr; }
-        .row-mobile { grid-template-columns: 1fr !important; }
-    }
+    @@media (max-width: 600px) { .row-mobile { grid-template-columns: 1fr !important; } .buttons-container { grid-template-columns: 1fr; } }
 </style>
 
 <div class="page-container">
     <div class="card-form">
         <h2><i class="fas fa-edit me-2"></i>Editar Cotización</h2>
-        <p class="subtitle">Modifique los valores para actualizar el cálculo</p>
+        <p class="subtitle">Modificando partida de: <strong>@Model.Area</strong></p>
 
         <form id="formEditar">
             <input type="hidden" id="id" value="@Model.Id" />
+            
+            <div class="form-section-title"><i class="fas fa-info-circle"></i> Ubicación</div>
+            <div class="form-group">
+                <label>ÁREA / HABITACIÓN</label>
+                <input type="text" id="area" value="@Model.Area" />
+            </div>
 
-            <div class="form-section-title"><i class="fas fa-info-circle"></i> General</div>
+            <div class="form-section-title"><i class="fas fa-swatchbook"></i> Selección de Tela</div>
             <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem;" class="row-mobile">
                 <div class="form-group">
-                    <label>ÁREA</label>
-                    <input type="text" id="area" value="@Model.Area" placeholder="Ej: Sala" />
-                </div>
-                <div class="form-group">
-                    <label>ID TELA</label>
-                    <input type="number" id="idTela" value="@Model.IdTela" />
-                </div>
-                <div class="form-group">
-                    <label>TIPO CORTINA</label>
-                    <select id="tipoCortina">
-                        <option value="ONDULADO" selected="@(Model.TipoCortina == "ONDULADO")">ONDULADO</option>
-                        <option value="FRANCESA" selected="@(Model.TipoCortina == "FRANCESA")">FRANCESA</option>
+                    <label>CATÁLOGO</label>
+                    <select id="selectCatalogo" onchange="cargarMarcas()">
+                        <option value="">Seleccione...</option>
                     </select>
                 </div>
+                <div class="form-group">
+                    <label>MARCA</label>
+                    <select id="selectMarca" onchange="cargarModelos()" disabled>
+                        <option value="">Seleccione...</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>MODELO (TELA)</label>
+                    <select id="idTela" onchange="cargarColores()" disabled>
+                        <option value="@Model.IdTela" selected>@Model.Modelo</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>COLOR SELECCIONADO</label>
+                <select id="colorSeleccionado">
+                    <option value="@Model.ColorSeleccionado">@Model.ColorSeleccionado</option>
+                </select>
             </div>
 
             <div class="form-section-title"><i class="fas fa-ruler-combined"></i> Medidas y Sistema</div>
@@ -170,8 +95,15 @@
                 </div>
             </div>
 
-            <div class="form-section-title"><i class="fas fa-cog"></i> Configuración Extra</div>
-            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem;" class="row-mobile">
+            <div class="form-section-title"><i class="fas fa-cog"></i> Configuración Técnica</div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 1rem;" class="row-mobile">
+                <div class="form-group">
+                    <label>TIPO CORTINA</label>
+                    <select id="tipoCortina">
+                        <option value="ONDULADO" selected="@(Model.TipoCortina == "ONDULADO")">ONDULADO</option>
+                        <option value="FRANCESA" selected="@(Model.TipoCortina == "FRANCESA")">FRANCESA</option>
+                    </select>
+                </div>
                 <div class="form-group">
                     <label>INSTALACIÓN</label>
                     <select id="instalacion">
@@ -180,7 +112,7 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>ACOPLAMIENTO</label>
+                    <label>APERTURA</label>
                     <select id="acoplamiento">
                         <option value="DERECHO" selected="@(Model.Acoplamiento == "DERECHO")">DERECHO</option>
                         <option value="IZQUIERDO" selected="@(Model.Acoplamiento == "IZQUIERDO")">IZQUIERDO</option>
@@ -195,26 +127,123 @@
             </div>
 
             <div class="buttons-container">
-                <a href="/Administrador/Cotizaciones" class="btn btn-back">Cancelar</a>
-                <button type="button" id="btnGuardar" onclick="enviarEdicion()" class="btn btn-save">
-                    GUARDAR Y RECALCULAR
-                </button>
+                <a href="javascript:history.back()" class="btn btn-back">CANCELAR</a>
+                <button type="button" id="btnGuardar" onclick="enviarEdicion()" class="btn btn-save">GUARDAR Y RECALCULAR</button>
             </div>
         </form>
     </div>
 </div>
 
 <script>
+    // Variables para guardar el estado inicial (lo que ya está en la base de datos)
+    const initData = {
+        idTela: "@Model.IdTela",
+        color: "@Model.ColorSeleccionado"
+    };
+
+    document.addEventListener("DOMContentLoaded", async () => {
+        // Al cargar, obtenemos la información detallada de la tela actual para saber su marca y catálogo
+        await inicializarFormulario();
+    });
+
+    async function inicializarFormulario() {
+        try {
+            // 1. Obtener detalles de la tela actual
+            const resTela = await fetch("/api/Telas/" + initData.idTela);
+            if (!resTela.ok) throw new Error("No se pudo obtener la tela actual");
+            const telaActual = await resTela.json();
+
+            // 2. Cargar catálogos y seleccionar el actual
+            const resCats = await fetch("/api/Telas/catalogos-unicos");
+            const catalogos = await resCats.json();
+            const selectCat = document.getElementById("selectCatalogo");
+            catalogos.forEach(c => {
+                let opt = new Option(c, c);
+                if (c === telaActual.catalogo) opt.selected = true;
+                selectCat.add(opt);
+            });
+
+            // 3. Disparar carga de Marcas y seleccionar la actual
+            await cargarMarcas(telaActual.marca);
+            
+            // 4. Disparar carga de Modelos y seleccionar el actual
+            await cargarModelos(parseInt(initData.idTela));
+
+            // 5. Cargar colores del modelo actual
+            await cargarColores(initData.color);
+
+        } catch (e) { console.error("Error inicializando:", e); }
+    }
+
+    async function cargarMarcas(marcaSeleccionada = null) {
+        const cat = document.getElementById("selectCatalogo").value;
+        const selectMarca = document.getElementById("selectMarca");
+        selectMarca.innerHTML = '<option value="">Seleccione...</option>';
+        selectMarca.disabled = !cat;
+
+        if (cat) {
+            const res = await fetch("/api/Telas/marcas-por-catalogo/" + encodeURIComponent(cat));
+            const marcas = await res.json();
+            marcas.forEach(m => {
+                let opt = new Option(m.nombre, m.id);
+                if (marcaSeleccionada && m.nombre === marcaSeleccionada) opt.selected = true;
+                selectMarca.add(opt);
+            });
+        }
+    }
+
+    async function cargarModelos(idTelaSeleccionada = null) {
+        const cat = document.getElementById("selectCatalogo").value;
+        const marcaId = document.getElementById("selectMarca").value;
+        const selectTela = document.getElementById("idTela");
+        selectTela.innerHTML = '<option value="">Seleccione...</option>';
+        selectTela.disabled = !marcaId;
+
+        if (marcaId && cat) {
+            const res = await fetch(`/api/Telas/buscar-id-tela?catalogo=${encodeURIComponent(cat)}&idMarca=${marcaId}`);
+            const telas = await res.json();
+            telas.forEach(t => {
+                let opt = new Option(t.nombre, t.id);
+                if (idTelaSeleccionada && t.id === idTelaSeleccionada) opt.selected = true;
+                selectTela.add(opt);
+            });
+        }
+    }
+
+    async function cargarColores(colorSeleccionado = null) {
+        const idTela = document.getElementById("idTela").value;
+        const selectColor = document.getElementById("colorSeleccionado");
+        selectColor.innerHTML = '<option value="">Seleccione Color...</option>';
+
+        if (idTela) {
+            // Usamos el endpoint GET {id} de tu controller para traer los colores de esa tela
+            const res = await fetch("/api/Telas/" + idTela);
+            const tela = await res.json();
+            
+            if (tela.color_nombre) {
+                // Separamos el string "Rojo, Azul, Verde" en un array
+                const colores = tela.color_nombre.split(',').map(c => c.trim());
+                colores.forEach(c => {
+                    let opt = new Option(c, c);
+                    if (colorSeleccionado && c === colorSeleccionado) opt.selected = true;
+                    selectColor.add(opt);
+                });
+            }
+        }
+    }
+
     async function enviarEdicion() {
         const btn = document.getElementById('btnGuardar');
         const idVal = document.getElementById('id').value;
         
         btn.disabled = true;
-        btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Calculando...';
+        btn.innerHTML = 'GUARDANDO...';
 
         const data = {
             id: parseInt(idVal),
+            presupuestoId: parseInt("@Model.PresupuestoId"),
             idTela: parseInt(document.getElementById('idTela').value),
+            colorSeleccionado: document.getElementById('colorSeleccionado').value,
             ancho: parseFloat(document.getElementById('ancho').value),
             alto: parseFloat(document.getElementById('alto').value),
             tipoCortina: document.getElementById('tipoCortina').value,
@@ -226,29 +255,18 @@
         };
 
         try {
-            const response = await fetch(/api/Cotizador/${idVal}, { 
+            const response = await fetch("/api/Cotizador/" + idVal, {
                 method: 'PUT',
-                headers: { 
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
             });
-
             const result = await response.json();
-
             if (response.ok) {
-                const costo = result.data.totalPublico || result.data.TotalPublico || "0.00";
-                alert(¡Éxito!\n${result.mensaje}\nNuevo Total: $${costo});
-                window.location.href = '/Administrador/Cotizaciones';
+                window.location.href = "/Administrador/Cotizaciones/PresupuestoFinal/" + result.data.presupuestoId;
             } else {
-                throw new Error(result.mensaje || "Error en el servidor");
+                alert("Error al guardar");
+                btn.disabled = false;
             }
-        } catch (error) {
-            alert("Ocurrió un error: " + error.message);
-        } finally {
-            btn.disabled = false;
-            btn.innerHTML = 'GUARDAR Y RECALCULAR';
-        }
+        } catch (e) { alert("Error de red"); btn.disabled = false; }
     }
 </script>

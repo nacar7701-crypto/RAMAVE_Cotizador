@@ -1,8 +1,19 @@
-@model IEnumerable<RAMAVE_Cotizador.Models.Cotizaciones>
+@model IEnumerable<RAMAVE_Cotizador.Models.Presupuesto>
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
 
 @{
     ViewData["Title"] = "Mi Historial de Cotizaciones";
-    int? ultimoPresupuestoId = null;
+    
+    // Obtenemos el rol de la sesión
+    var rol = HttpContextAccessor.HttpContext.Session.GetString("UsuarioRol")?.Trim();
+    
+    // Definimos qué precio mostrar según el rol
+    string etiquetaPrecio = "Total Público"; // Por defecto
+    if (rol == "Distribuidor")
+    {
+        etiquetaPrecio = "Total Distribuidor";
+    }
 }
 
 <style>
@@ -59,12 +70,20 @@
         text-decoration: none; font-size: 0.8rem; display: inline-flex; align-items: center; gap: 5px;
     }
     .btn-gray { background: #e0e0e0; color: #333; }
+    .date-text { font-size: 0.75rem; color: #888; font-weight: 400; margin-left: 10px; }
+    
+    .role-indicator {
+        font-size: 0.7rem; background: #eee; padding: 2px 8px; border-radius: 4px; color: #666; font-weight: normal;
+    }
 </style>
 
 <div class="wrapper">
     <div class="header-panel">
         <div class="header-top-row">
-            <h2><i class="fas fa-history"></i> Mi Historial</h2>
+            <h2>
+                <i class="fas fa-history"></i> Mi Historial 
+                <span class="role-indicator">Sesión: @rol</span>
+            </h2>
             <a href="@Url.Action("Index", "Clientes")" class="btn-main btn-gray">
                 <i class="fas fa-chevron-left"></i> Volver al Menú
             </a>
@@ -80,77 +99,89 @@
                     <th>Información Técnica</th>
                     <th>Detalles Producto</th>
                     <th>Medidas</th>
-                    <th>Total Público</th>
-                    <th style="width: 80px;">Acción</th>
+                    <th>@etiquetaPrecio</th> @* Encabezado Dinámico *@
+                    <th style="width: 100px;">Acción</th>
                 </tr>
             </thead>
             <tbody id="listaCotizaciones">
-                @if (!Model.Any())
+                @if (Model == null || !Model.Any())
                 {
                     <tr><td colspan="5" style="text-align:center; padding: 40px; color: #888;">No tienes cotizaciones registradas.</td></tr>
                 }
-
-                @foreach (var item in Model)
+                else
                 {
-                    if (ultimoPresupuestoId != item.PresupuestoId)
+                    @foreach (var presupuesto in Model)
                     {
-                        <tr class="group-header" data-folio="@item.PresupuestoId">
+                        <tr class="group-header" data-searchable="@presupuesto.NombreCliente @presupuesto.Id">
                             <td colspan="5">
-                                <span class="folio-badge">FOLIO #@item.PresupuestoId</span>
-                                <span style="color: #333;">Proyecto: <strong>@item.Cliente</strong></span>
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <div>
+                                        <span class="folio-badge">FOLIO #@presupuesto.Id</span>
+                                        <span style="color: #333;">Proyecto: <strong>@presupuesto.NombreCliente</strong></span>
+                                        <span class="date-text">@presupuesto.FechaCreacion.ToString("dd/MM/yyyy HH:mm")</span>
+                                    </div>
+                                    <div style="margin-right: 15px;">
+                                        <a href="@Url.Action("PresupuestoFinal", "Clientes", new { id = presupuesto.Id })" style="color: var(--ramave-red); text-decoration: none; font-size: 0.8rem;">
+                                            <i class="fas fa-file-pdf"></i> VER PDF COMPLETO
+                                        </a>
+                                    </div>
+                                </div>
                             </td>
                         </tr>
-                        ultimoPresupuestoId = item.PresupuestoId;
+
+                        foreach (var item in presupuesto.Cotizaciones)
+                        {
+                            @* Lógica de valor de precio por partida *@
+                            decimal precioAMostrar = (rol == "Distribuidor") 
+                                ? (item.PrecioCortinaDistribuidor + item.PrecioCortineroDistribuidor) 
+                                : item.TotalPublico;
+
+                            <tr class="fila-cotizacion" data-parent-folio="@presupuesto.Id">
+                                <td>
+                                    <div><strong>@item.Area</strong></div>
+                                    <div style="font-size: 0.75rem; color: #666;">@item.Sistema | @item.TipoCortina</div>
+                                </td>
+                                <td>
+                                    <div>@item.Marca - @item.Modelo</div>
+                                    <div style="font-size: 0.75rem; color: #666;">Color: @(item.ColorSeleccionado ?? "N/A")</div>
+                                </td>
+                                <td><strong>@item.Ancho.ToString("N2") x @item.Alto.ToString("N2") m</strong></td>
+                                <td><span class="price-total">@precioAMostrar.ToString("C")</span></td>
+                                <td>
+                                    <a href="@Url.Action("Home", "Clientes", new { id = item.Id })" style="color: #666; font-weight:bold; text-decoration:none;">
+                                        <i class="fas fa-eye"></i> Detalle
+                                    </a>
+                                </td>
+                            </tr>
+                        }
                     }
-
-                    var totalPublico = item.PrecioCortinaPublico + item.PrecioCortineroPublico;
-
-                    <tr class="fila-cotizacion" data-folio="@item.PresupuestoId">
-                        <td>
-                            <div><strong>@item.Area</strong></div>
-                            <div style="font-size: 0.75rem; color: #666;">@item.Sistema | @item.TipoCortina</div>
-                        </td>
-                        <td>
-                            <div>@item.Marca - @item.Modelo</div>
-                            <div style="font-size: 0.75rem; color: #666;">Catálogo: @item.Catalogo</div>
-                        </td>
-                        <td><strong>@item.Ancho.ToString("N2") x @item.Alto.ToString("N2") m</strong></td>
-                        <td><span class="price-total">@totalPublico.ToString("C")</span></td>
-                        <td>
-                            @* El cliente solo puede ver, no editar ni borrar en el historial *@
-                            <a href="@Url.Action("Home", "Clientes", new { id = item.Id })" style="color: var(--ramave-red); font-weight:bold; text-decoration:none;">
-                                <i class="fas fa-eye"></i> Ver
-                            </a>
-                        </td>
-                    </tr>
                 }
             </tbody>
         </table>
     </div>
 </div>
 
+@* Mantenemos tu mismo script de filtrado *@
 <script>
     function filtrarTabla() {
         const query = document.getElementById('txtBuscar').value.toLowerCase().trim();
-        const filas = document.querySelectorAll('.fila-cotizacion');
         const cabeceras = document.querySelectorAll('.group-header');
-
-        filas.forEach(fila => {
-            const contenido = fila.innerText.toLowerCase();
-            const folio = fila.getAttribute('data-folio');
-            fila.style.display = (contenido.includes(query) || folio.includes(query)) ? "" : "none";
-        });
-
+        
         cabeceras.forEach(header => {
-            const folio = header.getAttribute('data-folio');
+            const infoCabecera = header.getAttribute('data-searchable').toLowerCase();
             let tieneHijosVisibles = false;
             let siguiente = header.nextElementSibling;
-            
             while (siguiente && siguiente.classList.contains('fila-cotizacion')) {
-                if (siguiente.style.display !== "none") { tieneHijosVisibles = true; break; }
+                const contenidoFila = siguiente.innerText.toLowerCase();
+                if (contenidoFila.includes(query) || infoCabecera.includes(query)) {
+                    siguiente.style.display = "";
+                    tieneHijosVisibles = true;
+                } else {
+                    siguiente.style.display = "none";
+                }
                 siguiente = siguiente.nextElementSibling;
             }
-            header.style.display = (tieneHijosVisibles || (query !== "" && folio.includes(query))) ? "" : "none";
+            header.style.display = (infoCabecera.includes(query) || tieneHijosVisibles) ? "" : "none";
         });
     }
 </script>

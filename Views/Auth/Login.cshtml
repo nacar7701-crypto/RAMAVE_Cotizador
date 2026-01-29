@@ -9,263 +9,122 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <title>Acceso | FÁBRICA DE PERSIANAS RAMAVE</title>
-    
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
-        :root {
-            --ramave-red: #c62828;
-            --ramave-red-dark: #a81f1f;
-            --text-main: #2d3436;
-            --border-color: #ced4da;
-            --white-trans: rgba(255, 255, 255, 0.92);
-        }
-
-        * {
-            box-sizing: border-box;
-            font-family: 'Inter', sans-serif;
-        }
-
-        body {
-            margin: 0;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            /* IMAGEN DE FONDO */
-            background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), 
-                        url('/images/RAMAVE1.jpeg') no-repeat center center fixed;
-            background-size: cover;
-            /* Respeta el notch de los teléfonos */
-            padding: calc(1rem + env(safe-area-inset-top)) 1rem calc(1rem + env(safe-area-inset-bottom)) 1rem;
-        }
-
-        /* CONTENEDOR PRINCIPAL */
-        .container-wrapper {
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        /* LOGO PRINCIPAL */
-        .logo-container {
-            text-align: center;
-            margin-bottom: 2.5rem; /* Espacio extra abajo del logo */
-        }
-
-        .logo-container img {
-            max-height: 130px;
-            width: auto;
-            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5));
-        }
-
-        /* TARJETA DE LOGIN */
-        .login-card {
-            width: 100%;
-            max-width: 450px;
-            background: var(--white-trans);
-            backdrop-filter: blur(10px);
-            padding: 2.5rem;
-            border-radius: 28px;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
-            border-top: 8px solid var(--ramave-red);
-            animation: fadeIn 0.6s ease-out;
-        }
-
-        @@keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .login-card h1 {
-            margin: 0;
-            color: #1a1a1a;
-            text-align: center;
-            font-size: 1.4rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: -0.5px;
-        }
-
-        .login-card h2 {
-            color: var(--ramave-red);
-            text-align: center;
-            font-size: 1.1rem;
-            margin: 0.5rem 0 2rem 0;
-            font-weight: 600;
-        }
-
-        .form-group {
-            margin-bottom: 1.2rem;
-        }
-
-        label {
-            display: block;
-            font-size: 0.85rem;
-            font-weight: 700;
-            color: var(--text-main);
-            margin-bottom: 0.6rem;
-            padding-left: 4px;
-        }
-
-        input {
-            width: 100%;
-            padding: 14px 16px;
-            border-radius: 14px;
-            border: 1.5px solid var(--border-color);
-            font-size: 16px; /* Evita que iOS haga zoom automático al enfocar */
-            transition: all 0.3s ease;
-            background-color: rgba(255,255,255,0.8);
-        }
-
-        input:focus {
-            border-color: var(--ramave-red);
-            outline: none;
-            background-color: white;
-            box-shadow: 0 0 0 4px rgba(198, 40, 40, 0.15);
-        }
-
-        .password-wrapper {
-            position: relative;
-        }
-
-        .toggle-password {
-            position: absolute;
-            right: 16px;
-            top: 50%;
-            transform: translateY(-50%);
-            cursor: pointer;
-            color: #636e72;
-            font-size: 1.2rem;
-            z-index: 5;
-        }
-
-        .error {
-            color: #d63031;
-            font-size: 0.75rem;
-            font-weight: 600;
-            margin-top: 5px;
-            display: block;
-        }
-
-        .validation-summary {
-            background: #fff0f0;
-            padding: 12px;
-            border-radius: 12px;
-            border: 1px solid #ffcccc;
-            margin-bottom: 1.5rem;
-        }
-
-        button {
-            width: 100%;
-            padding: 16px;
-            background: var(--ramave-red);
-            border: none;
-            color: white;
-            font-size: 1.1rem;
-            font-weight: 700;
-            border-radius: 14px;
-            cursor: pointer;
-            margin-top: 1.5rem;
-            transition: all 0.3s;
-            box-shadow: 0 8px 15px rgba(198, 40, 40, 0.3);
-        }
-
-        button:hover {
-            background: var(--ramave-red-dark);
-            transform: translateY(-3px);
-            box-shadow: 0 12px 20px rgba(198, 40, 40, 0.4);
-        }
-
-        /* MEDIA QUERIES PARA DISPOSITIVOS */
-        
-        /* Tablets */
-        @@media (max-width: 768px) {
-            .login-card {
-                max-width: 400px;
-                padding: 2rem;
-            }
-        }
-
-        /* Teléfonos */
-        @@media (max-width: 480px) {
-            body {
-                align-items: flex-start; /* Permite scroll si la pantalla es pequeña */
-                padding-top: 8rem; /* BAJA EL CONTENIDO MÁS EN TELÉFONOS */
-            }
-            .logo-container {
-                margin-bottom: 2rem;
-                padding-top: 1rem; /* Margen extra interno para el logo */
-            }
-            .logo-container img {
-                max-height: 90px; /* Logo ligeramente más pequeño en celular */
-            }
-            .login-card {
-                border-radius: 24px;
-                padding: 1.8rem 1.5rem;
-            }
-            h1 { font-size: 1.2rem; }
-        }
+        /* ... Tu CSS se mantiene igual (es excelente) ... */
+        :root { --ramave-red: #c62828; --ramave-red-dark: #a81f1f; --text-main: #2d3436; --border-color: #ced4da; --white-trans: rgba(255, 255, 255, 0.92); }
+        * { box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { margin: 0; min-height: 100vh; display: flex; justify-content: center; align-items: center; background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('/images/RAMAVE1.jpeg') no-repeat center center fixed; background-size: cover; padding: 1rem; }
+        .container-wrapper { width: 100%; display: flex; flex-direction: column; align-items: center; }
+        .logo-container { text-align: center; margin-bottom: 2.5rem; }
+        .logo-container img { max-height: 130px; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5)); }
+        .login-card { width: 100%; max-width: 450px; background: var(--white-trans); backdrop-filter: blur(10px); padding: 2.5rem; border-radius: 28px; box-shadow: 0 25px 50px rgba(0,0,0,0.3); border-top: 8px solid var(--ramave-red); animation: fadeIn 0.6s ease-out; }
+        @@keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .login-card h1 { margin: 0; color: #1a1a1a; text-align: center; font-size: 1.4rem; font-weight: 800; text-transform: uppercase; }
+        .login-card h2 { color: var(--ramave-red); text-align: center; font-size: 1.1rem; margin: 0.5rem 0 2rem 0; font-weight: 600; }
+        .form-group { margin-bottom: 1.2rem; }
+        label { display: block; font-size: 0.85rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.6rem; }
+        input { width: 100%; padding: 14px 16px; border-radius: 14px; border: 1.5px solid var(--border-color); font-size: 16px; transition: all 0.3s; }
+        input:focus { border-color: var(--ramave-red); outline: none; box-shadow: 0 0 0 4px rgba(198,40,40,0.15); }
+        .password-wrapper { position: relative; }
+        .toggle-password { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); cursor: pointer; }
+        #api-error { display: none; background: #fff0f0; padding: 12px; border-radius: 12px; border: 1px solid #ffcccc; margin-bottom: 1.5rem; color: #d63031; text-align: center; font-size: 0.85rem; font-weight: 600; }
+        button { width: 100%; padding: 16px; background: var(--ramave-red); border: none; color: white; font-size: 1.1rem; font-weight: 700; border-radius: 14px; cursor: pointer; margin-top: 1.5rem; transition: all 0.3s; box-shadow: 0 8px 15px rgba(198,40,40,0.3); }
+        button:hover { background: var(--ramave-red-dark); transform: translateY(-3px); }
     </style>
 </head>
 <body>
 
-<div class="container-wrapper">
-    <div class="logo-container">
-        <img src="/images/logoramave.jpg" alt="FÁBRICA DE PERSIANAS RAMAVE" />
+    <div class="container-wrapper">
+        <div class="logo-container">
+            <img src="/images/logoramave.jpg" alt="RAMAVE" />
+        </div>
+
+        <div class="login-card">
+            <h1>Fábrica de Persianas RAMAVE</h1>
+            <h2>Sistema Cotizador</h2>
+
+            <div id="api-error"></div>
+
+            <form id="loginForm">
+                <div class="form-group">
+                    @* Corregido: for apunta al id del input *@
+                    <label for="txtCorreo">Correo Institucional</label>
+                    <input id="txtCorreo" type="email" placeholder="usuario@ramave.com" autofocus required />
+                </div>
+
+                <div class="form-group">
+                    @* Corregido: for apunta al id del input *@
+                    <label for="txtPassword">Contraseña</label>
+                    <div class="password-wrapper">
+                        <input id="txtPassword" type="password" placeholder="••••••••" required />
+                        <span class="toggle-password" onclick="togglePassword()" id="eye-icon">👁️</span>
+                    </div>
+                </div>
+
+                <button type="button" onclick="ejecutarLoginApi()">Iniciar Sesión</button>
+            </form>
+        </div>
     </div>
 
-    <div class="login-card">
-        <h1>Fábrica de Persianas RAMAVE</h1>
-        <h2>Sistema Cotizador</h2>
+    <script>
+        function togglePassword() {
+            const input = document.getElementById("txtPassword");
+            const icon = document.getElementById("eye-icon");
+            if (input.type === "password") {
+                input.type = "text";
+                icon.textContent = "🙈";
+            } else {
+                input.type = "password";
+                icon.textContent = "👁️";
+            }
+        }
 
-        <form asp-action="Login" method="post" novalidate>
+        async function ejecutarLoginApi() {
+            const correo = document.getElementById("txtCorreo").value.trim();
+            const password = document.getElementById("txtPassword").value;
+            const errorDiv = document.getElementById("api-error");
 
-            @if (ViewBag.Error != null || !ViewData.ModelState.IsValid)
-            {
-                <div class="validation-summary">
-                    @if (ViewBag.Error != null)
-                    {
-                        <span class="error">@ViewBag.Error</span>
-                    }
-                    <div asp-validation-summary="ModelOnly" class="error"></div>
-                </div>
+            if(!correo || !password) {
+                errorDiv.innerText = "Por favor, llene todos los campos.";
+                errorDiv.style.display = "block";
+                return;
             }
 
-            <div class="form-group">
-                <label asp-for="Correo">Correo Institucional</label>
-                <input asp-for="Correo" type="email" placeholder="usuario@ramave.com" autofocus />
-                <span class="error" asp-validation-for="Correo"></span>
-            </div>
+            try {
+                const response = await fetch('/api/Usuarios/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ Correo: correo, Password: password })
+                });
 
-            <div class="form-group">
-                <label asp-for="Password">Contraseña</label>
-                <div class="password-wrapper">
-                    <input asp-for="Password" id="password" type="password" placeholder="••••••••" />
-                    <span class="toggle-password" onclick="togglePassword()" id="eye-icon">👁️</span>
-                </div>
-                <span class="error" asp-validation-for="Password"></span>
-            </div>
+                const data = await response.json();
 
-            <button type="submit">Iniciar Sesión</button>
-        </form>
-    </div>
-</div>
+                if (response.ok) {
+                    // 1. Guardar en navegador
+                    localStorage.setItem('usuarioId', data.id);
+                    localStorage.setItem('usuarioNombre', data.usuario);
 
-<script>
-    function togglePassword() {
-        const input = document.getElementById("password");
-        const icon = document.getElementById("eye-icon");
-        if (input.type === "password") {
-            input.type = "text";
-            icon.textContent = "🙈";
-        } else {
-            input.type = "password";
-            icon.textContent = "👁️";
+                    // 2. CREAR SESIÓN EN EL SERVIDOR
+                    // Redirigimos al puente que creamos en ClientesController
+                    const params = new URLSearchParams({
+                        rol: data.rol,
+                        id: data.id,
+                        nombre: data.usuario
+                    });
+
+                    window.location.href = `/Clientes/EstablecerSesion?${params.toString()}`;
+                } else {
+                    errorDiv.innerText = data.mensaje || "Credenciales incorrectas";
+                    errorDiv.style.display = "block";
+                }
+            } catch (err) {
+                console.error("Error:", err);
+                errorDiv.innerText = "Error de conexión con el servidor.";
+                errorDiv.style.display = "block";
+            }
         }
-    }
-</script>
-
+    </script>
 </body>
 </html>

@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RAMAVE_Cotizador.Data;
 using RAMAVE_Cotizador.Models;
+using Microsoft.AspNetCore.Http; // Asegúrate de tener esta referencia
 
 namespace RAMAVE_Cotizador.Controllers
 {
@@ -15,16 +16,12 @@ namespace RAMAVE_Cotizador.Controllers
         }
 
         [HttpGet]
-        public IActionResult Login()
-        {
-            return View(new LoginViewModel());
-        }
+        public IActionResult Login() => View(new LoginViewModel());
 
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
-            if (!ModelState.IsValid)
-                return View(model);
+            if (!ModelState.IsValid) return View(model);
 
             var usuario = await _context.Usuarios
                 .FirstOrDefaultAsync(u => u.correo_electronico == model.Correo);
@@ -41,13 +38,21 @@ namespace RAMAVE_Cotizador.Controllers
                 return View(model);
             }
 
-            // 🔥 CLAVE: GUARDAR ROL EN SESIÓN
             var rol = usuario.rol.Trim();
+            
+            // 1. Guardamos el ROL en la sesión (Para las vistas de C#)
             HttpContext.Session.SetString("UsuarioRol", rol);
+            
+            // 2. Guardamos el ID en la sesión (Fundamental para que el Cotizador lo use después)
+            HttpContext.Session.SetInt32("UsuarioId", usuario.id); 
+            
+            // Opcional: Guardar el nombre para mostrarlo en el Layout
+            HttpContext.Session.SetString("UsuarioNombre", usuario.nombre ?? "Usuario");
 
-            Console.WriteLine($"ROL LOGUEADO = '{rol}'");
+            // --- ⬆️ FIN DEL CAMBIO ⬆️ ---
 
-            // 🔥 CLAVE: NOMBRES CORRECTOS
+            Console.WriteLine($"USUARIO LOGUEADO: ID={usuario.id}, ROL='{rol}'");
+
             return rol switch
             {
                 "Administrador" => RedirectToAction("Administrador", "Home"),
@@ -60,10 +65,7 @@ namespace RAMAVE_Cotizador.Controllers
         [HttpGet]
         public IActionResult Logout()
         {
-            // Limpia todos los datos almacenados en la sesión del usuario
             HttpContext.Session.Clear();
-
-            // Redirige a la pantalla de Login
             return RedirectToAction("Login", "Auth");
         }
     }
