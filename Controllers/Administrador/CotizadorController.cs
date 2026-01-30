@@ -1427,6 +1427,8 @@ namespace RAMAVE_Cotizador.Controllers
 
             return Ok(new {
                 cliente = presupuesto.NombreCliente,
+                numero = presupuesto.Numero,
+                direccion = presupuesto.Direccion,
                 fecha = presupuesto.FechaCreacion,
                 totalGlobal = presupuesto.TotalPresupuesto,
                 observaciones = presupuesto.Observaciones,
