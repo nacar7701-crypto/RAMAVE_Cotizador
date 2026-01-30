@@ -77,7 +77,8 @@
         color: #444;
     }
 
-    input, select {
+    input,
+    select {
         width: 100%;
         padding: 0.8rem 1rem;
         border-radius: 10px;
@@ -132,12 +133,24 @@
         font-size: 1rem;
     }
 
-    .btn-save { background: var(--ramave-red); color: white; }
-    .btn-back { background: #e9ecef; color: #495057; }
+    .btn-save {
+        background: var(--ramave-red);
+        color: white;
+    }
+
+    .btn-back {
+        background: #e9ecef;
+        color: #495057;
+    }
 
     @@media (max-width: 600px) {
-        .row-mobile { grid-template-columns: 1fr !important; }
-        .buttons-container { grid-template-columns: 1fr; }
+        .row-mobile {
+            grid-template-columns: 1fr !important;
+        }
+
+        .buttons-container {
+            grid-template-columns: 1fr;
+        }
     }
 </style>
 
@@ -156,10 +169,11 @@
             </div>
 
             <div class="form-section-title"><i class="fas fa-swatchbook"></i> Selección de Tela</div>
-            
+
             <div class="form-group">
                 <label>TIPO DE TELA (CATEGORÍA)</label>
-                <input type="text" id="tipoTela" value="@Model.tipo" readonly class="readonly-field" placeholder="Seleccione un modelo..." />
+                <input type="text" id="tipoTela" value="@Model.tipo" readonly class="readonly-field"
+                    placeholder="Seleccione un modelo..." />
             </div>
 
             <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem;" class="row-mobile">
@@ -195,14 +209,16 @@
                 <div class="form-group">
                     <label>ANCHO (m)</label>
                     <div class="input-group-custom">
-                        <input type="number" id="ancho" step="0.01" value="@Model.Ancho.ToString("F2", System.Globalization.CultureInfo.InvariantCulture)" />
+                        <input type="number" id="ancho" step="0.01"
+                            value="@Model.Ancho.ToString("F2", System.Globalization.CultureInfo.InvariantCulture)" />
                         <span class="input-group-text-custom">m</span>
                     </div>
                 </div>
                 <div class="form-group">
                     <label>ALTO (m)</label>
                     <div class="input-group-custom">
-                        <input type="number" id="alto" step="0.01" value="@Model.Alto.ToString("F2", System.Globalization.CultureInfo.InvariantCulture)" />
+                        <input type="number" id="alto" step="0.01"
+                            value="@Model.Alto.ToString("F2", System.Globalization.CultureInfo.InvariantCulture)" />
                         <span class="input-group-text-custom">m</span>
                     </div>
                 </div>
@@ -210,8 +226,10 @@
                     <label>SISTEMA</label>
                     <select id="sistema">
                         <option value="MANUAL" selected="@(Model.Sistema == "MANUAL")">MANUAL</option>
-                        <option value="MOTORIZADO WIFI" selected="@(Model.Sistema == "MOTORIZADO WIFI")">MOTORIZADO WIFI</option>
-                        <option value="MOTORIZADO BATERIA" selected="@(Model.Sistema == "MOTORIZADO BATERIA")">MOTORIZADO BATERIA</option>
+                        <option value="MOTORIZADO WIFI" selected="@(Model.Sistema == "MOTORIZADO WIFI")">MOTORIZADO WIFI
+                        </option>
+                        <option value="MOTORIZADO BATERIA" selected="@(Model.Sistema == "MOTORIZADO BATERIA")">
+                            MOTORIZADO BATERIA</option>
                     </select>
                 </div>
             </div>
@@ -223,6 +241,7 @@
                     <select id="tipoCortina">
                         <option value="ONDULADO" selected="@(Model.TipoCortina == "ONDULADO")">ONDULADO</option>
                         <option value="FRANCESA" selected="@(Model.TipoCortina == "FRANCESA")">FRANCESA</option>
+                        <option value="OJILLOS" selected="@(Model.TipoCortina == "OJILLOS")">OJILLOS</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -241,7 +260,8 @@
                         <option value="DOS HOJAS" selected="@(Model.Acoplamiento == "DOS HOJAS")">DOS HOJAS</option>
                     </select>
                 </div>
-                <div class="form-group">
+                <div class="form-group" id="contenedorPorcentajeOnda"
+                    style="display: @(Model.TipoCortina == "ONDULADO" ? "block" : "none");">
                     <label>% ONDA</label>
                     <select id="porcentajeOnda">
                         <option value="60" selected="@(Model.PorcentajeOnda == 60)">60%</option>
@@ -252,8 +272,10 @@
             </div>
 
             <div class="buttons-container">
-                <a asp-area="Administrador" asp-controller="Cotizaciones" asp-action="Index" class="btn btn-back">CANCELAR</a>
-                <button type="button" id="btnGuardar" onclick="enviarEdicion()" class="btn btn-save">GUARDAR Y RECALCULAR</button>
+                <a asp-area="Administrador" asp-controller="Cotizaciones" asp-action="Index"
+                    class="btn btn-back">CANCELAR</a>
+                <button type="button" id="btnGuardar" onclick="enviarEdicion()" class="btn btn-save">GUARDAR Y
+                    RECALCULAR</button>
             </div>
         </form>
     </div>
@@ -268,6 +290,8 @@
 
     async function inicializarFormulario() {
         try {
+            const selectTipoCortina = document.getElementById("tipoCortina");
+            selectTipoCortina.addEventListener("change", togglePorcentajeOnda);
             const resTela = await fetch("/api/Telas/" + initData.idTela);
             const telaActual = await resTela.json();
             document.getElementById("tipoTela").value = telaActual.tipo || "Sin tipo";
@@ -364,6 +388,20 @@
         }
     }
 
+    function togglePorcentajeOnda() {
+        const tipoCortina = document.getElementById("tipoCortina").value;
+        const contenedor = document.getElementById("contenedorPorcentajeOnda");
+        const selectOnda = document.getElementById("porcentajeOnda");
+
+        if (tipoCortina === "ONDULADO") {
+            contenedor.style.display = "block";
+        } else {
+            contenedor.style.display = "none";
+            // Opcional: Resetear a un valor por defecto si no es ondulado
+            selectOnda.value = "0";
+        }
+    }
+
     async function enviarEdicion() {
         const btn = document.getElementById('btnGuardar');
         const idVal = document.getElementById('id').value;
@@ -407,9 +445,9 @@
                 btn.disabled = false;
                 btn.innerHTML = 'GUARDAR Y RECALCULAR';
             }
-        } catch (e) { 
-            alert("Error de conexión"); 
-            btn.disabled = false; 
+        } catch (e) {
+            alert("Error de conexión");
+            btn.disabled = false;
             btn.innerHTML = 'GUARDAR Y RECALCULAR';
         }
     }

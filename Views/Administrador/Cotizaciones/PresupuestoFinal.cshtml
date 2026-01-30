@@ -24,14 +24,46 @@
         margin: 0;
     }
 
-    .wrapper { width: 100%; padding: 10px; box-sizing: border-box; }
-    .budget-container { background: white; border-radius: 10px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); padding: 15px; border-top: 5px solid var(--ramave-red); }
+    .wrapper {
+        width: 100%;
+        padding: 10px;
+        box-sizing: border-box;
+    }
+
+    .budget-container {
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        padding: 15px;
+        border-top: 5px solid var(--ramave-red);
+    }
 
     /* PDF HEADER */
-    .pdf-header { display: none; border-bottom: 2px solid var(--ramave-red); padding-bottom: 5px; margin-bottom: 10px; }
-    .header-logo-row { display: flex; justify-content: space-between; align-items: center; }
-    .logo-img { max-width: 120px; height: auto; }
-    .company-info h1 { color: var(--ramave-red); margin: 0; font-size: 1.1rem; font-weight: 800; text-transform: uppercase; }
+    .pdf-header {
+        display: none;
+        border-bottom: 2px solid var(--ramave-red);
+        padding-bottom: 5px;
+        margin-bottom: 10px;
+    }
+
+    .header-logo-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .logo-img {
+        max-width: 120px;
+        height: auto;
+    }
+
+    .company-info h1 {
+        color: var(--ramave-red);
+        margin: 0;
+        font-size: 1.1rem;
+        font-weight: 800;
+        text-transform: uppercase;
+    }
 
     .client-data-grid {
         display: grid;
@@ -44,70 +76,205 @@
         border-radius: 6px;
     }
 
-    .data-label { font-size: 0.55rem; font-weight: 800; color: #777; text-transform: uppercase; display: block; }
-    .data-value { font-size: 0.8rem; font-weight: 700; color: #222; }
+    .data-label {
+        font-size: 0.55rem;
+        font-weight: 800;
+        color: #777;
+        text-transform: uppercase;
+        display: block;
+    }
+
+    .data-value {
+        font-size: 0.8rem;
+        font-weight: 700;
+        color: #222;
+    }
 
     /* UI WEB */
-    .filter-toolbar { background: #f8f9fa; border: 1px solid var(--border-color); padding: 10px; border-radius: 8px; margin-bottom: 15px; }
-    .header-top-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; }
-    .header-top-row h2 { margin: 0; font-size: 1.1rem; font-weight: 700; color: var(--ramave-red); }
-    .folio-badge { background: #eee; color: #555; padding: 2px 6px; border-radius: 4px; font-size: 0.8rem; }
+    .filter-toolbar {
+        background: #f8f9fa;
+        border: 1px solid var(--border-color);
+        padding: 10px;
+        border-radius: 8px;
+        margin-bottom: 15px;
+    }
+
+    .header-top-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+        flex-wrap: wrap;
+    }
+
+    .header-top-row h2 {
+        margin: 0;
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--ramave-red);
+    }
+
+    .folio-badge {
+        background: #eee;
+        color: #555;
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-size: 0.8rem;
+    }
 
     /* TABLA PRINCIPAL */
-    .table-main { 
-        width: 100%; 
-        border-collapse: collapse; 
-        table-layout: fixed; 
-        margin-bottom: 15px; 
-        border: 1px solid var(--border-color); 
-    }
-    
-    .col-base { width: 30%; }
-    .col-herrajes { width: 20%; }
-    .col-precios { width: 15%; }
-    .col-costos { width: 35%; }
-
-    .partida-title { background: var(--dark-bg); color: white; padding: 5px 12px; font-weight: 700; font-size: 0.75rem; }
-    .table-main td { vertical-align: top; border: 1px solid var(--border-color); padding: 0; }
-    
-    .inner-table { width: 100%; border-collapse: collapse; font-size: 0.68rem; }
-    .inner-table th { 
-        background: #f8f9fa; 
-        color: #666; 
-        font-weight: 600; 
-        text-align: left; 
-        padding: 3px 6px; 
-        border-bottom: 1px solid var(--border-color); 
-        width: 50%; 
-        text-transform: uppercase; 
-        font-size: 0.58rem; 
-    }
-    .inner-table td { 
-        padding: 3px 6px; 
-        font-weight: 700; 
-        color: #222; 
-        border-bottom: 1px solid var(--border-color); 
-        text-align: right; 
+    .table-main {
+        width: 100%;
+        border-collapse: collapse;
+        table-layout: fixed;
+        margin-bottom: 15px;
+        border: 1px solid var(--border-color);
     }
 
-    .col-header { background: #f1f1f1; padding: 4px; font-weight: 800; font-size: 0.65rem; text-transform: uppercase; color: #444; text-align: center; border-bottom: 2px solid var(--border-color); }
-    .sub-section-header { background: #eee; font-size: 0.6rem; font-weight: 900; padding: 3px; text-align: center; border-bottom: 1px solid #ddd; text-transform: uppercase; }
-    .row-subtotal { background-color: #fcfcfc; }
-    .row-subtotal td { color: var(--ramave-red) !important; font-size: 0.7rem !important; }
-    
-    .grand-total-section { background: var(--dark-bg); color: white; padding: 12px; border-radius: 10px; margin-top: 15px; }
-    .d-none-filter { display: none !important; }
+    .col-base {
+        width: 30%;
+    }
+
+    .col-herrajes {
+        width: 20%;
+    }
+
+    .col-precios {
+        width: 15%;
+    }
+
+    .col-costos {
+        width: 35%;
+    }
+
+    .partida-title {
+        background: var(--dark-bg);
+        color: white;
+        padding: 5px 12px;
+        font-weight: 700;
+        font-size: 0.75rem;
+    }
+
+    .table-main td {
+        vertical-align: top;
+        border: 1px solid var(--border-color);
+        padding: 0;
+    }
+
+    .inner-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.68rem;
+    }
+
+    .inner-table th {
+        background: #f8f9fa;
+        color: #666;
+        font-weight: 600;
+        text-align: left;
+        padding: 3px 6px;
+        border-bottom: 1px solid var(--border-color);
+        width: 50%;
+        text-transform: uppercase;
+        font-size: 0.58rem;
+    }
+
+    .inner-table td {
+        padding: 3px 6px;
+        font-weight: 700;
+        color: #222;
+        border-bottom: 1px solid var(--border-color);
+        text-align: right;
+    }
+
+    .col-header {
+        background: #f1f1f1;
+        padding: 4px;
+        font-weight: 800;
+        font-size: 0.65rem;
+        text-transform: uppercase;
+        color: #444;
+        text-align: center;
+        border-bottom: 2px solid var(--border-color);
+    }
+
+    .sub-section-header {
+        background: #eee;
+        font-size: 0.6rem;
+        font-weight: 900;
+        padding: 3px;
+        text-align: center;
+        border-bottom: 1px solid #ddd;
+        text-transform: uppercase;
+    }
+
+    .row-subtotal {
+        background-color: #fcfcfc;
+    }
+
+    .row-subtotal td {
+        color: var(--ramave-red) !important;
+        font-size: 0.7rem !important;
+    }
+
+    .grand-total-section {
+        background: var(--dark-bg);
+        color: white;
+        padding: 12px;
+        border-radius: 10px;
+        margin-top: 15px;
+    }
+
+    .d-none-filter {
+        display: none !important;
+    }
 
     @@media print {
-        @@page { margin: 1cm; size: landscape; }
-        body { background: white !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-        .no-print { display: none !important; }
-        .pdf-header { display: block !important; }
-        .wrapper { padding: 0 !important; }
-        .budget-container { border: none !important; box-shadow: none !important; padding: 0 !important; }
-        .part-container { break-inside: avoid; page-break-inside: avoid; margin-bottom: 10px; display: block; }
-        .table-main tr, .inner-table tr { break-inside: avoid !important; page-break-inside: avoid !important; }
-        .table-main td { break-inside: avoid !important; }
+        @@page {
+            margin: 1cm;
+            size: landscape;
+        }
+
+        body {
+            background: white !important;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        .no-print {
+            display: none !important;
+        }
+
+        .pdf-header {
+            display: block !important;
+        }
+
+        .wrapper {
+            padding: 0 !important;
+        }
+
+        .budget-container {
+            border: none !important;
+            box-shadow: none !important;
+            padding: 0 !important;
+        }
+
+        .part-container {
+            break-inside: avoid;
+            page-break-inside: avoid;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .table-main tr,
+        .inner-table tr {
+            break-inside: avoid !important;
+            page-break-inside: avoid !important;
+        }
+
+        .table-main td {
+            break-inside: avoid !important;
+        }
     }
 </style>
 
@@ -152,7 +319,10 @@
                 </div>
             </div>
             <div class="d-flex gap-2">
-                <a href="/Clientes/Historial" class="btn btn-secondary btn-sm">REGRESAR</a>
+                <a href="@Url.Action("Index", "Cotizaciones", new { area = "Administrador" })"
+                    class="btn btn-secondary btn-sm">
+                    REGRESAR
+                </a>
                 <button class="btn btn-danger btn-sm" onclick="window.print()"><span>📄</span> IMPRIMIR PDF</button>
             </div>
         </div>
@@ -161,28 +331,48 @@
             <div class="row g-3">
                 <div class="col-md-3 border-end">
                     <p class="data-label mb-2">Columnas Visibles</p>
-                    <div class="form-check form-switch small"><input class="form-check-input f-chk" type="checkbox" data-t="col-base" id="c1" checked> <label class="form-check-label">DATOS BASE</label></div>
-                    <div class="form-check form-switch small"><input class="form-check-input f-chk" type="checkbox" data-t="col-herrajes" id="c2" checked> <label class="form-check-label">COMPONENTES</label></div>
-                    <div class="form-check form-switch small"><input class="form-check-input f-chk" type="checkbox" data-t="col-precios" id="c3" checked> <label class="form-check-label">MOTOR</label></div>
-                    <div class="form-check form-switch small"><input class="form-check-input f-chk" type="checkbox" data-t="col-costos" id="c4" checked> <label class="form-check-label">COSTOS</label></div>
+                    <div class="form-check form-switch small"><input class="form-check-input f-chk" type="checkbox"
+                            data-t="col-base" id="c1" checked> <label class="form-check-label">DATOS BASE</label></div>
+                    <div class="form-check form-switch small"><input class="form-check-input f-chk" type="checkbox"
+                            data-t="col-herrajes" id="c2" checked> <label class="form-check-label">COMPONENTES</label>
+                    </div>
+                    <div class="form-check form-switch small"><input class="form-check-input f-chk" type="checkbox"
+                            data-t="col-precios" id="c3" checked> <label class="form-check-label">MOTOR</label></div>
+                    <div class="form-check form-switch small"><input class="form-check-input f-chk" type="checkbox"
+                            data-t="col-costos" id="c4" checked> <label class="form-check-label">COSTOS</label></div>
                 </div>
                 <div class="col-md-3 border-end">
                     <p class="data-label mb-2">1. Fábrica</p>
-                    <div class="form-check small"><input class="form-check-input f-chk sum-trigger" type="checkbox" data-t="f-f-cortinero" id="ff1" checked> <label class="form-check-label">Cortinero</label></div>
-                    <div class="form-check small"><input class="form-check-input f-chk sum-trigger" type="checkbox" data-t="f-f-cortina" id="ff2" checked> <label class="form-check-label">Cortina</label></div>
-                    <div class="form-check small"><input class="form-check-input f-chk sum-trigger" type="checkbox" data-t="sec-fabrica" id="ff3" checked> <label class="form-check-label fw-bold">VER SECCIÓN</label></div>
+                    <div class="form-check small"><input class="form-check-input f-chk sum-trigger" type="checkbox"
+                            data-t="f-f-cortinero" id="ff1" checked> <label class="form-check-label">Cortinero</label>
+                    </div>
+                    <div class="form-check small"><input class="form-check-input f-chk sum-trigger" type="checkbox"
+                            data-t="f-f-cortina" id="ff2" checked> <label class="form-check-label">Cortina</label></div>
+                    <div class="form-check small"><input class="form-check-input f-chk sum-trigger" type="checkbox"
+                            data-t="sec-fabrica" id="ff3" checked> <label class="form-check-label fw-bold">VER
+                            SECCIÓN</label></div>
                 </div>
                 <div class="col-md-3 border-end">
                     <p class="data-label mb-2">2. Público</p>
-                    <div class="form-check small"><input class="form-check-input f-chk sum-trigger" type="checkbox" data-t="f-p-cortinero" id="fp1" checked> <label class="form-check-label">Cortinero</label></div>
-                    <div class="form-check small"><input class="form-check-input f-chk sum-trigger" type="checkbox" data-t="f-p-cortina" id="fp2" checked> <label class="form-check-label">Cortina</label></div>
-                    <div class="form-check small"><input class="form-check-input f-chk sum-trigger" type="checkbox" data-t="sec-publico" id="fp3" checked> <label class="form-check-label fw-bold">VER SECCIÓN</label></div>
+                    <div class="form-check small"><input class="form-check-input f-chk sum-trigger" type="checkbox"
+                            data-t="f-p-cortinero" id="fp1" checked> <label class="form-check-label">Cortinero</label>
+                    </div>
+                    <div class="form-check small"><input class="form-check-input f-chk sum-trigger" type="checkbox"
+                            data-t="f-p-cortina" id="fp2" checked> <label class="form-check-label">Cortina</label></div>
+                    <div class="form-check small"><input class="form-check-input f-chk sum-trigger" type="checkbox"
+                            data-t="sec-publico" id="fp3" checked> <label class="form-check-label fw-bold">VER
+                            SECCIÓN</label></div>
                 </div>
                 <div class="col-md-3">
                     <p class="data-label mb-2">3. Distribuidor</p>
-                    <div class="form-check small"><input class="form-check-input f-chk sum-trigger" type="checkbox" data-t="f-d-cortinero" id="fd1" checked> <label class="form-check-label">Cortinero</label></div>
-                    <div class="form-check small"><input class="form-check-input f-chk sum-trigger" type="checkbox" data-t="f-d-cortina" id="fd2" checked> <label class="form-check-label">Cortina</label></div>
-                    <div class="form-check small"><input class="form-check-input f-chk sum-trigger" type="checkbox" data-t="sec-distribuidor" id="fd3" checked> <label class="form-check-label fw-bold">VER SECCIÓN</label></div>
+                    <div class="form-check small"><input class="form-check-input f-chk sum-trigger" type="checkbox"
+                            data-t="f-d-cortinero" id="fd1" checked> <label class="form-check-label">Cortinero</label>
+                    </div>
+                    <div class="form-check small"><input class="form-check-input f-chk sum-trigger" type="checkbox"
+                            data-t="f-d-cortina" id="fd2" checked> <label class="form-check-label">Cortina</label></div>
+                    <div class="form-check small"><input class="form-check-input f-chk sum-trigger" type="checkbox"
+                            data-t="sec-distribuidor" id="fd3" checked> <label class="form-check-label fw-bold">VER
+                            SECCIÓN</label></div>
                 </div>
             </div>
         </div>
@@ -226,7 +416,7 @@
         document.getElementById('lblCliente').innerText = data.cliente || "N/A";
         document.getElementById('lblDireccion').innerText = data.direccion || "No proporcionada";
         document.getElementById('lblTelefono').innerText = data.numero || "No proporcionado";
-        
+
         document.getElementById('pdf-cliente').innerText = data.cliente || "N/A";
         document.getElementById('pdf-direccion').innerText = data.direccion || "No proporcionada";
         document.getElementById('pdf-telefono').innerText = data.numero || "No proporcionado";
@@ -238,7 +428,7 @@
 
         rawData.forEach((c, i) => {
             const partidaDiv = document.createElement('div');
-            partidaDiv.className = "part-container"; 
+            partidaDiv.className = "part-container";
             partidaDiv.innerHTML = `
                 <div class="partida-title">PARTIDA ${i + 1} - ÁREA: ${c.area || 'GENERAL'}</div>
                 <table class="table-main">
@@ -316,7 +506,7 @@
         let granF = 0, granP = 0, granD = 0;
         document.querySelectorAll('.part-container').forEach(container => {
             let partF = 0, partP = 0, partD = 0;
-            
+
             // Suma Fábrica
             if (document.getElementById('ff3').checked) {
                 const c1 = container.querySelector('.f-f-cortinero .v-val-f');
