@@ -4,26 +4,141 @@
 }
 
 <style>
-    /* ... (Mantengo tus estilos intactos) ... */
     @@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-    :root { --ramave-red: #c62828; --ramave-red-dark: #a81f1f; --bg-gray: #f4f6f9; --text-dark: #2d3436; --border-color: #ced4da; }
-    body { background-color: var(--bg-gray); font-family: 'Inter', sans-serif; color: var(--text-dark); }
-    .page-container { min-height: 100vh; display: flex; justify-content: center; align-items: flex-start; padding: 2.5rem 1.5rem; }
-    .card-form { background: white; width: 100%; max-width: 900px; padding: 2.5rem; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); border-top: 6px solid var(--ramave-red); }
-    h2 { text-align: center; color: var(--ramave-red); font-weight: 700; }
-    .subtitle { text-align: center; color: #636e72; font-size: 0.9rem; margin-bottom: 2rem; }
-    .form-section-title { font-size: 0.75rem; font-weight: 800; color: var(--ramave-red); text-transform: uppercase; letter-spacing: 1.2px; border-bottom: 1px solid #eee; padding-bottom: 8px; margin: 25px 0 15px 0; display: flex; align-items: center; gap: 10px; }
-    .form-group { margin-bottom: 1.2rem; }
-    label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem; color: #444; }
-    input, select { width: 100%; padding: 0.8rem 1rem; border-radius: 10px; border: 1px solid var(--border-color); font-size: 0.95rem; box-sizing: border-box; }
-    .input-group-custom { display: flex; }
-    .input-group-custom input { border-radius: 10px 0 0 10px; border-right: none; }
-    .input-group-text-custom { background: #f8f9fa; border: 1px solid var(--border-color); border-radius: 0 10px 10px 0; padding: 0 15px; display: flex; align-items: center; font-size: 0.9rem; color: #666; font-weight: 600; }
-    .buttons-container { display: grid; grid-template-columns: 1fr 2fr; gap: 1rem; margin-top: 3rem; }
-    .btn { padding: 1rem; border-radius: 12px; border: none; font-weight: 700; cursor: pointer; text-align: center; text-decoration: none; font-size: 1rem; }
+
+    :root {
+        --ramave-red: #c62828;
+        --ramave-red-dark: #a81f1f;
+        --bg-gray: #f4f6f9;
+        --text-dark: #2d3436;
+        --border-color: #ced4da;
+    }
+
+    body {
+        background-color: var(--bg-gray);
+        font-family: 'Inter', sans-serif;
+        color: var(--text-dark);
+    }
+
+    .page-container {
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        padding: 2.5rem 1.5rem;
+    }
+
+    .card-form {
+        background: white;
+        width: 100%;
+        max-width: 900px;
+        padding: 2.5rem;
+        border-radius: 20px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        border-top: 6px solid var(--ramave-red);
+    }
+
+    h2 {
+        text-align: center;
+        color: var(--ramave-red);
+        font-weight: 700;
+    }
+
+    .subtitle {
+        text-align: center;
+        color: #636e72;
+        font-size: 0.9rem;
+        margin-bottom: 2rem;
+    }
+
+    .form-section-title {
+        font-size: 0.75rem;
+        font-weight: 800;
+        color: var(--ramave-red);
+        text-transform: uppercase;
+        letter-spacing: 1.2px;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 8px;
+        margin: 25px 0 15px 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .form-group {
+        margin-bottom: 1.2rem;
+    }
+
+    label {
+        display: block;
+        font-size: 0.85rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: #444;
+    }
+
+    input, select {
+        width: 100%;
+        padding: 0.8rem 1rem;
+        border-radius: 10px;
+        border: 1px solid var(--border-color);
+        font-size: 0.95rem;
+        box-sizing: border-box;
+    }
+
+    .readonly-field {
+        background-color: #f8f9fa;
+        color: var(--ramave-red);
+        font-weight: 700;
+        border: 1px dashed var(--border-color);
+    }
+
+    .input-group-custom {
+        display: flex;
+    }
+
+    .input-group-custom input {
+        border-radius: 10px 0 0 10px;
+        border-right: none;
+    }
+
+    .input-group-text-custom {
+        background: #f8f9fa;
+        border: 1px solid var(--border-color);
+        border-radius: 0 10px 10px 0;
+        padding: 0 15px;
+        display: flex;
+        align-items: center;
+        font-size: 0.9rem;
+        color: #666;
+        font-weight: 600;
+    }
+
+    .buttons-container {
+        display: grid;
+        grid-template-columns: 1fr 2fr;
+        gap: 1rem;
+        margin-top: 3rem;
+    }
+
+    .btn {
+        padding: 1rem;
+        border-radius: 12px;
+        border: none;
+        font-weight: 700;
+        cursor: pointer;
+        text-align: center;
+        text-decoration: none;
+        font-size: 1rem;
+    }
+
     .btn-save { background: var(--ramave-red); color: white; }
     .btn-back { background: #e9ecef; color: #495057; }
-    @@media (max-width: 600px) { .row-mobile { grid-template-columns: 1fr !important; } .buttons-container { grid-template-columns: 1fr; } }
+
+    @@media (max-width: 600px) {
+        .row-mobile { grid-template-columns: 1fr !important; }
+        .buttons-container { grid-template-columns: 1fr; }
+    }
 </style>
 
 <div class="page-container">
@@ -33,7 +148,7 @@
 
         <form id="formEditar">
             <input type="hidden" id="id" value="@Model.Id" />
-            
+
             <div class="form-section-title"><i class="fas fa-info-circle"></i> Ubicación</div>
             <div class="form-group">
                 <label>ÁREA / HABITACIÓN</label>
@@ -41,27 +156,33 @@
             </div>
 
             <div class="form-section-title"><i class="fas fa-swatchbook"></i> Selección de Tela</div>
+            
+            <div class="form-group">
+                <label>TIPO DE TELA (CATEGORÍA)</label>
+                <input type="text" id="tipoTela" value="@Model.tipo" readonly class="readonly-field" placeholder="Seleccione un modelo..." />
+            </div>
+
             <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem;" class="row-mobile">
                 <div class="form-group">
                     <label>CATÁLOGO</label>
-                    <select id="selectCatalogo" onchange="cargarMarcas()">
+                    <select id="selectCatalogo" onchange="resetParaNuevoCatalogo()">
                         <option value="">Seleccione...</option>
                     </select>
                 </div>
                 <div class="form-group">
                     <label>MARCA</label>
-                    <select id="selectMarca" onchange="cargarModelos()" disabled>
+                    <select id="selectMarca" onchange="resetParaNuevaMarca()" disabled>
                         <option value="">Seleccione...</option>
                     </select>
                 </div>
                 <div class="form-group">
                     <label>MODELO (TELA)</label>
-                    <select id="idTela" onchange="cargarColores()" disabled>
+                    <select id="idTela" onchange="actualizarDetallesAlCambiar()" disabled>
                         <option value="@Model.IdTela" selected>@Model.Modelo</option>
                     </select>
                 </div>
             </div>
-            
+
             <div class="form-group">
                 <label>COLOR SELECCIONADO</label>
                 <select id="colorSeleccionado">
@@ -122,12 +243,16 @@
                 </div>
                 <div class="form-group">
                     <label>% ONDA</label>
-                    <input type="number" id="porcentajeOnda" value="@Model.PorcentajeOnda" />
+                    <select id="porcentajeOnda">
+                        <option value="60" selected="@(Model.PorcentajeOnda == 60)">60%</option>
+                        <option value="80" selected="@(Model.PorcentajeOnda == 80)">80%</option>
+                        <option value="120" selected="@(Model.PorcentajeOnda == 120)">120%</option>
+                    </select>
                 </div>
             </div>
 
             <div class="buttons-container">
-                <a href="javascript:history.back()" class="btn btn-back">CANCELAR</a>
+                <a asp-area="Administrador" asp-controller="Cotizaciones" asp-action="Index" class="btn btn-back">CANCELAR</a>
                 <button type="button" id="btnGuardar" onclick="enviarEdicion()" class="btn btn-save">GUARDAR Y RECALCULAR</button>
             </div>
         </form>
@@ -135,25 +260,18 @@
 </div>
 
 <script>
-    // Variables para guardar el estado inicial (lo que ya está en la base de datos)
-    const initData = {
-        idTela: "@Model.IdTela",
-        color: "@Model.ColorSeleccionado"
-    };
+    const initData = { idTela: "@Model.IdTela", color: "@Model.ColorSeleccionado" };
 
     document.addEventListener("DOMContentLoaded", async () => {
-        // Al cargar, obtenemos la información detallada de la tela actual para saber su marca y catálogo
         await inicializarFormulario();
     });
 
     async function inicializarFormulario() {
         try {
-            // 1. Obtener detalles de la tela actual
             const resTela = await fetch("/api/Telas/" + initData.idTela);
-            if (!resTela.ok) throw new Error("No se pudo obtener la tela actual");
             const telaActual = await resTela.json();
+            document.getElementById("tipoTela").value = telaActual.tipo || "Sin tipo";
 
-            // 2. Cargar catálogos y seleccionar el actual
             const resCats = await fetch("/api/Telas/catalogos-unicos");
             const catalogos = await resCats.json();
             const selectCat = document.getElementById("selectCatalogo");
@@ -163,16 +281,36 @@
                 selectCat.add(opt);
             });
 
-            // 3. Disparar carga de Marcas y seleccionar la actual
             await cargarMarcas(telaActual.marca);
-            
-            // 4. Disparar carga de Modelos y seleccionar el actual
             await cargarModelos(parseInt(initData.idTela));
-
-            // 5. Cargar colores del modelo actual
             await cargarColores(initData.color);
-
         } catch (e) { console.error("Error inicializando:", e); }
+    }
+
+    // --- Lógica de Reset para evitar datos residuales ---
+    function resetParaNuevoCatalogo() {
+        document.getElementById("tipoTela").value = "";
+        document.getElementById("selectMarca").innerHTML = '<option value="">Seleccione...</option>';
+        document.getElementById("idTela").innerHTML = '<option value="">Seleccione...</option>';
+        document.getElementById("idTela").disabled = true;
+        cargarMarcas();
+    }
+
+    function resetParaNuevaMarca() {
+        document.getElementById("tipoTela").value = "";
+        document.getElementById("idTela").innerHTML = '<option value="">Seleccione...</option>';
+        cargarModelos();
+    }
+
+    async function actualizarDetallesAlCambiar() {
+        const idTela = document.getElementById("idTela").value;
+        if (!idTela) return;
+        try {
+            const res = await fetch("/api/Telas/" + idTela);
+            const tela = await res.json();
+            document.getElementById("tipoTela").value = tela.tipo || "Sin tipo";
+            await cargarColores();
+        } catch (e) { console.error(e); }
     }
 
     async function cargarMarcas(marcaSeleccionada = null) {
@@ -180,7 +318,6 @@
         const selectMarca = document.getElementById("selectMarca");
         selectMarca.innerHTML = '<option value="">Seleccione...</option>';
         selectMarca.disabled = !cat;
-
         if (cat) {
             const res = await fetch("/api/Telas/marcas-por-catalogo/" + encodeURIComponent(cat));
             const marcas = await res.json();
@@ -198,7 +335,6 @@
         const selectTela = document.getElementById("idTela");
         selectTela.innerHTML = '<option value="">Seleccione...</option>';
         selectTela.disabled = !marcaId;
-
         if (marcaId && cat) {
             const res = await fetch(`/api/Telas/buscar-id-tela?catalogo=${encodeURIComponent(cat)}&idMarca=${marcaId}`);
             const telas = await res.json();
@@ -214,14 +350,10 @@
         const idTela = document.getElementById("idTela").value;
         const selectColor = document.getElementById("colorSeleccionado");
         selectColor.innerHTML = '<option value="">Seleccione Color...</option>';
-
         if (idTela) {
-            // Usamos el endpoint GET {id} de tu controller para traer los colores de esa tela
             const res = await fetch("/api/Telas/" + idTela);
             const tela = await res.json();
-            
             if (tela.color_nombre) {
-                // Separamos el string "Rojo, Azul, Verde" en un array
                 const colores = tela.color_nombre.split(',').map(c => c.trim());
                 colores.forEach(c => {
                     let opt = new Option(c, c);
@@ -235,14 +367,21 @@
     async function enviarEdicion() {
         const btn = document.getElementById('btnGuardar');
         const idVal = document.getElementById('id').value;
-        
+        const selCat = document.getElementById("selectCatalogo");
+        const selMarca = document.getElementById("selectMarca");
+        const selModelo = document.getElementById("idTela");
+
         btn.disabled = true;
         btn.innerHTML = 'GUARDANDO...';
 
         const data = {
             id: parseInt(idVal),
             presupuestoId: parseInt("@Model.PresupuestoId"),
-            idTela: parseInt(document.getElementById('idTela').value),
+            idTela: parseInt(selModelo.value),
+            tipo: document.getElementById("tipoTela").value,
+            catalogo: selCat.options[selCat.selectedIndex].text,
+            marca: selMarca.options[selMarca.selectedIndex].text,
+            modelo: selModelo.options[selModelo.selectedIndex].text,
             colorSeleccionado: document.getElementById('colorSeleccionado').value,
             ancho: parseFloat(document.getElementById('ancho').value),
             alto: parseFloat(document.getElementById('alto').value),
@@ -251,7 +390,7 @@
             area: document.getElementById('area').value,
             instalacion: document.getElementById('instalacion').value,
             acoplamiento: document.getElementById('acoplamiento').value,
-            porcentajeOnda: parseInt(document.getElementById('porcentajeOnda').value) || 0
+            porcentajeOnda: parseInt(document.getElementById('porcentajeOnda').value)
         };
 
         try {
@@ -262,11 +401,16 @@
             });
             const result = await response.json();
             if (response.ok) {
-                window.location.href = "/Administrador/Cotizaciones/PresupuestoFinal/" + result.data.presupuestoId;
+                window.location.href = "/Administrador/Cotizaciones/PresupuestoFinal/" + (result.data?.presupuestoId || "@Model.PresupuestoId");
             } else {
-                alert("Error al guardar");
+                alert("Error: " + (result.mensaje || "No se pudo actualizar"));
                 btn.disabled = false;
+                btn.innerHTML = 'GUARDAR Y RECALCULAR';
             }
-        } catch (e) { alert("Error de red"); btn.disabled = false; }
+        } catch (e) { 
+            alert("Error de conexión"); 
+            btn.disabled = false; 
+            btn.innerHTML = 'GUARDAR Y RECALCULAR';
+        }
     }
 </script>

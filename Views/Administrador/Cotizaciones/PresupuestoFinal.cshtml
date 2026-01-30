@@ -3,7 +3,6 @@
 }
 
 <style>
-    /* ... (Mantenemos tus estilos anteriores) ... */
     @@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
     :root {
@@ -19,77 +18,112 @@
         background-color: var(--bg-body);
         font-family: 'Inter', sans-serif;
         color: var(--text-main);
-        font-size: 0.85rem;
+        font-size: 0.75rem;
         margin: 0;
     }
 
-    .wrapper { width: 100%; padding: 20px; box-sizing: border-box; }
-    .budget-container { background: white; border-radius: 10px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); padding: 25px; border-top: 5px solid var(--ramave-red); }
+    .wrapper { width: 100%; padding: 10px; box-sizing: border-box; }
+    .budget-container { background: white; border-radius: 10px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); padding: 15px; border-top: 5px solid var(--ramave-red); }
 
-    /* ESTILOS DEL ENCABEZADO PDF (Oculto en web) */
-    .pdf-header { display: none; border-bottom: 2px solid var(--ramave-red); padding-bottom: 15px; margin-bottom: 25px; }
+    /* PDF HEADER */
+    .pdf-header { display: none; border-bottom: 2px solid var(--ramave-red); padding-bottom: 5px; margin-bottom: 10px; }
     .header-logo-row { display: flex; justify-content: space-between; align-items: center; }
-    .logo-img { max-width: 150px; height: auto; }
-    .company-info { text-align: right; }
-    .company-info h1 { color: var(--ramave-red); margin: 0; font-size: 1.5rem; font-weight: 800; text-transform: uppercase; }
+    .logo-img { max-width: 120px; height: auto; }
+    .company-info h1 { color: var(--ramave-red); margin: 0; font-size: 1.1rem; font-weight: 800; text-transform: uppercase; }
 
     .client-data-grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 20px;
-        margin-top: 20px;
-        padding: 15px;
+        gap: 10px;
+        margin-top: 5px;
+        padding: 8px;
         background: #fdfdfd;
         border: 1px solid #eee;
-        border-radius: 8px;
+        border-radius: 6px;
     }
 
-    .data-label { font-size: 0.7rem; font-weight: 800; color: #777; text-transform: uppercase; display: block; }
-    .data-value { font-size: 1rem; font-weight: 700; color: #222; }
+    .data-label { font-size: 0.55rem; font-weight: 800; color: #777; text-transform: uppercase; display: block; }
+    .data-value { font-size: 0.8rem; font-weight: 700; color: #222; }
 
-    /* ESTILOS DE INTERFAZ WEB */
-    .filter-toolbar { background: #f8f9fa; border: 1px solid var(--border-color); padding: 15px; border-radius: 8px; margin-bottom: 25px; }
-    .header-top-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-    .header-top-row h2 { margin: 0; font-size: 1.4rem; font-weight: 700; color: var(--ramave-red); }
+    /* UI WEB */
+    .filter-toolbar { background: #f8f9fa; border: 1px solid var(--border-color); padding: 10px; border-radius: 8px; margin-bottom: 15px; }
+    .header-top-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; }
+    .header-top-row h2 { margin: 0; font-size: 1.1rem; font-weight: 700; color: var(--ramave-red); }
+    .folio-badge { background: #eee; color: #555; padding: 2px 6px; border-radius: 4px; font-size: 0.8rem; }
+
+    /* TABLA PRINCIPAL */
+    .table-main { 
+        width: 100%; 
+        border-collapse: collapse; 
+        table-layout: fixed; 
+        margin-bottom: 15px; 
+        border: 1px solid var(--border-color); 
+    }
     
-    .folio-badge {
-        background: #eee;
-        color: #555;
-        padding: 2px 8px;
-        border-radius: 4px;
-        font-size: 0.9rem;
-        vertical-align: middle;
-        margin-right: 10px;
+    .col-base { width: 30%; }
+    .col-herrajes { width: 20%; }
+    .col-precios { width: 15%; }
+    .col-costos { width: 35%; }
+
+    .partida-title { background: var(--dark-bg); color: white; padding: 5px 12px; font-weight: 700; font-size: 0.75rem; }
+    .table-main td { vertical-align: top; border: 1px solid var(--border-color); padding: 0; }
+    
+    .inner-table { width: 100%; border-collapse: collapse; font-size: 0.68rem; }
+    .inner-table th { 
+        background: #f8f9fa; 
+        color: #666; 
+        font-weight: 600; 
+        text-align: left; 
+        padding: 3px 6px; 
+        border-bottom: 1px solid var(--border-color); 
+        width: 50%; 
+        text-transform: uppercase; 
+        font-size: 0.58rem; 
+    }
+    .inner-table td { 
+        padding: 3px 6px; 
+        font-weight: 700; 
+        color: #222; 
+        border-bottom: 1px solid var(--border-color); 
+        text-align: right; 
     }
 
-    .btn-main { padding: 8px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; border: none; font-size: 0.8rem; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s; }
-    .btn-red { background: var(--ramave-red); color: white; }
-    .btn-red:hover { background: var(--ramave-dark); }
-    .btn-outline { background: transparent; border: 1px solid #ccc; color: #555; }
-
-    /* TABLAS */
-    .table-main { width: 100%; border-collapse: collapse; table-layout: fixed; margin-bottom: 30px; border-radius: 8px; overflow: hidden; border: 1px solid var(--border-color); }
-    .partida-title { background: var(--dark-bg); color: white; padding: 10px 20px; font-weight: 700; display: flex; justify-content: space-between; font-size: 0.9rem; }
-    .table-main td { vertical-align: top; border: 1px solid var(--border-color); padding: 0; }
-    .inner-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
-    .inner-table th { background: #f8f9fa; color: #666; font-weight: 600; text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--border-color); width: 55%; text-transform: uppercase; font-size: 0.65rem; }
-    .inner-table td { padding: 8px 12px; font-weight: 700; color: #222; border-bottom: 1px solid var(--border-color); text-align: right; }
-    .col-header { background: #f1f1f1; padding: 8px; font-weight: 800; font-size: 0.7rem; text-transform: uppercase; color: #444; text-align: center; border-bottom: 2px solid var(--border-color); }
-    .sub-section-header { background: #eee; font-size: 0.65rem; font-weight: 900; padding: 5px; text-align: center; border-bottom: 1px solid #ddd; text-transform: uppercase; }
-    .row-subtotal { background-color: #f8f9fa; border-top: 1.5px solid var(--border-color) !important; }
-    .row-subtotal td { color: var(--ramave-red) !important; font-size: 0.85rem !important; }
-    .grand-total-section { background: var(--dark-bg); color: white; padding: 25px; border-radius: 10px; margin-top: 20px; }
+    .col-header { background: #f1f1f1; padding: 4px; font-weight: 800; font-size: 0.65rem; text-transform: uppercase; color: #444; text-align: center; border-bottom: 2px solid var(--border-color); }
+    .sub-section-header { background: #eee; font-size: 0.6rem; font-weight: 900; padding: 3px; text-align: center; border-bottom: 1px solid #ddd; text-transform: uppercase; }
+    .row-subtotal { background-color: #fcfcfc; }
+    .row-subtotal td { color: var(--ramave-red) !important; font-size: 0.7rem !important; }
+    
+    .grand-total-section { background: var(--dark-bg); color: white; padding: 12px; border-radius: 10px; margin-top: 15px; }
     .d-none-filter { display: none !important; }
-    .text-red { color: var(--ramave-red); }
 
+    /* --- AJUSTES DE IMPRESIÓN --- */
     @@media print {
-        @@page { margin-top: 0; margin-bottom: 0; }
-        body { background: white !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; padding: 1.5cm 1cm; }
-        .no-print, .filter-toolbar, .header-top-row { display: none !important; }
+        @@page { margin: 1cm; size: landscape; }
+        body { background: white !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+        .no-print { display: none !important; }
         .pdf-header { display: block !important; }
-        .budget-container { box-shadow: none !important; border: none !important; padding: 0 !important; }
         .wrapper { padding: 0 !important; }
-        .table-main { page-break-inside: avoid; margin-bottom: 20px; }
+        .budget-container { border: none !important; box-shadow: none !important; padding: 0 !important; }
+
+        /* Evita que una partida se corte a la mitad si hay espacio en la siguiente hoja */
+        .part-container { 
+            break-inside: avoid; 
+            page-break-inside: avoid; 
+            margin-bottom: 10px; 
+            display: block;
+        }
+
+        /* Fuerza a que las celdas y filas no se corten internamente */
+        .table-main tr, .inner-table tr { 
+            break-inside: avoid !important; 
+            page-break-inside: avoid !important; 
+        }
+
+        .table-main td { 
+            break-inside: avoid !important; 
+        }
+
+        .grand-total-section { break-inside: avoid; }
     }
 </style>
 
@@ -105,7 +139,7 @@
             <div>
                 <span class="data-label">Folio de Cotización</span>
                 <span class="data-value" id="pdf-folio">#00000</span>
-                <div style="margin-top:10px">
+                <div style="margin-top:5px">
                     <span class="data-label">Cliente</span>
                     <span class="data-value" id="pdf-cliente">...</span>
                 </div>
@@ -127,44 +161,37 @@
                 <small class="text-muted" id="lblFecha"></small>
             </div>
             <div class="d-flex gap-2">
-                <a href="javascript:history.back()" class="btn-main btn-outline">
-                    <span>⬅</span> Regresar
-                </a>
-                <button class="btn-main btn-red" onclick="window.print()">
-                    <span>📄</span> Descargar PDF
-                </button>
+                <a asp-area="Administrador" asp-controller="Cotizaciones" asp-action="Index" class="btn btn-secondary btn-sm">REGRESAR</a>
+                <button class="btn btn-danger btn-sm" onclick="window.print()"><span>📄</span> PDF</button>
             </div>
         </div>
 
         <div class="filter-toolbar no-print">
             <div class="row g-3">
-                <div class="col-12">
-                    <h6 class="small fw-bold text-uppercase border-bottom pb-2" style="color: var(--ramave-red);">Panel de Control de Presupuesto</h6>
+                <div class="col-md-3 border-end">
+                    <p class="data-label mb-2">Columnas</p>
+                    <div class="form-check form-switch small"><input class="form-check-input f-chk" type="checkbox" data-t="col-base" id="c1" checked> <label class="form-check-label" for="c1">DATOS BASE</label></div>
+                    <div class="form-check form-switch small"><input class="form-check-input f-chk" type="checkbox" data-t="col-herrajes" id="c2" checked> <label class="form-check-label" for="c2">COMPONENTES</label></div>
+                    <div class="form-check form-switch small"><input class="form-check-input f-chk" type="checkbox" data-t="col-precios" id="c3" checked> <label class="form-check-label" for="c3">MOTOR</label></div>
+                    <div class="form-check form-switch small"><input class="form-check-input f-chk" type="checkbox" data-t="col-costos" id="c4" checked> <label class="form-check-label" for="c4">COSTOS</label></div>
                 </div>
                 <div class="col-md-3 border-end">
-                    <p class="x-small fw-bold text-muted mb-2 text-uppercase" style="font-size: 0.65rem;">Columnas</p>
-                    <div class="form-check form-switch mb-1"><input class="form-check-input f-chk" type="checkbox" data-t="col-base" id="c1" checked> <label class="form-check-label" for="c1">DATOS BASE</label></div>
-                    <div class="form-check form-switch mb-1"><input class="form-check-input f-chk" type="checkbox" data-t="col-herrajes" id="c2" checked> <label class="form-check-label" for="c2">COMPONENTES</label></div>
-                    <div class="form-check form-switch mb-1"><input class="form-check-input f-chk" type="checkbox" data-t="col-precios" id="c3" checked> <label class="form-check-label" for="c3">PRECIOS</label></div>
-                    <div class="form-check form-switch mb-1"><input class="form-check-input f-chk" type="checkbox" data-t="col-costos" id="c4" checked> <label class="form-check-label" for="c4">COSTOS</label></div>
+                    <p class="data-label mb-2">1. Fábrica</p>
+                    <div class="form-check small"><input class="form-check-input f-chk sum-trigger" type="checkbox" data-t="f-f-cortinero" id="ff1" checked> <label class="form-check-label">Cortinero</label></div>
+                    <div class="form-check small"><input class="form-check-input f-chk sum-trigger" type="checkbox" data-t="f-f-cortina" id="ff2" checked> <label class="form-check-label">Cortina</label></div>
+                    <div class="form-check small"><input class="form-check-input f-chk sum-trigger" type="checkbox" data-t="sec-fabrica" id="ff3" checked> <label class="form-check-label fw-bold">VER FÁBRICA</label></div>
                 </div>
                 <div class="col-md-3 border-end">
-                    <p class="x-small fw-bold text-muted mb-2 text-uppercase" style="font-size: 0.65rem;">1. Fábrica</p>
-                    <div class="form-check mb-1"><input class="form-check-input f-chk sum-trigger" type="checkbox" data-t="f-f-cortinero" id="ff1" checked> <label class="form-check-label" for="ff1">Cortinero</label></div>
-                    <div class="form-check mb-1"><input class="form-check-input f-chk sum-trigger" type="checkbox" data-t="f-f-cortina" id="ff2" checked> <label class="form-check-label" for="ff2">Cortina</label></div>
-                    <div class="form-check mb-1"><input class="form-check-input f-chk sum-trigger" type="checkbox" data-t="sec-fabrica" id="ff3" checked> <label class="form-check-label fw-bold text-danger" for="ff3">MOSTRAR SECCIÓN</label></div>
-                </div>
-                <div class="col-md-3 border-end">
-                    <p class="x-small fw-bold text-muted mb-2 text-uppercase" style="font-size: 0.65rem;">2. Público</p>
-                    <div class="form-check mb-1"><input class="form-check-input f-chk sum-trigger" type="checkbox" data-t="f-p-cortinero" id="fp1" checked> <label class="form-check-label" for="fp1">Cortinero</label></div>
-                    <div class="form-check mb-1"><input class="form-check-input f-chk sum-trigger" type="checkbox" data-t="f-p-cortina" id="fp2" checked> <label class="form-check-label" for="fp2">Cortina</label></div>
-                    <div class="form-check mb-1"><input class="form-check-input f-chk sum-trigger" type="checkbox" data-t="sec-publico" id="fp3" checked> <label class="form-check-label fw-bold" for="fp3">MOSTRAR SECCIÓN</label></div>
+                    <p class="data-label mb-2">2. Público</p>
+                    <div class="form-check small"><input class="form-check-input f-chk sum-trigger" type="checkbox" data-t="f-p-cortinero" id="fp1" checked> <label class="form-check-label">Cortinero</label></div>
+                    <div class="form-check small"><input class="form-check-input f-chk sum-trigger" type="checkbox" data-t="f-p-cortina" id="fp2" checked> <label class="form-check-label">Cortina</label></div>
+                    <div class="form-check small"><input class="form-check-input f-chk sum-trigger" type="checkbox" data-t="sec-publico" id="fp3" checked> <label class="form-check-label fw-bold">VER PÚBLICO</label></div>
                 </div>
                 <div class="col-md-3">
-                    <p class="x-small fw-bold text-muted mb-2 text-uppercase" style="font-size: 0.65rem;">3. Distribuidor</p>
-                    <div class="form-check mb-1"><input class="form-check-input f-chk sum-trigger" type="checkbox" data-t="f-d-cortinero" id="fd1" checked> <label class="form-check-label" for="fd1">Cortinero</label></div>
-                    <div class="form-check mb-1"><input class="form-check-input f-chk sum-trigger" type="checkbox" data-t="f-d-cortina" id="fd2" checked> <label class="form-check-label" for="fd2">Cortina</label></div>
-                    <div class="form-check mb-1"><input class="form-check-input f-chk sum-trigger" type="checkbox" data-t="sec-distribuidor" id="fd3" checked> <label class="form-check-label fw-bold" for="fd3">MOSTRAR SECCIÓN</label></div>
+                    <p class="data-label mb-2">3. Distribuidor</p>
+                    <div class="form-check small"><input class="form-check-input f-chk sum-trigger" type="checkbox" data-t="f-d-cortinero" id="fd1" checked> <label class="form-check-label">Cortinero</label></div>
+                    <div class="form-check small"><input class="form-check-input f-chk sum-trigger" type="checkbox" data-t="f-d-cortina" id="fd2" checked> <label class="form-check-label">Cortina</label></div>
+                    <div class="form-check small"><input class="form-check-input f-chk sum-trigger" type="checkbox" data-t="sec-distribuidor" id="fd3" checked> <label class="form-check-label fw-bold">VER DIST.</label></div>
                 </div>
             </div>
         </div>
@@ -174,15 +201,15 @@
         <div class="grand-total-section">
             <div class="row text-center">
                 <div class="col-md-4 sec-fabrica">
-                    <div class="small fw-bold opacity-75 text-uppercase">Total Fábrica</div>
+                    <div class="data-label text-white opacity-75">Total Fábrica</div>
                     <h3 id="totalFabricaSum" class="mb-0 fw-bold">$0.00</h3>
                 </div>
                 <div class="col-md-4 sec-publico">
-                    <div class="small fw-bold opacity-75 text-uppercase">Total Público</div>
+                    <div class="data-label text-white opacity-75">Total Público</div>
                     <h3 id="totalPublicoSum" class="mb-0 fw-bold">$0.00</h3>
                 </div>
                 <div class="col-md-4 sec-distribuidor">
-                    <div class="small fw-bold opacity-75 text-uppercase">Total Distribuidor</div>
+                    <div class="data-label text-white opacity-75">Total Distribuidor</div>
                     <h3 id="totalDistSum" class="mb-0 fw-bold">$0.00</h3>
                 </div>
             </div>
@@ -200,18 +227,12 @@
         rawData = data.detalleCortinas;
 
         const fechaObj = new Date(data.fecha);
-        const fechaFormateada = fechaObj.toLocaleDateString('es-MX', {
-            day: '2-digit', month: 'long', year: 'numeric'
-        });
-
+        const fechaFormateada = fechaObj.toLocaleDateString('es-MX', { day: '2-digit', month: 'long', year: 'numeric' });
         const folioTexto = "#" + id.toString().padStart(5, '0');
 
-        // Asignación a elementos Web
         document.getElementById('lblFolio').innerText = folioTexto;
         document.getElementById('lblCliente').innerText = data.cliente;
         document.getElementById('lblFecha').innerText = "Generado: " + fechaFormateada;
-
-        // Asignación a elementos PDF
         document.getElementById('pdf-cliente').innerText = data.cliente;
         document.getElementById('pdf-folio').innerText = folioTexto;
         document.getElementById('pdf-fecha').innerText = fechaFormateada;
@@ -221,46 +242,44 @@
 
         rawData.forEach((c, i) => {
             const partidaDiv = document.createElement('div');
-            partidaDiv.className = "mb-4 part-container";
+            partidaDiv.className = "part-container"; 
             partidaDiv.innerHTML = `
-                <div class="partida-title">
-                    <span>COTIZACIÓN ${i + 1}</span>
-                </div>
+                <div class="partida-title">COTIZACIÓN ${i + 1}</div>
                 <table class="table-main">
                     <tr>
                         <td class="col-base">
                             <div class="col-header">Datos Base</div>
                             <table class="inner-table">
-                                <tr><th>Tipo de Cortina</th><td>${c.tipoCortina}</td></tr>
-                                <tr><th>Porcentaje de Onda</th><td>${c.porcentajeOnda}%</td></tr>
-                                <tr><th>Tipo</th><td>${c.tipo}</td></tr>
-                                <tr><th>Modelo</th><td>${c.modelo || 'N/A'}</td></tr>
-                                <tr><th>Ancho</th><td>${c.ancho} m</td></tr>
-                                <tr><th>Alto</th><td>${c.alto} m</td></tr>
+                                <tr><th>TIPO CORTINA</th><td>${c.tipoCortina}</td></tr>
+                                <tr><th>% ONDA</th><td>${c.porcentajeOnda}%</td></tr>
+                                <tr><th>TIPO</th><td>${c.tipo}</td></tr>
+                                <tr><th>MODELO</th><td>${c.modelo || 'N/A'}</td></tr>
+                                <tr><th>ANCHO</th><td>${c.ancho} m</td></tr>
+                                <tr><th>ALTO</th><td>${c.alto} m</td></tr>
                                 <tr><th>M2</th><td>${c.m2} m²</td></tr>
-                                <tr><th>Sistema</th><td>${c.sistema}</td></tr>
-                                <tr><th>Acoplamiento</th><td>${c.acoplamiento}</td></tr>
-                                <tr><th>Instalación</th><td>${c.instalacion} </td></tr>
-                                <tr><th>Tipo de apertura</th><td>${c.tipoApertura}</td></tr>
+                                <tr><th>SISTEMA</th><td>${c.sistema}</td></tr>
+                                <tr><th>ACOPLAMIENTO</th><td>${c.acoplamiento}</td></tr>
+                                <tr><th>INSTALACIÓN</th><td>${c.instalacion} </td></tr>
+                                <tr><th>APERTURA</th><td>${c.tipoApertura}</td></tr>
                             </table>
                         </td>
                         <td class="col-herrajes">
                             <div class="col-header">Componentes</div>
                             <table class="inner-table">
-                                <tr><th>Ancho de Lienzo</th><td>${c.totalAnchoLienzo}</td></tr>
-                                <tr><th>ML Compra</th><td class="text-red">${c.mlComprar} m</td></tr>
-                                <tr><th>Altura Exacta</th><td class="text-red">${c.totalAltura} m</td></tr>
+                                <tr><th>ANCHO LIENZO</th><td>${c.totalAnchoLienzo}</td></tr>
+                                <tr><th>ML COMPRA</th><td class="text-danger">${c.mlComprar} m</td></tr>
+                                <tr><th>ALTURA EXACTA</th><td class="text-danger">${c.totalAltura} m</td></tr>
                             </table>
                         </td>
                         <td class="col-precios">
-                            <div class="col-header">Motor.</div>
+                            <div class="col-header">Motor</div>
                             <table class="inner-table">
-                                <tr><th>Motor</th><td>${fM(c.motor)}</td></tr>
+                                <tr><th>MOTOR</th><td>${fM(c.motor)}</td></tr>
                             </table>
                         </td>
                         <td class="col-costos">
                             <div class="col-header">Costos / Precios</div>
-                            <div class="sec-fabrica border-bottom pb-1 mb-1">
+                            <div class="sec-fabrica border-bottom mb-1">
                                 <div class="sub-section-header">FÁBRICA</div>
                                 <table class="inner-table">
                                     <tr class="f-f-cortinero"><th>Cortinero</th><td class="v-val-f" data-v="${c.costoTotalCortinero}">${fM(c.costoTotalCortinero)}</td></tr>
@@ -268,7 +287,7 @@
                                     <tr class="row-subtotal"><th>SUBTOTAL</th><td class="part-total-f">$0.00</td></tr>
                                 </table>
                             </div>
-                            <div class="sec-publico border-bottom pb-1 mb-1">
+                            <div class="sec-publico border-bottom mb-1">
                                 <div class="sub-section-header" style="background:#fff5f5">PÚBLICO</div>
                                 <table class="inner-table">
                                     <tr class="f-p-cortinero"><th>Cortinero</th><td class="v-val-p" data-v="${c.precioCortineroPublico}">${fM(c.precioCortineroPublico)}</td></tr>
@@ -302,31 +321,33 @@
         });
 
         let granF = 0, granP = 0, granD = 0;
-
         document.querySelectorAll('.part-container').forEach(container => {
             let partF = 0, partP = 0, partD = 0;
             if (document.getElementById('ff3').checked) {
-                if (document.getElementById('ff1').checked) partF += parseFloat(container.querySelector('.f-f-cortinero .v-val-f').dataset.v || 0);
-                if (document.getElementById('ff2').checked) partF += parseFloat(container.querySelector('.f-f-cortina .v-val-f').dataset.v || 0);
+                const c1 = container.querySelector('.f-f-cortinero .v-val-f');
+                const c2 = container.querySelector('.f-f-cortina .v-val-f');
+                if (document.getElementById('ff1').checked && c1) partF += parseFloat(c1.dataset.v || 0);
+                if (document.getElementById('ff2').checked && c2) partF += parseFloat(c2.dataset.v || 0);
             }
             container.querySelector('.part-total-f').innerText = fM(partF);
             granF += partF;
-
             if (document.getElementById('fp3').checked) {
-                if (document.getElementById('fp1').checked) partP += parseFloat(container.querySelector('.f-p-cortinero .v-val-p').dataset.v || 0);
-                if (document.getElementById('fp2').checked) partP += parseFloat(container.querySelector('.f-p-cortina .v-val-p').dataset.v || 0);
+                const c1 = container.querySelector('.f-p-cortinero .v-val-p');
+                const c2 = container.querySelector('.f-p-cortina .v-val-p');
+                if (document.getElementById('fp1').checked && c1) partP += parseFloat(c1.dataset.v || 0);
+                if (document.getElementById('fp2').checked && c2) partP += parseFloat(c2.dataset.v || 0);
             }
             container.querySelector('.part-total-p').innerText = fM(partP);
             granP += partP;
-
             if (document.getElementById('fd3').checked) {
-                if (document.getElementById('fd1').checked) partD += parseFloat(container.querySelector('.f-d-cortinero .v-val-d').dataset.v || 0);
-                if (document.getElementById('fd2').checked) partD += parseFloat(container.querySelector('.f-d-cortina .v-val-d').dataset.v || 0);
+                const c1 = container.querySelector('.f-d-cortinero .v-val-d');
+                const c2 = container.querySelector('.f-d-cortina .v-val-d');
+                if (document.getElementById('fd1').checked && c1) partD += parseFloat(c1.dataset.v || 0);
+                if (document.getElementById('fd2').checked && c2) partD += parseFloat(c2.dataset.v || 0);
             }
             container.querySelector('.part-total-d').innerText = fM(partD);
             granD += partD;
         });
-
         document.getElementById('totalFabricaSum').innerText = fM(granF);
         document.getElementById('totalPublicoSum').innerText = fM(granP);
         document.getElementById('totalDistSum').innerText = fM(granD);
