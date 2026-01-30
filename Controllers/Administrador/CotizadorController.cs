@@ -697,14 +697,14 @@ namespace RAMAVE_Cotizador.Controllers
                 .OrderByDescending(c => c.Id)
                 .ToListAsync();
 
-            // IMPORTANTE: Siempre devolvemos Ok. 
+            // IMPORTANTE: Siempre devolvemos Ok.
             // Si resultados está vacío, enviará [], y el JS entrará al bloque de "No se encontraron"
             return Ok(resultados);
         }
         [HttpPut("{id}")]
         public async Task<IActionResult> EditCotizacion(int id, [FromBody] Cotizaciones modelInput)
         {
-            
+           
             // 1. Buscar el registro original en la DB
             var model = await _context.Cotizaciones.FindAsync(id);
 
@@ -741,6 +741,7 @@ namespace RAMAVE_Cotizador.Controllers
             model.Catalogo = tela.catalogo;
             model.Marca = tela.modelo?.marca?.nombre ?? "N/A";
             model.Modelo = tela.modelo?.nombre ?? "N/A";
+            model.tipo = tela.tipo;
             model.ColorSeleccionado = model.ColorSeleccionado;
             model.AnchoRollo = tela.ancho;
             model.AnchoCM = model.Ancho * 100;
@@ -754,7 +755,7 @@ namespace RAMAVE_Cotizador.Controllers
                 var m = await _context.CostosMateriales.FirstOrDefaultAsync(x => x.concepto.ToUpper() == c.ToUpper());
                 return (m?.precio_unitario ?? 0m) * 1.16m;
             }
-            
+           
 
             // ============================================================
             // BLOQUE 1: ONDULADO Y MANUAL (Cálculo de Ingeniería y Costos)
@@ -1378,8 +1379,8 @@ namespace RAMAVE_Cotizador.Controllers
             if (string.IsNullOrEmpty(request.Nombre) || request.Nombre == "string")
                 return BadRequest("El nombre del cliente es obligatorio.");
 
-            var p = new Presupuesto { 
-                NombreCliente = request.Nombre, 
+            var p = new Presupuesto {
+                NombreCliente = request.Nombre,
                 FechaCreacion = DateTime.Now,
                 UsuarioId = request.UsuarioId // <--- Aquí ya guardamos quién lo hizo
             };
@@ -1393,7 +1394,7 @@ namespace RAMAVE_Cotizador.Controllers
         public async Task<IActionResult> GetReporte(int presupuestoId)
         {
             var reporte = await _context.Presupuestos
-            
+           
                 .Include(p => p.Cotizaciones) // Esto trae todas las cortinas asociadas
                 .FirstOrDefaultAsync(p => p.Id == presupuestoId);
 
@@ -1405,10 +1406,10 @@ namespace RAMAVE_Cotizador.Controllers
         public async Task<IActionResult> GetPresupuestoCompleto(int id)
         {
             var presupuesto = await _context.Presupuestos
-                .Include(p => p.Cotizaciones) // Esto trae todas las cortinas asociadas         
+                .Include(p => p.Cotizaciones) // Esto trae todas las cortinas asociadas        
                 .FirstOrDefaultAsync(p => p.Id == id);
 
-            if (presupuesto == null) 
+            if (presupuesto == null)
                 return NotFound(new { mensaje = "Presupuesto no encontrado" });
 
             presupuesto.TotalPresupuesto = presupuesto.Cotizaciones.Sum(c => c.TotalPublico);
@@ -1515,9 +1516,9 @@ namespace RAMAVE_Cotizador.Controllers
                     c.PrecioCortineroDistribuidor,
                     c.PrecioCortinaDistribuidor,
                     c.TotalDistribuidor,
-                    
+                   
                     // Campo de validación
-                    totalPartidaVerificacion = c.TotalPublico 
+                    totalPartidaVerificacion = c.TotalPublico
                 })
             });
         }
