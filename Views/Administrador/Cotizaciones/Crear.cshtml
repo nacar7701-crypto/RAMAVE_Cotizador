@@ -138,9 +138,9 @@
     }
 
     .radio-content img {
-        width: 100%;
-        max-width: 60px;
-        height: 60px;
+        width: 200%;
+        max-width: 150px;
+        height: 100px;
         object-fit: contain;
         margin-bottom: 8px;
     }
@@ -221,15 +221,15 @@
             <div class="radio-group-visual">
                 <label class="radio-card">
                     <input type="radio" name="TipoCortina" value="OJILLOS" @(tipoInicial == "OJILLOS" ? "checked" : "") onchange="actualizarInterfaz(this.value)">
-                    <div class="radio-content"><img src="/images/persiana-ojillos.jpg"><span>Ojillos</span></div>
+                    <div class="radio-content"><img src="/images/ojillos.png"><span>Ojillos</span></div>
                 </label>
                 <label class="radio-card">
                     <input type="radio" name="TipoCortina" value="FRANCESA" @(tipoInicial == "FRANCESA" ? "checked" : "") onchange="actualizarInterfaz(this.value)">
-                    <div class="radio-content"><img src="/images/persiana-francesa.jpg"><span>Francesa</span></div>
+                    <div class="radio-content"><img src="/images/francesa.png"><span>Francesa</span></div>
                 </label>
                 <label class="radio-card">
                     <input type="radio" name="TipoCortina" value="ONDULADO" @(tipoInicial == "ONDULADO" ? "checked" : "") onchange="actualizarInterfaz(this.value)">
-                    <div class="radio-content"><img src="/images/persiana-ondulada.jpg"><span>Ondulado</span></div>
+                    <div class="radio-content"><img src="/images/ondulada.png"><span>Ondulado</span></div>
                 </label>
             </div>
 
@@ -311,11 +311,11 @@
                     <div class="radio-group-visual">
                         <label class="radio-card">
                             <input type="radio" name="radioAcoplamiento" value="IZQUIERDO" checked>
-                            <div class="radio-content"><img src="/images/Izquierda.jpeg"><span>Izq</span></div>
+                            <div class="radio-content"><img src="/images/Izquierda.jpeg"><span>Izquierdo</span></div>
                         </label>
                         <label class="radio-card">
                             <input type="radio" name="radioAcoplamiento" value="DERECHO">
-                            <div class="radio-content"><img src="/images/derecha.jpeg"><span>Der</span></div>
+                            <div class="radio-content"><img src="/images/derecha.jpeg"><span>Derecho</span></div>
                         </label>
                         <label class="radio-card">
                             <input type="radio" name="radioAcoplamiento" value="AMBOS">
