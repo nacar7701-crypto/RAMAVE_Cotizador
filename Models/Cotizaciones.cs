@@ -100,6 +100,15 @@ namespace RAMAVE_Cotizador.Models
         public decimal CostoCarritos { get; set; } = 0m;
         public decimal CostoCarritoCortinero { get; set; } = 0m;
         public decimal CostoGanchoFinal { get; set; } = 0m;
+        // --- CAMPOS PARA SISTEMA DE OJILLOS ---
+        public int CantidadOjillosPorLienzo { get; set; } = 0;
+        public int TotalOjillos { get; set; } = 0;
+
+        [Column(TypeName = "decimal(18,4)")]
+        public decimal MedidaTubular { get; set; } = 0;
+
+        [Column(TypeName = "decimal(18,4)")]
+        public decimal CostoOjillos { get; set; } = 0;
         [NotMapped] // Esto le dice a EF: "No busques esta columna en la tabla Cotizaciones"
         public string? NombreCliente { get; set; }
 

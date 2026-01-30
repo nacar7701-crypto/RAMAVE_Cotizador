@@ -645,9 +645,121 @@ namespace RAMAVE_Cotizador.Controllers
                 model.PrecioCortinaDistribuidor = model.CostoTotalCortina * 2;
                 model.TotalDistribuidor = model.CostoTotalGeneral * 2;
             }
-            // ============================================================
-            // BLOQUE 8: OJILLOS Y MANUAL
-            // ============================================================
+// ============================================================
+// BLOQUE 8: OJILLOS Y MANUAL
+// ============================================================
+if (tipoCortina == "OJILLOS" && sistema == "MANUAL")
+{
+    // --- 1. LÓGICA DE INGENIERÍA ---
+
+    // CANTIDAD DE OJILLOS POR LIENZO (Ancho en cm / 7)
+    decimal ojillosPorLienzoRaw = model.AnchoCM / 7m;
+    model.CantidadOjillosPorLienzo = (int)Math.Floor(ojillosPorLienzoRaw);
+
+    // TOTAL OJILLOS (Redondear al par inferior - Estilo Redondear.Menos de Excel)
+    int totalSugerido = (int)Math.Floor(model.AnchoCM / 7m);
+    model.TotalOjillos = (totalSugerido % 2 == 0) ? totalSugerido : totalSugerido - 1;
+
+    // ANCHO TOTAL DE LIENZO: (Total anillos * 16) + (26 una hoja / 42 dos hojas) / 100
+    decimal constanteHojas = (model.TipoApertura == "DOS HOJAS") ? 42m : 26m;
+    model.TotalAnchoLienzo = ((model.TotalOjillos * 16m) + constanteHojas) / 100m;
+
+    // ALTURA TOTAL: (Altura cm + 44) / 100
+    model.TotalAltura = (model.AlturaCM + 44m) / 100m;
+    model.AlturaExacta = model.TotalAltura;
+
+    // ANCHO DE ROLLO (Desde tabla Telas)
+    model.AnchoRollo = tela.ancho;
+
+    // ML REALES (Condición de giro de tela)
+    if (model.TotalAltura < model.AnchoRollo)
+    {
+        model.TotalML = model.TotalAnchoLienzo;
+    }
+    else
+    {
+        model.NumLienzos = (int)Math.Ceiling(model.TotalAnchoLienzo / model.AnchoRollo);
+        model.TotalML = (model.TotalAnchoLienzo / model.AnchoRollo) * model.TotalAltura;
+    }
+
+    // ML A COMPRAR: Redondear siempre al mayor (Ceiling)
+    model.MLComprar = (int)Math.Ceiling(model.TotalML);
+
+    // MEDIDA DE CORTINERO TUBULAR Y SOPORTES
+    model.MedidaTubular = model.Ancho;
+    model.Soportes = (model.MedidaTubular > 3m) ? 4 : 2;
+
+    // TARLATANA: Igual al ancho total de lienzo
+    model.Tarlatana = model.TotalAnchoLienzo;
+
+    // --- 2. OBTENCIÓN DE PRECIOS (PARCHE "AMBOS") ---
+
+    async Task<decimal> PrecioMat(string concepto, string sistemaFiltro = "AMBOS")
+    {
+        // Buscamos específicamente el concepto que coincida con el sistema "AMBOS"
+        var m = await _context.CostosMateriales
+            .FirstOrDefaultAsync(x => x.concepto.ToUpper() == concepto.ToUpper() 
+                                   && x.sistema.ToUpper() == sistemaFiltro.ToUpper());
+        
+        // Si no existe con "AMBOS", buscamos el concepto general como respaldo
+        if (m == null)
+            m = await _context.CostosMateriales.FirstOrDefaultAsync(x => x.concepto.ToUpper() == concepto.ToUpper());
+
+        return (m?.precio_unitario ?? 0m) * 1.16m; // Precio con IVA
+    }
+
+    // Recuperamos precios unitarios con IVA
+    decimal pTubular = await PrecioMat("CORTINERO TUBULAR 1\"", "AMBOS");
+    decimal pSoporte = await PrecioMat("SOPORTE A MURO", "AMBOS");
+    decimal pOjillos = await PrecioMat("OJILLOS", "AMBOS");
+    decimal pTarlatana = await PrecioMat("TARLATANA", "AMBOS");
+
+    // --- 3. ASIGNACIÓN DE COSTOS ---
+
+    // CORTINERO (Tubular * Medida)
+    model.CostoRiel = pTubular * model.MedidaTubular;
+
+    // SOPORTES (Validar Instalación)
+    string instSafe = (model.Instalacion ?? "MURO").ToUpper();
+    if (instSafe.Contains("TECHO"))
+    {
+        model.Soportes = 0;
+        model.CostoSoportes = 0m;
+    }
+    else
+    {
+        model.CostoSoportes = pSoporte * (decimal)model.Soportes;
+    }
+
+    // OTROS COMPONENTES
+    model.CostoEmpaque = 20.00m;
+    model.CostoOjillos = pOjillos * (decimal)model.TotalOjillos;
+    model.CostoTarlatana = pTarlatana * model.Tarlatana;
+
+    // COSTO TOTAL CORTINERO (Cortinero + Soportes + Empaque)
+    model.CostoTotalCortinero = model.CostoRiel + model.CostoSoportes + model.CostoEmpaque;
+
+    // COSTO TOTAL CORTINA
+    model.PrecioTelaML = tela.precio_ml_corte * 1.16m;
+    model.CostoTotalTela = (decimal)model.MLComprar * model.PrecioTelaML;
+    
+    // Suma: Empaque + Ojillos + Tarlatana + Tela
+    model.CostoTotalCortina = model.CostoEmpaque + model.CostoOjillos + model.CostoTarlatana + model.CostoTotalTela;
+
+    // --- 4. TOTALES GENERALES Y COMERCIALES ---
+
+    model.CostoTotalGeneral = model.CostoTotalCortina + model.CostoTotalCortinero;
+
+    // PÚBLICO (x3)
+    model.PrecioCortineroPublico = model.CostoTotalCortinero * 3;
+    model.PrecioCortinaPublico = model.CostoTotalCortina * 3;
+    model.TotalPublico = model.CostoTotalGeneral * 3;
+
+    // DISTRIBUIDOR (x2)
+    model.PrecioCortineroDistribuidor = model.CostoTotalCortinero * 2;
+    model.PrecioCortinaDistribuidor = model.CostoTotalCortina * 2;
+    model.TotalDistribuidor = model.CostoTotalGeneral * 2;
+}
             // ============================================================
             // BLOQUE 9: OJILLOS Y MOTORIZADO BATERIA
             // ============================================================
