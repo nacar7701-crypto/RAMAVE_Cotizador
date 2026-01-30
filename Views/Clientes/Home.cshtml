@@ -74,8 +74,7 @@
         color: #444;
     }
 
-    input,
-    select {
+    input, select {
         width: 100%;
         padding: 0.7rem 0.9rem;
         border-radius: 8px;
@@ -90,7 +89,6 @@
         font-size: 0.85rem;
     }
 
-    /* Validaciones */
     .error-text {
         color: var(--ramave-red);
         font-size: 0.7rem;
@@ -104,7 +102,6 @@
         box-shadow: 0 0 0 2px rgba(198, 40, 40, 0.1);
     }
 
-    /* Radio Cards */
     .radio-group-visual {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
@@ -135,7 +132,7 @@
         justify-content: center;
     }
 
-    .radio-card input:checked+.radio-content {
+    .radio-card input:checked + .radio-content {
         border-color: var(--ramave-red);
         background-color: #fff5f5;
     }
@@ -143,7 +140,6 @@
     .radio-content img {
         width: 100%;
         max-width: 60px;
-        /* Un poco más grandes para mejor visibilidad */
         height: 60px;
         object-fit: contain;
         margin-bottom: 8px;
@@ -175,30 +171,12 @@
         transition: 0.3s;
     }
 
-    .btn-add {
-        background: #2d3436;
-        color: white;
-    }
+    .btn-add { background: #2d3436; color: white; }
+    .btn-finish { background: var(--ramave-red); color: white; }
+    .btn-back { background: #eee; color: #666; }
 
-    .btn-finish {
-        background: var(--ramave-red);
-        color: white;
-    }
-
-    .btn-back {
-        background: #eee;
-        color: #666;
-    }
-
-    .input-group-custom {
-        display: flex;
-    }
-
-    .input-group-custom input {
-        border-radius: 8px 0 0 8px;
-        border-right: none;
-    }
-
+    .input-group-custom { display: flex; }
+    .input-group-custom input { border-radius: 8px 0 0 8px; border-right: none; }
     .input-group-text-custom {
         background: #f1f3f5;
         border: 1px solid var(--border-color);
@@ -211,10 +189,7 @@
         color: #777;
     }
 
-    #sectionOnda {
-        display: none;
-    }
-
+    #sectionOnda { display: none; }
     .presupuesto-info {
         background: #fff5f5;
         padding: 12px;
@@ -224,40 +199,12 @@
         border: 1px solid #f8d7da;
     }
 
-    /* --- MEDIA QUERIES PARA MÓVIL --- */
     @@media (max-width: 600px) {
-        .card-form {
-            padding: 1.5rem;
-            /* Menos padding lateral en móviles */
-        }
-
-        h2 {
-            font-size: 1.4rem;
-        }
-
-        /* En pantallas muy pequeñas, forzamos 2 columnas para que no se vean diminutas */
-        .radio-group-visual {
-            grid-template-columns: repeat(2, 1fr);
-        }
-
-        /* Ajuste de los botones de abajo */
-        .buttons-container {
-            grid-template-columns: 1fr;
-            /* Los botones se apilan uno sobre otro */
-            gap: 0.8rem;
-        }
-
-        /* Ajuste de la sección 2 (Cliente/Área) */
-        #cotizadorForm>div[style*="grid-template-columns"] {
-            grid-template-columns: 1fr !important;
-            /* Pasamos de 3 columnas a 1 */
-        }
-
-        /* Ajuste de la sección 3 (Catálogo/Marca/Tela/Color) */
-        #cotizadorForm>div[style*="grid-template-columns: 1fr 1fr 1fr"] {
-            grid-template-columns: 1fr 1fr !important;
-            /* 2 filas de 2 columnas */
-        }
+        .card-form { padding: 1.5rem; }
+        .radio-group-visual { grid-template-columns: repeat(2, 1fr); }
+        .buttons-container { grid-template-columns: 1fr; }
+        #cotizadorForm > div[style*="grid-template-columns"] { grid-template-columns: 1fr !important; }
+    }
 </style>
 
 <div class="page-container">
@@ -274,30 +221,28 @@
             <div class="form-section-title"><i class="fas fa-cut"></i> 1. Confección</div>
             <div class="radio-group-visual">
                 <label class="radio-card">
-                    <input type="radio" name="TipoCortina" value="OJILLOS" @(tipoInicial == "OJILLOS" ? "checked" : "")
-                        onchange="actualizarInterfaz(this.value)">
+                    <input type="radio" name="TipoCortina" value="OJILLOS" @(tipoInicial == "OJILLOS" ? "checked" : "") onchange="actualizarInterfaz(this.value)">
                     <div class="radio-content"><img src="/images/persiana-ojillos.jpg"><span>Ojillos</span></div>
                 </label>
                 <label class="radio-card">
-                    <input type="radio" name="TipoCortina" value="FRANCESA" @(tipoInicial == "FRANCESA" ? "checked" :
-                                                                                                    "") onchange="actualizarInterfaz(this.value)">
+                    <input type="radio" name="TipoCortina" value="FRANCESA" @(tipoInicial == "FRANCESA" ? "checked" : "") onchange="actualizarInterfaz(this.value)">
                     <div class="radio-content"><img src="/images/persiana-francesa.jpg"><span>Francesa</span></div>
                 </label>
                 <label class="radio-card">
-                    <input type="radio" name="TipoCortina" value="ONDULADO" @(tipoInicial == "ONDULADO" ? "checked" :
-                                                                                                    "") onchange="actualizarInterfaz(this.value)">
+                    <input type="radio" name="TipoCortina" value="ONDULADO" @(tipoInicial == "ONDULADO" ? "checked" : "") onchange="actualizarInterfaz(this.value)">
                     <div class="radio-content"><img src="/images/persiana-ondulada.jpg"><span>Ondulado</span></div>
                 </label>
             </div>
 
             <div class="form-section-title"><i class="fas fa-user"></i> 2. Proyecto</div>
-            <div style="display: grid; grid-template-columns: 0.40fr 0.10fr 0.50fr; align-items: start;">
+            
+            @* Fila 1: Cliente y Área *@
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
                 <div class="form-group">
                     <label>Cliente</label>
                     <input id="Cliente" class="input-compact" placeholder="Nombre completo" />
                     <span id="err-Cliente" class="error-text">Requerido</span>
                 </div>
-                <div></div>
                 <div class="form-group">
                     <label>Área</label>
                     <input id="Area" class="input-compact" placeholder="Ej. Sala Principal" />
@@ -305,52 +250,52 @@
                 </div>
             </div>
 
-            <div class="form-section-title"><i class="fas fa-layer-group"></i> 3. Material</div>
+            @* Fila 2: Número (Teléfono) y Dirección *@
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+                <div class="form-group">
+                    <label>Número (Teléfono)</label>
+                    <input id="Numero" type="tel" class="input-compact" placeholder="10 dígitos" />
+                    <span id="err-Numero" class="error-text">Requerido</span>
+                </div>
+                <div class="form-group">
+                    <label>Dirección</label>
+                    <input id="Direccion" class="input-compact" placeholder="Calle, número y colonia" />
+                    <span id="err-Direccion" class="error-text">Requerido</span>
+                </div>
+            </div>
 
-            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.8rem; margin-bottom: 0.5rem;">
+            <div class="form-section-title"><i class="fas fa-layer-group"></i> 3. Material</div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.8rem;">
                 <div class="form-group">
                     <label>Catálogo</label>
-                    <select id="selectCatalogo">
-                        <option value="">Seleccione...</option>
-                    </select>
+                    <select id="selectCatalogo"><option value="">Seleccione...</option></select>
                     <span id="err-selectCatalogo" class="error-text">Seleccione uno</span>
                 </div>
                 <div class="form-group">
                     <label>Marca</label>
-                    <select id="selectMarca" disabled>
-                        <option value="">Marca...</option>
-                    </select>
+                    <select id="selectMarca" disabled><option value="">Marca...</option></select>
                     <span id="err-selectMarca" class="error-text">Seleccione uno</span>
                 </div>
                 <div class="form-group">
                     <label>Tela</label>
-                    <select id="selectModelo" disabled>
-                        <option value="">Modelo...</option>
-                    </select>
+                    <select id="selectModelo" disabled><option value="">Modelo...</option></select>
                     <span id="err-selectModelo" class="error-text">Seleccione uno</span>
                 </div>
             </div>
 
-            <div style="display: grid; grid-template-columns: 0.40fr 0.10fr 0.50fr; align-items: start;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
                 <div class="form-group">
                     <label>Tipo de Tela</label>
-                    <input id="inputTipoTela" class="input-compact" readonly
-                        style="background-color: #f1f3f5; font-weight: bold; color: var(--ramave-red);"
-                        placeholder="Tipo..." />
+                    <input id="inputTipoTela" class="input-compact" readonly style="background-color: #f1f3f5; font-weight: bold; color: var(--ramave-red);" />
                 </div>
-
-                <div></div>
-
                 <div class="form-group">
                     <label>Color</label>
-                    <select id="selectColor" disabled>
-                        <option value="">Color...</option>
-                    </select>
+                    <select id="selectColor" disabled><option value="">Color...</option></select>
                     <span id="err-selectColor" class="error-text">Seleccione uno</span>
                 </div>
             </div>
 
-            <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 1.5rem;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
                 <div>
                     <div class="form-section-title">Instalación</div>
                     <div class="radio-group-visual">
@@ -387,14 +332,12 @@
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 0.8rem;">
                 <div class="form-group">
                     <label>Ancho (m)</label>
-                    <div class="input-group-custom"><input id="ancho" type="number" step="0.01"
-                            placeholder="0.00" /><span class="input-group-text-custom">m</span></div>
+                    <div class="input-group-custom"><input id="ancho" type="number" step="0.01" placeholder="0.00" /><span class="input-group-text-custom">m</span></div>
                     <span id="err-ancho" class="error-text">Medida inválida</span>
                 </div>
                 <div class="form-group">
                     <label>Alto (m)</label>
-                    <div class="input-group-custom"><input id="alto" type="number" step="0.01"
-                            placeholder="0.00" /><span class="input-group-text-custom">m</span></div>
+                    <div class="input-group-custom"><input id="alto" type="number" step="0.01" placeholder="0.00" /><span class="input-group-text-custom">m</span></div>
                     <span id="err-alto" class="error-text">Medida inválida</span>
                 </div>
                 <div class="form-group">
@@ -412,11 +355,9 @@
             </div>
 
             <div class="buttons-container">
-                <a href="/Clientes/Index" class="btn btn-back"
-                    onclick="localStorage.removeItem('pId')">CANCELAR</a>
+                <a href="/Clientes/Historial" class="btn btn-back" onclick="localStorage.removeItem('pId')">CANCELAR</a>
                 <button type="button" onclick="accionAgregar()" class="btn btn-add">AGREGAR OTRA CORTINA</button>
-                <button type="button" onclick="accionGuardarContinuar()" class="btn btn-finish">GUARDAR Y
-                    CONTINUAR</button>
+                <button type="button" onclick="accionGuardarContinuar()" class="btn btn-finish">GUARDAR Y CONTINUAR</button>
             </div>
         </form>
     </div>
@@ -432,12 +373,13 @@
 
     function validarFormulario() {
         let esValido = true;
-        const ids = ['Cliente', 'Area', 'selectCatalogo', 'selectMarca', 'selectModelo', 'selectColor', 'ancho', 'alto'];
+        // Agregamos Numero y Direccion a la lista de validación
+        const ids = ['Cliente', 'Numero', 'Direccion', 'Area', 'selectCatalogo', 'selectMarca', 'selectModelo', 'selectColor', 'ancho', 'alto'];
 
         ids.forEach(id => {
             const el = document.getElementById(id);
             const err = document.getElementById('err-' + id);
-            if (!el.value || el.value === "" || (el.type === "number" && el.value <= 0)) {
+            if (!el.value || el.value.trim() === "" || (el.type === "number" && el.value <= 0)) {
                 el.classList.add('invalid');
                 if (err) err.style.display = 'block';
                 esValido = false;
@@ -450,7 +392,6 @@
     }
 
     function limpiarCampos() {
-        // Limpiamos todo menos el Cliente
         const ids = ['Area', 'ancho', 'alto', 'selectCatalogo', 'selectMarca', 'selectModelo', 'selectColor'];
         ids.forEach(id => {
             const el = document.getElementById(id);
@@ -486,21 +427,17 @@
     }
 
     async function crearPresupuestoBase() {
-        const nombre = document.getElementById('Cliente').value;
-
-        // Suponiendo que guardas el UsuarioId en SessionStorage al hacer login
-        // Si no, puedes pasarlo desde el ViewBag en el HTML a una variable global
-        const userId = @(Context.Session.GetInt32("UsuarioId") ?? 0);
-
         const requestBody = {
-            Nombre: nombre,
-            UsuarioId: userId
+            Nombre: document.getElementById('Cliente').value.trim(),
+            Numero: document.getElementById('Numero').value.trim(), // Enviamos número
+            Direccion: document.getElementById('Direccion').value.trim(), // Enviamos dirección
+            UsuarioId: @(Context.Session.GetInt32("UsuarioId") ?? 0)
         };
 
         const res = await fetch('/api/Cotizador/CrearPresupuesto', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(requestBody) // Enviamos el objeto completo
+            body: JSON.stringify(requestBody)
         });
 
         if (res.ok) {
@@ -518,13 +455,16 @@
             document.getElementById('infoPresupuesto').style.display = 'block';
             document.getElementById('idPresupuestoTexto').innerText = "#" + pId;
             document.getElementById('Cliente').disabled = true;
+            document.getElementById('Numero').disabled = true;
+            document.getElementById('Direccion').disabled = true;
         }
     }
 
+    // ... (resto del script de envío de cotización y carga de telas igual)
     async function enviarCotizacion() {
         const data = {
             idTela: parseInt(document.getElementById('selectModelo').value),
-            cliente: document.getElementById('Cliente').value,
+            cliente: document.getElementById('Cliente').value.trim(),
             ancho: parseFloat(document.getElementById('ancho').value),
             alto: parseFloat(document.getElementById('alto').value),
             tipoCortina: document.querySelector('input[name="TipoCortina"]:checked').value,
@@ -536,7 +476,6 @@
             PresupuestoId: parseInt(pId),
             colorSeleccionado: document.getElementById('selectColor').value,
             tipo: document.getElementById('inputTipoTela').value
-
         };
 
         const res = await fetch('/api/Cotizador/Crear', {
@@ -555,21 +494,19 @@
         const selMar = document.getElementById("selectMarca");
         const selMod = document.getElementById("selectModelo");
         const selCol = document.getElementById("selectColor");
-        const inputTipo = document.getElementById('inputTipoTela'); // Referencia al nuevo campo
+        const inputTipo = document.getElementById('inputTipoTela');
 
         let listaTelasLocal = [];
 
-        // 1. Cargar Catálogos
         fetch('/api/Telas/catalogos-unicos')
             .then(r => r.json())
             .then(d => d.forEach(c => selCat.add(new Option(c, c))));
 
-        // 2. Al cambiar Catálogo -> Cargar Marcas
         selCat.onchange = () => {
             selMar.innerHTML = '<option value="">Marca...</option>';
             selMod.innerHTML = '<option value="">Modelo...</option>';
             selCol.innerHTML = '<option value="">Color...</option>';
-            inputTipo.value = ""; // Limpiar tipo
+            inputTipo.value = "";
             selMar.disabled = selMod.disabled = selCol.disabled = true;
 
             if (!selCat.value) return;
@@ -581,11 +518,10 @@
                 });
         };
 
-        // 3. Al cambiar Marca -> Cargar Modelos
         selMar.onchange = () => {
             selMod.innerHTML = '<option value="">Modelo...</option>';
             selCol.innerHTML = '<option value="">Color...</option>';
-            inputTipo.value = ""; // Limpiar tipo
+            inputTipo.value = "";
             selMod.disabled = selCol.disabled = true;
 
             if (!selMar.value) return;
@@ -598,32 +534,17 @@
                 });
         };
 
-        // 4. Al cambiar Modelo -> MOSTRAR TIPO Y COLORES
         selMod.onchange = () => {
             selCol.innerHTML = '<option value="">Color...</option>';
-            inputTipo.value = ""; // Reset por defecto
-
-            if (!selMod.value) {
-                selCol.disabled = true;
-                return;
-            }
-
-            // Buscamos la tela en la lista local que ya tenemos
+            if (!selMod.value) return;
             const tela = listaTelasLocal.find(t => t.id == selMod.value);
-
             if (tela) {
-                // MOSTRAR EL TIPO (Asegúrate que tu API devuelva la propiedad .tipo)
                 inputTipo.value = tela.tipo || "SIN TIPO";
-
-                // MOSTRAR COLORES
                 if (tela.color_nombre) {
                     selCol.disabled = false;
-                    const colores = tela.color_nombre.split(',');
-                    colores.forEach(c => {
-                        const nombreLimpio = c.trim();
-                        if (nombreLimpio) {
-                            selCol.add(new Option(nombreLimpio, nombreLimpio));
-                        }
+                    tela.color_nombre.split(',').forEach(c => {
+                        const n = c.trim();
+                        if (n) selCol.add(new Option(n, n));
                     });
                 } else {
                     selCol.add(new Option("ÚNICO", "ÚNICO"));

@@ -4,16 +4,8 @@
 
 @{
     ViewData["Title"] = "Mi Historial de Cotizaciones";
-    
-    // Obtenemos el rol de la sesión
     var rol = HttpContextAccessor.HttpContext.Session.GetString("UsuarioRol")?.Trim();
-    
-    // Definimos qué precio mostrar según el rol
-    string etiquetaPrecio = "Total Público"; // Por defecto
-    if (rol == "Distribuidor")
-    {
-        etiquetaPrecio = "Total Distribuidor";
-    }
+    string etiquetaPrecio = (rol == "Distribuidor") ? "Total Distribuidor" : "Total Público";
 }
 
 <style>
@@ -51,19 +43,40 @@
         border: 1px solid var(--border-color); background: #f8f9fa;
     }
 
+    /* AJUSTE DE COLUMNAS */
     .table-card { background: white; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); overflow: hidden; }
-    table { width: 100%; border-collapse: collapse; }
-    th { background: #f8f9fa; padding: 12px; font-size: 0.7rem; text-transform: uppercase; color: #666; border-bottom: 2px solid var(--border-color); }
+    
+    table { 
+        width: 100%; 
+        border-collapse: collapse; 
+        table-layout: fixed; /* Fuerza el respeto de los anchos */
+    }
+
+    th { 
+        background: #f8f9fa; 
+        padding: 12px; 
+        font-size: 0.7rem; 
+        text-transform: uppercase; 
+        color: #666; 
+        border-bottom: 2px solid var(--border-color);
+        text-align: left;
+    }
+
+    /* Definición de anchos */
+    .col-info { width: 35%; }
+    .col-detalles { width: 25%; }
+    .col-medidas { width: 20%; }
+    .col-precio { width: 20%; text-align: right; }
 
     .group-header { background-color: var(--group-bg) !important; border-left: 5px solid var(--ramave-red); font-weight: 800; color: var(--ramave-red); }
-    .fila-cotizacion td { padding: 12px; border-bottom: 1px solid var(--border-color); }
+    .fila-cotizacion td { padding: 12px; border-bottom: 1px solid var(--border-color); vertical-align: middle; }
 
     .folio-badge {
         background: var(--ramave-red); color: white; padding: 4px 12px;
         border-radius: 15px; font-size: 0.75rem; margin-right: 10px;
     }
 
-    .price-total { font-weight: 700; color: var(--ramave-red); font-size: 1rem; }
+    .price-total { font-weight: 700; color: var(--ramave-red); font-size: 1rem; display: block; text-align: right; }
 
     .btn-main {
         padding: 10px 16px; border-radius: 8px; font-weight: 600;
@@ -96,24 +109,23 @@
         <table>
             <thead>
                 <tr>
-                    <th>Información Técnica</th>
-                    <th>Detalles Producto</th>
-                    <th>Medidas</th>
-                    <th>@etiquetaPrecio</th> @* Encabezado Dinámico *@
-                    <th style="width: 100px;">Acción</th>
+                    <th class="col-info">Información Técnica</th>
+                    <th class="col-detalles">Detalles Producto</th>
+                    <th class="col-medidas">Medidas</th>
+                    <th class="col-precio">@etiquetaPrecio</th>
                 </tr>
             </thead>
             <tbody id="listaCotizaciones">
                 @if (Model == null || !Model.Any())
                 {
-                    <tr><td colspan="5" style="text-align:center; padding: 40px; color: #888;">No tienes cotizaciones registradas.</td></tr>
+                    <tr><td colspan="4" style="text-align:center; padding: 40px; color: #888;">No tienes cotizaciones registradas.</td></tr>
                 }
                 else
                 {
                     @foreach (var presupuesto in Model)
                     {
                         <tr class="group-header" data-searchable="@presupuesto.NombreCliente @presupuesto.Id">
-                            <td colspan="5">
+                            <td colspan="4">
                                 <div style="display: flex; justify-content: space-between; align-items: center;">
                                     <div>
                                         <span class="folio-badge">FOLIO #@presupuesto.Id</span>
@@ -121,7 +133,7 @@
                                         <span class="date-text">@presupuesto.FechaCreacion.ToString("dd/MM/yyyy HH:mm")</span>
                                     </div>
                                     <div style="margin-right: 15px;">
-                                        <a href="@Url.Action("PresupuestoFinal", "Clientes", new { id = presupuesto.Id })" style="color: var(--ramave-red); text-decoration: none; font-size: 0.8rem;">
+                                        <a href="@Url.Action("PresupuestoFinal", "Clientes", new { id = presupuesto.Id })" style="color: var(--ramave-red); text-decoration: none; font-size: 0.8rem; font-weight: 700;">
                                             <i class="fas fa-file-pdf"></i> VER PDF COMPLETO
                                         </a>
                                     </div>
@@ -131,26 +143,24 @@
 
                         foreach (var item in presupuesto.Cotizaciones)
                         {
-                            @* Lógica de valor de precio por partida *@
                             decimal precioAMostrar = (rol == "Distribuidor") 
                                 ? (item.PrecioCortinaDistribuidor + item.PrecioCortineroDistribuidor) 
                                 : item.TotalPublico;
 
                             <tr class="fila-cotizacion" data-parent-folio="@presupuesto.Id">
-                                <td>
+                                <td class="col-info">
                                     <div><strong>@item.Area</strong></div>
                                     <div style="font-size: 0.75rem; color: #666;">@item.Sistema | @item.TipoCortina</div>
                                 </td>
-                                <td>
+                                <td class="col-detalles">
                                     <div>@item.Marca - @item.Modelo</div>
                                     <div style="font-size: 0.75rem; color: #666;">Color: @(item.ColorSeleccionado ?? "N/A")</div>
                                 </td>
-                                <td><strong>@item.Ancho.ToString("N2") x @item.Alto.ToString("N2") m</strong></td>
-                                <td><span class="price-total">@precioAMostrar.ToString("C")</span></td>
-                                <td>
-                                    <a href="@Url.Action("Home", "Clientes", new { id = item.Id })" style="color: #666; font-weight:bold; text-decoration:none;">
-                                        <i class="fas fa-eye"></i> Detalle
-                                    </a>
+                                <td class="col-medidas">
+                                    <strong>@item.Ancho.ToString("N2") x @item.Alto.ToString("N2") m</strong>
+                                </td>
+                                <td class="col-precio">
+                                    <span class="price-total">@precioAMostrar.ToString("C")</span>
                                 </td>
                             </tr>
                         }
@@ -161,7 +171,6 @@
     </div>
 </div>
 
-@* Mantenemos tu mismo script de filtrado *@
 <script>
     function filtrarTabla() {
         const query = document.getElementById('txtBuscar').value.toLowerCase().trim();
@@ -171,6 +180,7 @@
             const infoCabecera = header.getAttribute('data-searchable').toLowerCase();
             let tieneHijosVisibles = false;
             let siguiente = header.nextElementSibling;
+            
             while (siguiente && siguiente.classList.contains('fila-cotizacion')) {
                 const contenidoFila = siguiente.innerText.toLowerCase();
                 if (contenidoFila.includes(query) || infoCabecera.includes(query)) {

@@ -57,11 +57,12 @@ namespace RAMAVE_Cotizador.Controllers
 
             return View(historial);
         }
-        
-        [HttpGet("PresupuestoFinal/{id}")]
+
+        [HttpGet]
         public IActionResult PresupuestoFinal(int id)
         {
             ViewBag.PresupuestoId = id;
+            // Forzamos la ruta de la vista por si acaso
             return View("~/Views/Clientes/PresupuestoFinal.cshtml");
         }
     }
