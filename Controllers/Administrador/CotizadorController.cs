@@ -712,6 +712,8 @@ namespace RAMAVE_Cotizador.Controllers
             {
                 return NotFound(new { mensaje = "La cotización no existe." });
             }
+            // --- REINICIO DE CAMPOS MOTORIZADOS ---
+            model.Motor = 0m;
 
             // 2. Actualizar solo los campos que el usuario puede cambiar desde el Front
             model.IdTela = modelInput.IdTela;
