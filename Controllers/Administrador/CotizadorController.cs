@@ -1373,24 +1373,33 @@ namespace RAMAVE_Cotizador.Controllers
         {
             public string Nombre { get; set; } = string.Empty;
             public int UsuarioId { get; set; }
+            public string? Numero { get; set; }
+            public string? Direccion { get; set; }
         }
 
         [HttpPost("CrearPresupuesto")]
         public async Task<IActionResult> CrearPresupuesto([FromBody] PresupuestoRequest request)
         {
+            // Validamos usando 'request.Nombre' porque así viene del JSON
             if (string.IsNullOrEmpty(request.Nombre) || request.Nombre == "string")
                 return BadRequest("El nombre del cliente es obligatorio.");
 
             var p = new Presupuesto {
                 NombreCliente = request.Nombre,
+                Numero = request.Numero,       // Pasa del sobre (request) a la DB (p)
+                Direccion = request.Direccion, // Pasa del sobre (request) a la DB (p)
                 FechaCreacion = DateTime.Now,
-                UsuarioId = request.UsuarioId // <--- Aquí ya guardamos quién lo hizo
+                UsuarioId = request.UsuarioId 
             };
 
             _context.Presupuestos.Add(p);
             await _context.SaveChangesAsync();
 
-            return Ok(new { id = p.Id, mensaje = "Ya puedes agregar cortinas a este cliente" });
+            return Ok(new { 
+                id = p.Id, 
+                nombre = p.NombreCliente,
+                mensaje = "Ya puedes agregar cortinas a este cliente" 
+            });
         }
         [HttpGet("Reporte/{presupuestoId}")]
         public async Task<IActionResult> GetReporte(int presupuestoId)

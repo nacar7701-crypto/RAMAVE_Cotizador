@@ -108,5 +108,6 @@ namespace RAMAVE_Cotizador.Models
         [ForeignKey("PresupuestoId")]
         [JsonIgnore]
         public virtual Presupuesto? Presupuesto { get; set; }
+
     }
 }
