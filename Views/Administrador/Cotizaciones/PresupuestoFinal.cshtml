@@ -1,3 +1,5 @@
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
 @{
     ViewData["Title"] = "Presupuesto Maestro Detallado";
 }
@@ -33,7 +35,7 @@
 
     .client-data-grid {
         display: grid;
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: 1.5fr 1fr;
         gap: 10px;
         margin-top: 5px;
         padding: 8px;
@@ -96,7 +98,6 @@
     .grand-total-section { background: var(--dark-bg); color: white; padding: 12px; border-radius: 10px; margin-top: 15px; }
     .d-none-filter { display: none !important; }
 
-    /* --- AJUSTES DE IMPRESIÓN --- */
     @@media print {
         @@page { margin: 1cm; size: landscape; }
         body { background: white !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
@@ -104,49 +105,36 @@
         .pdf-header { display: block !important; }
         .wrapper { padding: 0 !important; }
         .budget-container { border: none !important; box-shadow: none !important; padding: 0 !important; }
-
-        /* Evita que una partida se corte a la mitad si hay espacio en la siguiente hoja */
-        .part-container { 
-            break-inside: avoid; 
-            page-break-inside: avoid; 
-            margin-bottom: 10px; 
-            display: block;
-        }
-
-        /* Fuerza a que las celdas y filas no se corten internamente */
-        .table-main tr, .inner-table tr { 
-            break-inside: avoid !important; 
-            page-break-inside: avoid !important; 
-        }
-
-        .table-main td { 
-            break-inside: avoid !important; 
-        }
-
-        .grand-total-section { break-inside: avoid; }
+        .part-container { break-inside: avoid; page-break-inside: avoid; margin-bottom: 10px; display: block; }
+        .table-main tr, .inner-table tr { break-inside: avoid !important; page-break-inside: avoid !important; }
+        .table-main td { break-inside: avoid !important; }
     }
 </style>
 
 <div class="wrapper">
     <div class="pdf-header">
         <div class="header-logo-row">
-            <img src="/images/logoramave.jpg" alt="RAMAVE" class="logo-img" onerror="this.style.display='none'">
+            <img src="/images/logoramave.jpg" alt="RAMAVE" class="logo-img">
             <div class="company-info">
                 <h1>Fábrica de Persianas RAMAVE</h1>
             </div>
         </div>
         <div class="client-data-grid">
             <div>
-                <span class="data-label">Folio de Cotización</span>
-                <span class="data-value" id="pdf-folio">#00000</span>
+                <span class="data-label">Cliente</span>
+                <span class="data-value" id="pdf-cliente">...</span>
                 <div style="margin-top:5px">
-                    <span class="data-label">Cliente</span>
-                    <span class="data-value" id="pdf-cliente">...</span>
+                    <span class="data-label">Dirección</span>
+                    <span class="data-value" id="pdf-direccion">...</span>
                 </div>
             </div>
             <div style="text-align: right;">
-                <span class="data-label">Fecha de Generación</span>
-                <span class="data-value" id="pdf-fecha">--/--/----</span>
+                <span class="data-label">Folio: <span id="pdf-folio" class="text-dark">#00000</span></span>
+                <span class="data-label">Fecha: <span id="pdf-fecha" class="text-dark">--/--/----</span></span>
+                <div style="margin-top:5px">
+                    <span class="data-label">Teléfono</span>
+                    <span class="data-value" id="pdf-telefono">...</span>
+                </div>
             </div>
         </div>
     </div>
@@ -158,40 +146,43 @@
                     <span id="lblFolio" class="folio-badge">#00000</span>
                     Cotización: <span id="lblCliente" class="text-danger">...</span>
                 </h2>
-                <small class="text-muted" id="lblFecha"></small>
+                <div class="d-flex gap-3 mt-1">
+                    <small class="text-muted"><i class="bi bi-geo-alt"></i> <span id="lblDireccion">...</span></small>
+                    <small class="text-muted"><i class="bi bi-telephone"></i> <span id="lblTelefono">...</span></small>
+                </div>
             </div>
             <div class="d-flex gap-2">
-                <a asp-area="Administrador" asp-controller="Cotizaciones" asp-action="Index" class="btn btn-secondary btn-sm">REGRESAR</a>
-                <button class="btn btn-danger btn-sm" onclick="window.print()"><span>📄</span> PDF</button>
+                <a href="/Clientes/Historial" class="btn btn-secondary btn-sm">REGRESAR</a>
+                <button class="btn btn-danger btn-sm" onclick="window.print()"><span>📄</span> IMPRIMIR PDF</button>
             </div>
         </div>
 
         <div class="filter-toolbar no-print">
             <div class="row g-3">
                 <div class="col-md-3 border-end">
-                    <p class="data-label mb-2">Columnas</p>
-                    <div class="form-check form-switch small"><input class="form-check-input f-chk" type="checkbox" data-t="col-base" id="c1" checked> <label class="form-check-label" for="c1">DATOS BASE</label></div>
-                    <div class="form-check form-switch small"><input class="form-check-input f-chk" type="checkbox" data-t="col-herrajes" id="c2" checked> <label class="form-check-label" for="c2">COMPONENTES</label></div>
-                    <div class="form-check form-switch small"><input class="form-check-input f-chk" type="checkbox" data-t="col-precios" id="c3" checked> <label class="form-check-label" for="c3">MOTOR</label></div>
-                    <div class="form-check form-switch small"><input class="form-check-input f-chk" type="checkbox" data-t="col-costos" id="c4" checked> <label class="form-check-label" for="c4">COSTOS</label></div>
+                    <p class="data-label mb-2">Columnas Visibles</p>
+                    <div class="form-check form-switch small"><input class="form-check-input f-chk" type="checkbox" data-t="col-base" id="c1" checked> <label class="form-check-label">DATOS BASE</label></div>
+                    <div class="form-check form-switch small"><input class="form-check-input f-chk" type="checkbox" data-t="col-herrajes" id="c2" checked> <label class="form-check-label">COMPONENTES</label></div>
+                    <div class="form-check form-switch small"><input class="form-check-input f-chk" type="checkbox" data-t="col-precios" id="c3" checked> <label class="form-check-label">MOTOR</label></div>
+                    <div class="form-check form-switch small"><input class="form-check-input f-chk" type="checkbox" data-t="col-costos" id="c4" checked> <label class="form-check-label">COSTOS</label></div>
                 </div>
                 <div class="col-md-3 border-end">
                     <p class="data-label mb-2">1. Fábrica</p>
                     <div class="form-check small"><input class="form-check-input f-chk sum-trigger" type="checkbox" data-t="f-f-cortinero" id="ff1" checked> <label class="form-check-label">Cortinero</label></div>
                     <div class="form-check small"><input class="form-check-input f-chk sum-trigger" type="checkbox" data-t="f-f-cortina" id="ff2" checked> <label class="form-check-label">Cortina</label></div>
-                    <div class="form-check small"><input class="form-check-input f-chk sum-trigger" type="checkbox" data-t="sec-fabrica" id="ff3" checked> <label class="form-check-label fw-bold">VER FÁBRICA</label></div>
+                    <div class="form-check small"><input class="form-check-input f-chk sum-trigger" type="checkbox" data-t="sec-fabrica" id="ff3" checked> <label class="form-check-label fw-bold">VER SECCIÓN</label></div>
                 </div>
                 <div class="col-md-3 border-end">
                     <p class="data-label mb-2">2. Público</p>
                     <div class="form-check small"><input class="form-check-input f-chk sum-trigger" type="checkbox" data-t="f-p-cortinero" id="fp1" checked> <label class="form-check-label">Cortinero</label></div>
                     <div class="form-check small"><input class="form-check-input f-chk sum-trigger" type="checkbox" data-t="f-p-cortina" id="fp2" checked> <label class="form-check-label">Cortina</label></div>
-                    <div class="form-check small"><input class="form-check-input f-chk sum-trigger" type="checkbox" data-t="sec-publico" id="fp3" checked> <label class="form-check-label fw-bold">VER PÚBLICO</label></div>
+                    <div class="form-check small"><input class="form-check-input f-chk sum-trigger" type="checkbox" data-t="sec-publico" id="fp3" checked> <label class="form-check-label fw-bold">VER SECCIÓN</label></div>
                 </div>
                 <div class="col-md-3">
                     <p class="data-label mb-2">3. Distribuidor</p>
                     <div class="form-check small"><input class="form-check-input f-chk sum-trigger" type="checkbox" data-t="f-d-cortinero" id="fd1" checked> <label class="form-check-label">Cortinero</label></div>
                     <div class="form-check small"><input class="form-check-input f-chk sum-trigger" type="checkbox" data-t="f-d-cortina" id="fd2" checked> <label class="form-check-label">Cortina</label></div>
-                    <div class="form-check small"><input class="form-check-input f-chk sum-trigger" type="checkbox" data-t="sec-distribuidor" id="fd3" checked> <label class="form-check-label fw-bold">VER DIST.</label></div>
+                    <div class="form-check small"><input class="form-check-input f-chk sum-trigger" type="checkbox" data-t="sec-distribuidor" id="fd3" checked> <label class="form-check-label fw-bold">VER SECCIÓN</label></div>
                 </div>
             </div>
         </div>
@@ -201,15 +192,15 @@
         <div class="grand-total-section">
             <div class="row text-center">
                 <div class="col-md-4 sec-fabrica">
-                    <div class="data-label text-white opacity-75">Total Fábrica</div>
+                    <div class="data-label text-white opacity-75">Total Fábrica Neto</div>
                     <h3 id="totalFabricaSum" class="mb-0 fw-bold">$0.00</h3>
                 </div>
                 <div class="col-md-4 sec-publico">
-                    <div class="data-label text-white opacity-75">Total Público</div>
+                    <div class="data-label text-white opacity-75">Total Público Neto</div>
                     <h3 id="totalPublicoSum" class="mb-0 fw-bold">$0.00</h3>
                 </div>
                 <div class="col-md-4 sec-distribuidor">
-                    <div class="data-label text-white opacity-75">Total Distribuidor</div>
+                    <div class="data-label text-white opacity-75">Total Distribuidor Neto</div>
                     <h3 id="totalDistSum" class="mb-0 fw-bold">$0.00</h3>
                 </div>
             </div>
@@ -230,10 +221,15 @@
         const fechaFormateada = fechaObj.toLocaleDateString('es-MX', { day: '2-digit', month: 'long', year: 'numeric' });
         const folioTexto = "#" + id.toString().padStart(5, '0');
 
+        // Llenar datos de Cliente, Teléfono y Dirección
         document.getElementById('lblFolio').innerText = folioTexto;
-        document.getElementById('lblCliente').innerText = data.cliente;
-        document.getElementById('lblFecha').innerText = "Generado: " + fechaFormateada;
-        document.getElementById('pdf-cliente').innerText = data.cliente;
+        document.getElementById('lblCliente').innerText = data.cliente || "N/A";
+        document.getElementById('lblDireccion').innerText = data.direccion || "No proporcionada";
+        document.getElementById('lblTelefono').innerText = data.numero || "No proporcionado";
+        
+        document.getElementById('pdf-cliente').innerText = data.cliente || "N/A";
+        document.getElementById('pdf-direccion').innerText = data.direccion || "No proporcionada";
+        document.getElementById('pdf-telefono').innerText = data.numero || "No proporcionado";
         document.getElementById('pdf-folio').innerText = folioTexto;
         document.getElementById('pdf-fecha').innerText = fechaFormateada;
 
@@ -244,7 +240,7 @@
             const partidaDiv = document.createElement('div');
             partidaDiv.className = "part-container"; 
             partidaDiv.innerHTML = `
-                <div class="partida-title">COTIZACIÓN ${i + 1}</div>
+                <div class="partida-title">PARTIDA ${i + 1} - ÁREA: ${c.area || 'GENERAL'}</div>
                 <table class="table-main">
                     <tr>
                         <td class="col-base">
@@ -252,15 +248,12 @@
                             <table class="inner-table">
                                 <tr><th>TIPO CORTINA</th><td>${c.tipoCortina}</td></tr>
                                 <tr><th>% ONDA</th><td>${c.porcentajeOnda}%</td></tr>
-                                <tr><th>TIPO</th><td>${c.tipo}</td></tr>
+                                <tr><th>TIPO TELA</th><td>${c.tipo}</td></tr>
                                 <tr><th>MODELO</th><td>${c.modelo || 'N/A'}</td></tr>
-                                <tr><th>ANCHO</th><td>${c.ancho} m</td></tr>
-                                <tr><th>ALTO</th><td>${c.alto} m</td></tr>
-                                <tr><th>M2</th><td>${c.m2} m²</td></tr>
+                                <tr><th>MEDIDAS</th><td>${c.ancho} x ${c.alto} m</td></tr>
+                                <tr><th>M2 TOTALES</th><td>${c.m2} m²</td></tr>
                                 <tr><th>SISTEMA</th><td>${c.sistema}</td></tr>
-                                <tr><th>ACOPLAMIENTO</th><td>${c.acoplamiento}</td></tr>
                                 <tr><th>INSTALACIÓN</th><td>${c.instalacion} </td></tr>
-                                <tr><th>APERTURA</th><td>${c.tipoApertura}</td></tr>
                             </table>
                         </td>
                         <td class="col-herrajes">
@@ -268,13 +261,13 @@
                             <table class="inner-table">
                                 <tr><th>ANCHO LIENZO</th><td>${c.totalAnchoLienzo}</td></tr>
                                 <tr><th>ML COMPRA</th><td class="text-danger">${c.mlComprar} m</td></tr>
-                                <tr><th>ALTURA EXACTA</th><td class="text-danger">${c.totalAltura} m</td></tr>
+                                <tr><th>ALTURA EXACTA</th><td class="text-danger">${c.totalAltura} m²</td></tr>
                             </table>
                         </td>
                         <td class="col-precios">
-                            <div class="col-header">Motor</div>
+                            <div class="col-header">Motorización</div>
                             <table class="inner-table">
-                                <tr><th>MOTOR</th><td>${fM(c.motor)}</td></tr>
+                                <tr><th>COSTO MOTOR</th><td>${fM(c.motor)}</td></tr>
                             </table>
                         </td>
                         <td class="col-costos">
@@ -323,6 +316,8 @@
         let granF = 0, granP = 0, granD = 0;
         document.querySelectorAll('.part-container').forEach(container => {
             let partF = 0, partP = 0, partD = 0;
+            
+            // Suma Fábrica
             if (document.getElementById('ff3').checked) {
                 const c1 = container.querySelector('.f-f-cortinero .v-val-f');
                 const c2 = container.querySelector('.f-f-cortina .v-val-f');
@@ -331,6 +326,8 @@
             }
             container.querySelector('.part-total-f').innerText = fM(partF);
             granF += partF;
+
+            // Suma Público
             if (document.getElementById('fp3').checked) {
                 const c1 = container.querySelector('.f-p-cortinero .v-val-p');
                 const c2 = container.querySelector('.f-p-cortina .v-val-p');
@@ -339,6 +336,8 @@
             }
             container.querySelector('.part-total-p').innerText = fM(partP);
             granP += partP;
+
+            // Suma Distribuidor
             if (document.getElementById('fd3').checked) {
                 const c1 = container.querySelector('.f-d-cortinero .v-val-d');
                 const c2 = container.querySelector('.f-d-cortina .v-val-d');
@@ -348,6 +347,7 @@
             container.querySelector('.part-total-d').innerText = fM(partD);
             granD += partD;
         });
+
         document.getElementById('totalFabricaSum').innerText = fM(granF);
         document.getElementById('totalPublicoSum').innerText = fM(granP);
         document.getElementById('totalDistSum').innerText = fM(granD);
