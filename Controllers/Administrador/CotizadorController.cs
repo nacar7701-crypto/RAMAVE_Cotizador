@@ -648,7 +648,7 @@ namespace RAMAVE_Cotizador.Controllers
 // ============================================================
 // BLOQUE 8: OJILLOS Y MANUAL
 // ============================================================
-if (tipoCortina == "OJILLOS" && sistema == "MANUAL")
+else if (tipoCortina == "OJILLOS" && sistema == "MANUAL")
 {
     // --- 1. LÓGICA DE INGENIERÍA ---
 
