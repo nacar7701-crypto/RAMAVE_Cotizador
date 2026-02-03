@@ -364,8 +364,6 @@
                                 <div id="dropdown-@item.Id" class="dropdown-content">
                                     <a href="@Url.Action("Editar", "Cotizaciones", new { id = item.Id })"><i
                                             class="fas fa-edit"></i>✏️ Editar</a>
-                                    <button onclick="eliminar(@item.Id)" style="color: #d32f2f;"><i
-                                            class="fas fa-trash"></i>❌ Eliminar</button>
                                 </div>
                             </div>
                         </td>
@@ -420,12 +418,5 @@
             }
             header.style.display = tieneHijosVisibles ? "" : "none";
         });
-    }
-
-    function eliminar(id) {
-        if (confirm("¿Estás seguro de eliminar esta cotización del presupuesto?")) {
-            // Lógica para llamar a tu API de eliminación
-            console.log("Eliminar ID:", id);
-        }
     }
 </script>
