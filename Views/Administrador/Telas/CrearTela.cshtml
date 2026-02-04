@@ -215,6 +215,34 @@
         /* Un poco más pequeño para que respire mejor */
         width: 100%;
     }
+
+    /* 1. Cambiamos de flex-end a center para que el aire sea igual arriba/abajo y lados */
+    .form-section-card .row {
+        align-items: center;
+    }
+
+    /* 2. Aseguramos que el padding sea uniforme en los 4 lados */
+    .form-section-card {
+        padding: 30px !important;
+    }
+
+    /* 3. El contenedor "compact-group" ahora centrará su contenido */
+    .compact-group {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        /* Centra la etiqueta y el input entre sí */
+        text-align: center;
+        width: 100%;
+    }
+
+    /* 4. Ajuste del input corto para que no se pegue a ningún lado */
+    .input-short {
+        max-width: 150px;
+        width: 100%;
+        margin: 0 auto;
+        /* Centra el input dentro de su columna */
+    }
 </style>
 
 <div class="container-full">
@@ -255,29 +283,39 @@
                             <span class="section-title">2. Detalles Técnicos</span>
                             <div class="row g-3">
                                 <div class="col-md-4">
+                                    <div class="compact-group">
                                     <label class="form-label">Tipo</label>
                                     <input type="text" name="tipo" class="form-control form-control-sm"
                                         placeholder="EJ: BLACKOUT" required>
+                                    </div>
                                 </div>
                                 <div class="col-md-5">
+                                    <div class="compact-group">
                                     <label class="form-label">Colores</label>
                                     <input type="text" id="color_nombre" name="color_nombre"
                                         class="form-control form-control-sm" placeholder="VERDE, NEGRO..." required>
+                                    </div>
                                 </div>
                                 <div class="col-md-3">
+                                    <div class="compact-group">
                                     <label class="form-label">Catálogo</label>
                                     <input type="text" name="catalogo" class="form-control form-control-sm"
                                         placeholder="N/A">
+                                    </div>
                                 </div>
                                 <div class="col-md-4">
+                                    <div class="compact-group">
                                     <label class="form-label">Ancho (mts)</label>
                                     <input type="number" step="0.0001" name="ancho"
                                         class="form-control form-control-sm input-short" placeholder="0.00" required>
+                                    </div>
                                 </div>
                                 <div class="col-md-4">
+                                    <div class="compact-group">
                                     <label class="form-label">Existencia</label>
                                     <input type="number" step="0.01" name="existencia"
                                         class="form-control form-control-sm input-short" value="0">
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -307,41 +345,57 @@
                         </div>
                     </div>
 
-                    <div class="col-lg-5">
-                        <div class="form-section-card">
-                            <span class="section-title">4. Ficha de Cuidado</span>
-                            <div class="row g-2">
-                                <div class="col-md-6">
+                    <div class="form-section-card">
+                        <span class="section-title">4. Ficha de Cuidado</span>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="compact-group">
                                     <label class="form-label">Lavar</label>
-                                    <input type="text" name="lavar" class="form-control form-control-sm"
+                                    <input type="text" name="lavar" class="form-control form-control-sm input-short"
                                         placeholder="N/A">
                                 </div>
-                                <div class="col-md-6">
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="compact-group">
                                     <label class="form-label">Jabón</label>
-                                    <input type="text" name="jabon" class="form-control form-control-sm"
+                                    <input type="text" name="jabon" class="form-control form-control-sm input-short"
                                         placeholder="N/A">
                                 </div>
-                                <div class="col-md-6">
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="compact-group">
                                     <label class="form-label">Temp. Agua</label>
                                     <input type="text" name="temp_agua" class="form-control form-control-sm input-short"
                                         placeholder="Ej: 30°C">
                                 </div>
-                                <div class="col-md-6">
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="compact-group">
                                     <label class="form-label">Blanqueador</label>
-                                    <input type="text" name="blanqueador" class="form-control form-control-sm"
-                                        placeholder="N/A">
+                                    <input type="text" name="blanqueador"
+                                        class="form-control form-control-sm input-short" placeholder="N/A">
                                 </div>
-                                <div class="col-md-6">
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="compact-group">
                                     <label class="form-label">Exprimir</label>
-                                    <input type="text" name="exprimir" class="form-control form-control-sm"
-                                        placeholder="N/A">
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label">Planchar</label>
-                                    <input type="text" name="planchar" class="form-control form-control-sm"
+                                    <input type="text" name="exprimir" class="form-control form-control-sm input-short"
                                         placeholder="N/A">
                                 </div>
                             </div>
+
+                            <div class="col-md-6">
+                                <div class="compact-group">
+                                    <label class="form-label">Planchar</label>
+                                    <input type="text" name="planchar" class="form-control form-control-sm input-short"
+                                        placeholder="N/A">
+                                </div>
+                            </div>
+
                         </div>
                     </div>
                 </div>
