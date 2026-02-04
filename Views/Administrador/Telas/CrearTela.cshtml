@@ -74,12 +74,9 @@
     }
 
     .form-label {
-        font-weight: 500;
-        font-size: 0.8rem;
-        color: var(--text-muted);
-        margin-bottom: 8px;
+        text-align: right;
         display: block;
-        text-transform: uppercase;
+        width: 100%;
     }
 
     .form-control,
@@ -205,8 +202,9 @@
     .compact-group {
         display: flex;
         flex-direction: column;
-        align-items: flex-start;
-        /* Mantiene todo alineado a la izquierda pero con margen */
+        align-items: flex-end;
+        /* Esto empuja el input corto a la derecha */
+        width: 100%;
     }
 
     /* Ajuste para que los inputs cortos tengan un ancho consistente pero no gigante */
@@ -284,37 +282,41 @@
                             <div class="row g-3">
                                 <div class="col-md-4">
                                     <div class="compact-group">
-                                    <label class="form-label">Tipo</label>
-                                    <input type="text" name="tipo" class="form-control form-control-sm"
-                                        placeholder="EJ: BLACKOUT" required>
+                                        <label class="form-label">Tipo</label>
+                                        <input type="text" name="tipo" class="form-control form-control-sm"
+                                            placeholder="EJ: BLACKOUT" required>
                                     </div>
                                 </div>
                                 <div class="col-md-5">
                                     <div class="compact-group">
-                                    <label class="form-label">Colores</label>
-                                    <input type="text" id="color_nombre" name="color_nombre"
-                                        class="form-control form-control-sm" placeholder="VERDE, NEGRO..." required>
+                                        <label class="form-label">Colores</label>
+                                        <input type="text" id="color_nombre" name="color_nombre"
+                                            class="form-control form-control-sm" placeholder="VERDE, NEGRO..." required>
                                     </div>
                                 </div>
                                 <div class="col-md-3">
                                     <div class="compact-group">
-                                    <label class="form-label">Catálogo</label>
-                                    <input type="text" name="catalogo" class="form-control form-control-sm"
-                                        placeholder="N/A">
+                                        <label class="form-label">Catálogo</label>
+                                        <input type="text" name="catalogo" class="form-control form-control-sm"
+                                            placeholder="N/A">
                                     </div>
                                 </div>
-                                <div class="col-md-4">
+
+                                <div class="col-md-6">
                                     <div class="compact-group">
-                                    <label class="form-label">Ancho (mts)</label>
-                                    <input type="number" step="0.0001" name="ancho"
-                                        class="form-control form-control-sm input-short" placeholder="0.00" required>
+                                        <label class="form-label">Ancho (mts)</label>
+                                        <input type="number" step="0.0001" name="ancho"
+                                            class="form-control form-control-sm input-short" style="text-align: right;"
+                                            placeholder="0.00" required>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
+
+                                <div class="col-md-6">
                                     <div class="compact-group">
-                                    <label class="form-label">Existencia</label>
-                                    <input type="number" step="0.01" name="existencia"
-                                        class="form-control form-control-sm input-short" value="0">
+                                        <label class="form-label">Existencia</label>
+                                        <input type="number" step="0.01" name="existencia"
+                                            class="form-control form-control-sm input-short" style="text-align: right;"
+                                            value="0">
                                     </div>
                                 </div>
                             </div>
