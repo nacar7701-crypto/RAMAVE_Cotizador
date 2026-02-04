@@ -90,16 +90,26 @@
     }
 
     /* Tabla */
+    /* Cambia esta clase para permitir que el menú sobresalga */
     .table-card {
         background: white;
         border-radius: 10px;
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-        overflow: hidden;
+        overflow: visible;
+        /* CAMBIADO de hidden a visible */
     }
 
+    /* Añade esto para que la tabla siempre tenga un mínimo de altura */
+    #listaTelas {
+        min-height: 150px;
+    }
+
+    /* Asegura que la tabla no corte el contenido */
     table {
         width: 100%;
         border-collapse: collapse;
+        position: relative;
+        /* Añadido */
     }
 
     th {
@@ -372,7 +382,6 @@
         const dropdown = document.getElementById('dropdown-' + id);
         const button = event.currentTarget;
 
-        // Cerrar otros menús abiertos
         document.querySelectorAll('.dropdown-content').forEach(d => {
             if (d !== dropdown) d.classList.remove('show');
         });
@@ -380,12 +389,12 @@
         const wasShowing = dropdown.classList.contains('show');
 
         if (!wasShowing) {
-            // Calcular posición
             const rect = button.getBoundingClientRect();
             const spaceBelow = window.innerHeight - rect.bottom;
 
-            // Si hay menos de 150px abajo, abrir hacia arriba
-            if (spaceBelow < 150) {
+            // Si hay poco espacio abajo (menos de 120px) abrimos hacia arriba
+            // Pero si la tabla es pequeña, forzamos hacia abajo con el overflow visible
+            if (spaceBelow < 120) {
                 dropdown.classList.remove('dropdown-down');
                 dropdown.classList.add('dropdown-up');
             } else {
