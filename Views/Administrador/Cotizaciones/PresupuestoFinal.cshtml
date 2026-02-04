@@ -39,15 +39,37 @@
     }
 
     /* PDF HEADER */
-    .pdf-header { display: none; border-bottom: 2px solid var(--ramave-red); padding-bottom: 5px; margin-bottom: 10px; }
-    .header-logo-row { display: flex; justify-content: space-between; align-items: center; }
-    .logo-img { max-width: 120px; height: auto; }
-    .company-info h1 { color: var(--ramave-red); margin: 0; font-size: 1.1rem; font-weight: 800; text-transform: uppercase; }
+    .pdf-header {
+        display: none;
+        border-bottom: 2px solid var(--ramave-red);
+        padding-bottom: 5px;
+        margin-bottom: 10px;
+    }
+
+    .header-logo-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .logo-img {
+        max-width: 120px;
+        height: auto;
+    }
+
+    .company-info h1 {
+        color: var(--ramave-red);
+        margin: 0;
+        font-size: 1.1rem;
+        font-weight: 800;
+        text-transform: uppercase;
+    }
 
     /* CLIENT DATA GRID */
     .client-data-grid {
         display: grid;
-        grid-template-columns: 1fr; /* Móvil por defecto */
+        grid-template-columns: 1fr;
+        /* Móvil por defecto */
         gap: 10px;
         margin-top: 5px;
         padding: 8px;
@@ -55,14 +77,78 @@
         border: 1px solid #eee;
         border-radius: 6px;
     }
-    @@media (min-width: 768px) { .client-data-grid { grid-template-columns: 1.5fr 1fr; } }
 
-    .data-label { font-size: 0.65rem; font-weight: 800; color: #777; text-transform: uppercase; display: block; }
-    .data-value { font-size: 0.9rem; font-weight: 700; color: #222; }
+    /* Dentro de tu bloque <style> */
+
+    /* Evita que el texto largo rompa la tabla */
+    .inner-table td,
+    .inner-table th {
+        word-break: break-word;
+        /* Rompe palabras largas */
+        overflow-wrap: break-word;
+        hyphens: auto;
+        line-height: 1.2;
+    }
+
+    /* Asegura que las tablas internas no superen el ancho del contenedor */
+    .inner-table {
+        table-layout: auto;
+        /* Permite que las columnas se ajusten al contenido */
+        width: 100% !important;
+    }
+
+    /* Ajuste específico para móvil */
+    @@media (max-width: 992px) {
+        .inner-table th {
+            width: 40% !important;
+            /* Un poco menos de espacio a la etiqueta */
+            font-size: 0.65rem;
+        }
+
+        .inner-table td {
+            width: 60% !important;
+            /* Más espacio al valor */
+            font-size: 0.75rem;
+        }
+    }
+
+    @@media (min-width: 768px) {
+        .client-data-grid {
+            grid-template-columns: 1.5fr 1fr;
+        }
+    }
+
+    .data-label {
+        font-size: 0.65rem;
+        font-weight: 800;
+        color: #777;
+        text-transform: uppercase;
+        display: block;
+    }
+
+    .data-value {
+        font-size: 0.9rem;
+        font-weight: 700;
+        color: #222;
+    }
 
     /* TOOLBAR */
-    .filter-toolbar { background: #f8f9fa; border: 1px solid var(--border-color); padding: 15px; border-radius: 8px; margin-bottom: 15px; }
-    .header-top-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px; }
+    .filter-toolbar {
+        background: #f8f9fa;
+        border: 1px solid var(--border-color);
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 15px;
+    }
+
+    .header-top-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
 
     /* TABLA PRINCIPAL Y RESPONSIVIDAD */
     .table-main {
@@ -73,53 +159,159 @@
     }
 
     /* Comportamiento Móvil */
+    /* Comportamiento Móvil Actualizado */
     @@media (max-width: 992px) {
-        .table-main, .table-main tbody, .table-main tr, .table-main td {
+
+        .table-main,
+        .table-main tbody,
+        .table-main tr,
+        .table-main td {
             display: block;
             width: 100% !important;
+            box-sizing: border-box;
+            /* Crucial para que el padding no sume al ancho */
         }
+
         .table-main td {
-            border-bottom: none;
-            padding-bottom: 10px;
+            border: none;
+            border-bottom: 1px solid var(--border-color);
+            padding: 5px;
+            /* Reducimos padding lateral */
+        }
+
+        .budget-container {
+            padding: 8px;
+            /* Menos margen en el contenedor principal */
         }
     }
 
     /* Anchos para Escritorio */
     @@media (min-width: 993px) {
-        .table-main { table-layout: fixed; }
-        .col-base { width: 30%; }
-        .col-herrajes { width: 20%; }
-        .col-precios { width: 15%; }
-        .col-costos { width: 35%; }
+        .table-main {
+            table-layout: fixed;
+        }
+
+        .col-base {
+            width: 30%;
+        }
+
+        .col-herrajes {
+            width: 20%;
+        }
+
+        .col-precios {
+            width: 15%;
+        }
+
+        .col-costos {
+            width: 35%;
+        }
     }
 
-    .partida-title { background: var(--dark-bg); color: white; padding: 8px 12px; font-weight: 700; font-size: 0.85rem; }
+    .partida-title {
+        background: var(--dark-bg);
+        color: white;
+        padding: 8px 12px;
+        font-weight: 700;
+        font-size: 0.85rem;
+    }
 
-    .inner-table { width: 100%; border-collapse: collapse; font-size: 0.75rem; }
+    .inner-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.75rem;
+    }
+
     .inner-table th {
-        background: #f8f9fa; color: #666; font-weight: 600; text-align: left;
-        padding: 6px; border-bottom: 1px solid var(--border-color); width: 50%; text-transform: uppercase;
+        background: #f8f9fa;
+        color: #666;
+        font-weight: 600;
+        text-align: left;
+        padding: 6px;
+        border-bottom: 1px solid var(--border-color);
+        width: 50%;
+        text-transform: uppercase;
     }
-    .inner-table td { padding: 6px; font-weight: 700; color: #222; border-bottom: 1px solid var(--border-color); text-align: right; }
 
-    .col-header { background: #f1f1f1; padding: 6px; font-weight: 800; font-size: 0.7rem; text-transform: uppercase; color: #444; text-align: center; border-bottom: 2px solid var(--border-color); }
-    .sub-section-header { background: #eee; font-size: 0.65rem; font-weight: 900; padding: 5px; text-align: center; border-bottom: 1px solid #ddd; text-transform: uppercase; }
+    .inner-table td {
+        padding: 6px;
+        font-weight: 700;
+        color: #222;
+        border-bottom: 1px solid var(--border-color);
+        text-align: right;
+    }
 
-    .row-subtotal { background-color: #fcfcfc; }
-    .row-subtotal td, .row-subtotal th { color: var(--ramave-red) !important; font-size: 0.8rem !important; }
+    .col-header {
+        background: #f1f1f1;
+        padding: 6px;
+        font-weight: 800;
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        color: #444;
+        text-align: center;
+        border-bottom: 2px solid var(--border-color);
+    }
 
-    .grand-total-section { background: var(--dark-bg); color: white; padding: 20px; border-radius: 10px; margin-top: 15px; }
-    .d-none-filter { display: none !important; }
+    .sub-section-header {
+        background: #eee;
+        font-size: 0.65rem;
+        font-weight: 900;
+        padding: 5px;
+        text-align: center;
+        border-bottom: 1px solid #ddd;
+        text-transform: uppercase;
+    }
+
+    .row-subtotal {
+        background-color: #fcfcfc;
+    }
+
+    .row-subtotal td,
+    .row-subtotal th {
+        color: var(--ramave-red) !important;
+        font-size: 0.8rem !important;
+    }
+
+    .grand-total-section {
+        background: var(--dark-bg);
+        color: white;
+        padding: 20px;
+        border-radius: 10px;
+        margin-top: 15px;
+    }
+
+    .d-none-filter {
+        display: none !important;
+    }
 
     /* Ajustes botones */
-    .btn-sm { padding: 8px 12px; font-size: 0.75rem; }
+    .btn-sm {
+        padding: 8px 12px;
+        font-size: 0.75rem;
+    }
 
     @@media print {
-        @@page { size: landscape; margin: 1cm; }
-        .no-print { display: none !important; }
-        .pdf-header { display: block !important; }
-        .table-main { display: table !important; table-layout: fixed !important; }
-        .table-main td { display: table-cell !important; }
+        @@page {
+            size: landscape;
+            margin: 1cm;
+        }
+
+        .no-print {
+            display: none !important;
+        }
+
+        .pdf-header {
+            display: block !important;
+        }
+
+        .table-main {
+            display: table !important;
+            table-layout: fixed !important;
+        }
+
+        .table-main td {
+            display: table-cell !important;
+        }
     }
 </style>
 
