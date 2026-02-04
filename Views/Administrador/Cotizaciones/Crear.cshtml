@@ -152,29 +152,76 @@
     .invalid { border-color: var(--ramave-red) !important; }
     .error-text { color: var(--ramave-red); font-size: 0.65rem; font-weight: 700; display: none; }
 
-    /* MEDIA QUERIES PARA MÓVIL */
+    /* AJUSTES RESPONSIVOS MEJORADOS */
     @@media (max-width: 768px) {
-        .grid-2-col, .grid-3-col {
-            grid-template-columns: 1fr; /* Todo a una columna */
-            gap: 1rem;
+        .page-container {
+            padding: 0.5rem; /* Menos espacio exterior para ganar pantalla */
         }
 
+        .card-form {
+            padding: 1rem; /* Reducimos el acolchado interno de la card */
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Ajuste de inputs en cascada */
+        .grid-2-col, 
+        .grid-3-col, 
+        div[style*="grid-template-columns"] {
+            grid-template-columns: 1fr !important; 
+            gap: 1rem !important;
+        }
+
+        /* Optimización de Radio Cards (Imágenes) */
         .radio-group-visual {
-            grid-template-columns: repeat(2, 1fr); /* 2 tarjetas por fila */
+            grid-template-columns: repeat(2, 1fr) !important; /* Forzamos 2 columnas */
+            gap: 8px;
         }
 
+        .radio-content {
+            min-height: 100px; /* Más bajas para ahorrar espacio */
+            padding: 8px;
+        }
+
+        .radio-content img {
+            height: 50px; /* Imágenes más pequeñas en móvil */
+            margin-bottom: 5px;
+        }
+
+        .radio-content span {
+            font-size: 0.6rem;
+            line-height: 1;
+        }
+
+        /* Botones de acción */
         .buttons-container {
-            grid-template-columns: 1fr; /* Botones uno sobre otro */
+            grid-template-columns: 1fr; /* Uno sobre otro */
+            gap: 0.8rem;
+            margin-top: 1.5rem;
         }
 
-        .card-form { padding: 1.2rem; }
-        
-        h2 { font-size: 1.4rem; }
+        .btn {
+            width: 100%;
+            padding: 1rem; /* Más fáciles de presionar con el pulgar */
+            font-size: 0.85rem;
+        }
+
+        /* Títulos de sección */
+        .form-section-title {
+            font-size: 0.7rem;
+            margin: 20px 0 10px 0;
+        }
+
+        h2 {
+            font-size: 1.2rem;
+            text-align: center;
+        }
     }
 
-    @@media (max-width: 480px) {
+    /* Para teléfonos muy pequeños (iPhone SE, etc) */
+    @@media (max-width: 380px) {
         .radio-group-visual {
-            grid-template-columns: 1fr; /* 1 tarjeta por fila en pantallas muy pequeñas */
+            grid-template-columns: 1fr !important; /* Una por fila si el ancho es crítico */
         }
     }
 </style>

@@ -276,69 +276,84 @@
             break-inside: avoid !important;
         }
     }
-    /* AJUSTES EXCLUSIVOS PARA TELÉFONO */
+    /* AJUSTES EXCLUSIVOS PARA TELÉFONO - EVITAR DESBORDAMIENTO */
     @@media screen and (max-width: 600px) {
-        /* Evitamos que el contenedor tenga padding excesivo */
         .wrapper { padding: 5px; }
-        .budget-container { padding: 10px; }
+        .budget-container { padding: 8px; }
 
-        /* Transformamos la tabla principal en bloques verticales */
-        .table-main, .table-main tbody, .table-main tr, .table-main td {
+        /* Permitir que la tabla se ajuste al contenido y no se salga */
+        .table-main {
+            display: block;
+            width: 100% !important;
+            table-layout: auto; /* Cambiamos de fixed a auto */
+            border: none;
+        }
+
+        .table-main tbody, .table-main tr, .table-main td {
             display: block;
             width: 100% !important;
         }
 
         .table-main td {
-            border: none;
-            border-bottom: 1px solid var(--border-color);
-            margin-bottom: 10px;
+            margin-bottom: 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            overflow: hidden; /* Corta cualquier texto que intente salir */
         }
 
-        /* Ajustamos títulos para que no se corten */
-        .header-top-row h2 {
-            font-size: 0.9rem;
-            line-height: 1.4;
-        }
-
-        .partida-title {
-            font-size: 0.7rem;
-            padding: 8px;
-        }
-
-        /* Ajustamos las tablas internas para que el texto sea legible */
+        /* Ajuste de tablas internas para que el texto no rompa el diseño */
         .inner-table {
-            font-size: 0.75rem; /* Un poco más grande para leer en móvil */
+            font-size: 0.7rem; 
+            width: 100%;
         }
 
         .inner-table th {
-            font-size: 0.65rem;
-            width: 40%;
+            width: 50%; /* Mitad para etiqueta */
+            font-size: 0.55rem;
+            word-break: break-word; /* Rompe palabras largas como nombres de tela */
+            padding: 5px;
         }
 
-        /* El toolbar de filtros lo hacemos scrolleable si es necesario o más compacto */
-        .filter-toolbar .col-md-3 {
-            border-end: none;
-            border-bottom: 1px solid #ddd;
-            padding-bottom: 10px;
-            margin-bottom: 10px;
+        .inner-table td {
+            width: 50%; /* Mitad para valor */
+            font-size: 0.7rem;
+            padding: 5px;
+            word-break: break-all; /* Fuerza el quiebre de texto si es muy largo */
         }
 
-        /* Los totales finales los ponemos uno debajo del otro */
-        .grand-total-section .col-md-4 {
-            margin-bottom: 15px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            padding-bottom: 10px;
+        /* Cabeceras de columna en móvil */
+        .col-header {
+            font-size: 0.75rem;
+            padding: 8px;
+            background: var(--ramave-red);
+            color: white;
         }
 
+        /* Ajuste de badge y título principal */
+        .header-top-row h2 {
+            font-size: 0.85rem;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .folio-badge {
+            width: fit-content;
+        }
+
+        /* Ocultar elementos que ocupan demasiado espacio horizontal */
+        .d-flex.gap-3.mt-1 {
+            flex-direction: column;
+            gap: 2px !important;
+        }
+
+        /* Ajuste de los totales inferiores */
+        .grand-total-section {
+            padding: 10px;
+        }
+        
         .grand-total-section h3 {
-            font-size: 1.3rem;
-        }
-
-        /* Ajuste de botones superiores */
-        .header-top-row .d-flex {
-            width: 100%;
-            justify-content: space-between;
-            margin-top: 10px;
+            font-size: 1.1rem;
         }
     }
 </style>
