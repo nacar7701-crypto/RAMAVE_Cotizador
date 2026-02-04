@@ -142,7 +142,6 @@
             <input type="hidden" id="id_tela" value="@ViewContext.RouteData.Values["id"]" />
             <input type="hidden" id="id_modelo" />
             <input type="hidden" id="catalogo" />
-            <input type="hidden" id="ancho" />
             <input type="hidden" id="existencia" />
 
             <div class="section-divider">Información de Venta</div>
@@ -160,9 +159,14 @@
                         <option value="TERCIOPELO">TERCIOPELO</option>
                     </select>
                 </div>
+                <div class="form-grid">
+                <div class="form-group">
+                    <label>Ancho (cm)</label>
+                    <input id="ancho" type="number" step="0.01" placeholder="Ej. 2.80" required />
                 <div class="form-group">
                     <label>Colores</label>
                     <input id="color_nombre" type="text" placeholder="ROJO, AZUL..." required />
+                </div>
                 </div>
                 <div class="form-group">
                     <label>Precio Corte ($)</label>
@@ -225,6 +229,7 @@
             document.getElementById('color_nombre').value = t.color_nombre || "";
             document.getElementById('precio_corte').value = t.precio_ml_corte;
             document.getElementById('precio_rollo').value = t.precio_ml_rollo;
+            document.getElementById('ancho').value = t.ancho;
 
             // Ficha de cuidados
             const c = t.cuidados || {};
@@ -265,7 +270,8 @@
             temp_agua: document.getElementById('temp_agua').value.toUpperCase(),
             blanqueador: document.getElementById('blanqueador').value.toUpperCase(),
             exprimir: document.getElementById('exprimir').value.toUpperCase(),
-            planchar: document.getElementById('planchar').value.toUpperCase()
+            planchar: document.getElementById('planchar').value.toUpperCase(),
+            ancho: parseFloat(document.getElementById('ancho').value)
         };
 
         fetch(`/api/Telas/${id}`, {

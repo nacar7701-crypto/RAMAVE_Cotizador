@@ -645,121 +645,121 @@ namespace RAMAVE_Cotizador.Controllers
                 model.PrecioCortinaDistribuidor = model.CostoTotalCortina * 2;
                 model.TotalDistribuidor = model.CostoTotalGeneral * 2;
             }
-// ============================================================
-// BLOQUE 8: OJILLOS Y MANUAL
-// ============================================================
-else if (tipoCortina == "OJILLOS" && sistema == "MANUAL")
-{
-    // --- 1. LÓGICA DE INGENIERÍA ---
+            // ============================================================
+            // BLOQUE 8: OJILLOS Y MANUAL
+            // ============================================================
+            else if (tipoCortina == "OJILLOS" && sistema == "MANUAL")
+            {
+                // --- 1. LÓGICA DE INGENIERÍA ---
 
-    // CANTIDAD DE OJILLOS POR LIENZO (Ancho en cm / 7)
-    decimal ojillosPorLienzoRaw = model.AnchoCM / 7m;
-    model.CantidadOjillosPorLienzo = (int)Math.Floor(ojillosPorLienzoRaw);
+                // CANTIDAD DE OJILLOS POR LIENZO (Ancho en cm / 7)
+                decimal ojillosPorLienzoRaw = model.AnchoCM / 7m;
+                model.CantidadOjillosPorLienzo = (int)Math.Floor(ojillosPorLienzoRaw);
 
-    // TOTAL OJILLOS (Redondear al par inferior - Estilo Redondear.Menos de Excel)
-    int totalSugerido = (int)Math.Floor(model.AnchoCM / 7m);
-    model.TotalOjillos = (totalSugerido % 2 == 0) ? totalSugerido : totalSugerido - 1;
+                // TOTAL OJILLOS (Redondear al par inferior - Estilo Redondear.Menos de Excel)
+                int totalSugerido = (int)Math.Floor(model.AnchoCM / 7m);
+                model.TotalOjillos = (totalSugerido % 2 == 0) ? totalSugerido : totalSugerido - 1;
 
-    // ANCHO TOTAL DE LIENZO: (Total anillos * 16) + (26 una hoja / 42 dos hojas) / 100
-    decimal constanteHojas = (model.TipoApertura == "DOS HOJAS") ? 42m : 26m;
-    model.TotalAnchoLienzo = ((model.TotalOjillos * 16m) + constanteHojas) / 100m;
+                // ANCHO TOTAL DE LIENZO: (Total anillos * 16) + (26 una hoja / 42 dos hojas) / 100
+                decimal constanteHojas = (model.TipoApertura == "DOS HOJAS") ? 42m : 26m;
+                model.TotalAnchoLienzo = ((model.TotalOjillos * 16m) + constanteHojas) / 100m;
 
-    // ALTURA TOTAL: (Altura cm + 44) / 100
-    model.TotalAltura = (model.AlturaCM + 44m) / 100m;
-    model.AlturaExacta = model.TotalAltura;
+                // ALTURA TOTAL: (Altura cm + 44) / 100
+                model.TotalAltura = (model.AlturaCM + 44m) / 100m;
+                model.AlturaExacta = model.TotalAltura;
 
-    // ANCHO DE ROLLO (Desde tabla Telas)
-    model.AnchoRollo = tela.ancho;
+                // ANCHO DE ROLLO (Desde tabla Telas)
+                model.AnchoRollo = tela.ancho;
 
-    // ML REALES (Condición de giro de tela)
-    if (model.TotalAltura < model.AnchoRollo)
-    {
-        model.TotalML = model.TotalAnchoLienzo;
-    }
-    else
-    {
-        model.NumLienzos = (int)Math.Ceiling(model.TotalAnchoLienzo / model.AnchoRollo);
-        model.TotalML = (model.TotalAnchoLienzo / model.AnchoRollo) * model.TotalAltura;
-    }
+                // ML REALES (Condición de giro de tela)
+                if (model.TotalAltura < model.AnchoRollo)
+                {
+                    model.TotalML = model.TotalAnchoLienzo;
+                }
+                else
+                {
+                    model.NumLienzos = (int)Math.Ceiling(model.TotalAnchoLienzo / model.AnchoRollo);
+                    model.TotalML = (model.TotalAnchoLienzo / model.AnchoRollo) * model.TotalAltura;
+                }
 
-    // ML A COMPRAR: Redondear siempre al mayor (Ceiling)
-    model.MLComprar = (int)Math.Ceiling(model.TotalML);
+                // ML A COMPRAR: Redondear siempre al mayor (Ceiling)
+                model.MLComprar = (int)Math.Ceiling(model.TotalML);
 
-    // MEDIDA DE CORTINERO TUBULAR Y SOPORTES
-    model.MedidaTubular = model.Ancho;
-    model.Soportes = (model.MedidaTubular > 3m) ? 4 : 2;
+                // MEDIDA DE CORTINERO TUBULAR Y SOPORTES
+                model.MedidaTubular = model.Ancho;
+                model.Soportes = (model.MedidaTubular > 3m) ? 4 : 2;
 
-    // TARLATANA: Igual al ancho total de lienzo
-    model.Tarlatana = model.TotalAnchoLienzo;
+                // TARLATANA: Igual al ancho total de lienzo
+                model.Tarlatana = model.TotalAnchoLienzo;
 
-    // --- 2. OBTENCIÓN DE PRECIOS (PARCHE "AMBOS") ---
+                // --- 2. OBTENCIÓN DE PRECIOS (PARCHE "AMBOS") ---
 
-    async Task<decimal> PrecioMat(string concepto, string sistemaFiltro = "AMBOS")
-    {
-        // Buscamos específicamente el concepto que coincida con el sistema "AMBOS"
-        var m = await _context.CostosMateriales
-            .FirstOrDefaultAsync(x => x.concepto.ToUpper() == concepto.ToUpper() 
-                                   && x.sistema.ToUpper() == sistemaFiltro.ToUpper());
-        
-        // Si no existe con "AMBOS", buscamos el concepto general como respaldo
-        if (m == null)
-            m = await _context.CostosMateriales.FirstOrDefaultAsync(x => x.concepto.ToUpper() == concepto.ToUpper());
+                async Task<decimal> PrecioMat(string concepto, string sistemaFiltro = "AMBOS")
+                {
+                    // Buscamos específicamente el concepto que coincida con el sistema "AMBOS"
+                    var m = await _context.CostosMateriales
+                        .FirstOrDefaultAsync(x => x.concepto.ToUpper() == concepto.ToUpper()
+                                               && x.sistema.ToUpper() == sistemaFiltro.ToUpper());
 
-        return (m?.precio_unitario ?? 0m) * 1.16m; // Precio con IVA
-    }
+                    // Si no existe con "AMBOS", buscamos el concepto general como respaldo
+                    if (m == null)
+                        m = await _context.CostosMateriales.FirstOrDefaultAsync(x => x.concepto.ToUpper() == concepto.ToUpper());
 
-    // Recuperamos precios unitarios con IVA
-    decimal pTubular = await PrecioMat("CORTINERO TUBULAR 1\"", "AMBOS");
-    decimal pSoporte = await PrecioMat("SOPORTE A MURO", "AMBOS");
-    decimal pOjillos = await PrecioMat("OJILLOS", "AMBOS");
-    decimal pTarlatana = await PrecioMat("TARLATANA", "AMBOS");
+                    return (m?.precio_unitario ?? 0m) * 1.16m; // Precio con IVA
+                }
 
-    // --- 3. ASIGNACIÓN DE COSTOS ---
+                // Recuperamos precios unitarios con IVA
+                decimal pTubular = await PrecioMat("CORTINERO TUBULAR 1\"", "AMBOS");
+                decimal pSoporte = await PrecioMat("SOPORTE A MURO", "AMBOS");
+                decimal pOjillos = await PrecioMat("OJILLOS", "AMBOS");
+                decimal pTarlatana = await PrecioMat("TARLATANA", "AMBOS");
 
-    // CORTINERO (Tubular * Medida)
-    model.CostoRiel = pTubular * model.MedidaTubular;
+                // --- 3. ASIGNACIÓN DE COSTOS ---
 
-    // SOPORTES (Validar Instalación)
-    string instSafe = (model.Instalacion ?? "MURO").ToUpper();
-    if (instSafe.Contains("TECHO"))
-    {
-        model.Soportes = 0;
-        model.CostoSoportes = 0m;
-    }
-    else
-    {
-        model.CostoSoportes = pSoporte * (decimal)model.Soportes;
-    }
+                // CORTINERO (Tubular * Medida)
+                model.CostoRiel = pTubular * model.MedidaTubular;
 
-    // OTROS COMPONENTES
-    model.CostoEmpaque = 20.00m;
-    model.CostoOjillos = pOjillos * (decimal)model.TotalOjillos;
-    model.CostoTarlatana = pTarlatana * model.Tarlatana;
+                // SOPORTES (Validar Instalación)
+                string instSafe = (model.Instalacion ?? "MURO").ToUpper();
+                if (instSafe.Contains("TECHO"))
+                {
+                    model.Soportes = 0;
+                    model.CostoSoportes = 0m;
+                }
+                else
+                {
+                    model.CostoSoportes = pSoporte * (decimal)model.Soportes;
+                }
 
-    // COSTO TOTAL CORTINERO (Cortinero + Soportes + Empaque)
-    model.CostoTotalCortinero = model.CostoRiel + model.CostoSoportes + model.CostoEmpaque;
+                // OTROS COMPONENTES
+                model.CostoEmpaque = 20.00m;
+                model.CostoOjillos = pOjillos * (decimal)model.TotalOjillos;
+                model.CostoTarlatana = pTarlatana * model.Tarlatana;
 
-    // COSTO TOTAL CORTINA
-    model.PrecioTelaML = tela.precio_ml_corte * 1.16m;
-    model.CostoTotalTela = (decimal)model.MLComprar * model.PrecioTelaML;
-    
-    // Suma: Empaque + Ojillos + Tarlatana + Tela
-    model.CostoTotalCortina = model.CostoEmpaque + model.CostoOjillos + model.CostoTarlatana + model.CostoTotalTela;
+                // COSTO TOTAL CORTINERO (Cortinero + Soportes + Empaque)
+                model.CostoTotalCortinero = model.CostoRiel + model.CostoSoportes + model.CostoEmpaque;
 
-    // --- 4. TOTALES GENERALES Y COMERCIALES ---
+                // COSTO TOTAL CORTINA
+                model.PrecioTelaML = tela.precio_ml_corte * 1.16m;
+                model.CostoTotalTela = (decimal)model.MLComprar * model.PrecioTelaML;
 
-    model.CostoTotalGeneral = model.CostoTotalCortina + model.CostoTotalCortinero;
+                // Suma: Empaque + Ojillos + Tarlatana + Tela
+                model.CostoTotalCortina = model.CostoEmpaque + model.CostoOjillos + model.CostoTarlatana + model.CostoTotalTela;
 
-    // PÚBLICO (x3)
-    model.PrecioCortineroPublico = model.CostoTotalCortinero * 3;
-    model.PrecioCortinaPublico = model.CostoTotalCortina * 3;
-    model.TotalPublico = model.CostoTotalGeneral * 3;
+                // --- 4. TOTALES GENERALES Y COMERCIALES ---
 
-    // DISTRIBUIDOR (x2)
-    model.PrecioCortineroDistribuidor = model.CostoTotalCortinero * 2;
-    model.PrecioCortinaDistribuidor = model.CostoTotalCortina * 2;
-    model.TotalDistribuidor = model.CostoTotalGeneral * 2;
-}
+                model.CostoTotalGeneral = model.CostoTotalCortina + model.CostoTotalCortinero;
+
+                // PÚBLICO (x3)
+                model.PrecioCortineroPublico = model.CostoTotalCortinero * 3;
+                model.PrecioCortinaPublico = model.CostoTotalCortina * 3;
+                model.TotalPublico = model.CostoTotalGeneral * 3;
+
+                // DISTRIBUIDOR (x2)
+                model.PrecioCortineroDistribuidor = model.CostoTotalCortinero * 2;
+                model.PrecioCortinaDistribuidor = model.CostoTotalCortina * 2;
+                model.TotalDistribuidor = model.CostoTotalGeneral * 2;
+            }
             // ============================================================
             // BLOQUE 9: OJILLOS Y MOTORIZADO BATERIA
             // ============================================================
@@ -816,7 +816,7 @@ else if (tipoCortina == "OJILLOS" && sistema == "MANUAL")
         [HttpPut("{id}")]
         public async Task<IActionResult> EditCotizacion(int id, [FromBody] Cotizaciones modelInput)
         {
-           
+
             // 1. Buscar el registro original en la DB
             var model = await _context.Cotizaciones.FindAsync(id);
 
@@ -869,7 +869,7 @@ else if (tipoCortina == "OJILLOS" && sistema == "MANUAL")
                 var m = await _context.CostosMateriales.FirstOrDefaultAsync(x => x.concepto.ToUpper() == c.ToUpper());
                 return (m?.precio_unitario ?? 0m) * 1.16m;
             }
-           
+
 
             // ============================================================
             // BLOQUE 1: ONDULADO Y MANUAL (Cálculo de Ingeniería y Costos)
@@ -1496,28 +1496,30 @@ else if (tipoCortina == "OJILLOS" && sistema == "MANUAL")
             if (string.IsNullOrEmpty(request.Nombre) || request.Nombre == "string")
                 return BadRequest("El nombre del cliente es obligatorio.");
 
-            var p = new Presupuesto {
+            var p = new Presupuesto
+            {
                 NombreCliente = request.Nombre,
                 Numero = request.Numero,       // Pasa del sobre (request) a la DB (p)
                 Direccion = request.Direccion, // Pasa del sobre (request) a la DB (p)
                 FechaCreacion = DateTime.Now,
-                UsuarioId = request.UsuarioId 
+                UsuarioId = request.UsuarioId
             };
 
             _context.Presupuestos.Add(p);
             await _context.SaveChangesAsync();
 
-            return Ok(new { 
-                id = p.Id, 
+            return Ok(new
+            {
+                id = p.Id,
                 nombre = p.NombreCliente,
-                mensaje = "Ya puedes agregar cortinas a este cliente" 
+                mensaje = "Ya puedes agregar cortinas a este cliente"
             });
         }
         [HttpGet("Reporte/{presupuestoId}")]
         public async Task<IActionResult> GetReporte(int presupuestoId)
         {
             var reporte = await _context.Presupuestos
-           
+
                 .Include(p => p.Cotizaciones) // Esto trae todas las cortinas asociadas
                 .FirstOrDefaultAsync(p => p.Id == presupuestoId);
 
@@ -1537,14 +1539,16 @@ else if (tipoCortina == "OJILLOS" && sistema == "MANUAL")
 
             presupuesto.TotalPresupuesto = presupuesto.Cotizaciones.Sum(c => c.TotalPublico);
 
-            return Ok(new {
+            return Ok(new
+            {
                 cliente = presupuesto.NombreCliente,
                 numero = presupuesto.Numero,
                 direccion = presupuesto.Direccion,
                 fecha = presupuesto.FechaCreacion,
                 totalGlobal = presupuesto.TotalPresupuesto,
                 observaciones = presupuesto.Observaciones,
-                detalleCortinas = presupuesto.Cotizaciones.Select(c => new {
+                detalleCortinas = presupuesto.Cotizaciones.Select(c => new
+                {
                     // 1. DATOS GENERALES Y DISEÑO
                     c.Id,
                     c.Area,
@@ -1641,7 +1645,7 @@ else if (tipoCortina == "OJILLOS" && sistema == "MANUAL")
                     c.PrecioCortineroDistribuidor,
                     c.PrecioCortinaDistribuidor,
                     c.TotalDistribuidor,
-                   
+
                     // Campo de validación
                     totalPartidaVerificacion = c.TotalPublico
                 })
