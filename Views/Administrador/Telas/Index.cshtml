@@ -79,8 +79,15 @@
         gap: 4px;
     }
 
-    .btn-red { background: var(--ramave-red); color: white; }
-    .btn-gray { background: #e0e0e0; color: #333; }
+    .btn-red {
+        background: var(--ramave-red);
+        color: white;
+    }
+
+    .btn-gray {
+        background: #e0e0e0;
+        color: #333;
+    }
 
     /* Tabla */
     .table-card {
@@ -90,7 +97,10 @@
         overflow: hidden;
     }
 
-    table { width: 100%; border-collapse: collapse; }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
 
     th {
         background: #f8f9fa;
@@ -123,17 +133,25 @@
         gap: 4px;
     }
 
-    .care-item { font-size: 0.7rem; color: #555; }
+    .care-item {
+        font-size: 0.7rem;
+        color: #555;
+    }
 
     /* Menú Desplegable */
-    .action-menu { position: relative; }
-    .pc-right { text-align: right; }
+    .action-menu {
+        position: relative;
+    }
 
-    .dot-btn { 
-        background: #f1f1f1; 
-        border: 1px solid #ddd; 
-        border-radius: 4px; 
-        padding: 5px 12px; 
+    .pc-right {
+        text-align: right;
+    }
+
+    .dot-btn {
+        background: #f1f1f1;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 5px 12px;
         cursor: pointer;
         font-size: 1.1rem;
     }
@@ -142,17 +160,33 @@
         display: none;
         position: absolute;
         right: 0;
-        top: 100%;
+        /* Quitamos el top: 100% fijo para manejarlo por JS o por clase */
         background: white;
         min-width: 140px;
-        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
-        z-index: 100;
-        border-radius: 6px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        /* Sombra más pronunciada */
+        z-index: 9999;
+        /* Asegura que esté por encima de todo */
+        border-radius: 8px;
         border: 1px solid var(--border-color);
+        overflow: hidden;
     }
 
-    .dropdown-up { top: auto !important; bottom: 100% !important; margin-bottom: 5px; }
-    .show { display: block; }
+    .dropdown-up {
+        bottom: 100% !important;
+        top: auto !important;
+        margin-bottom: 5px;
+    }
+
+    .dropdown-down {
+        top: 100% !important;
+        bottom: auto !important;
+        margin-top: 5px;
+    }
+
+    .show {
+        display: block;
+    }
 
     .dropdown-content button {
         padding: 10px 15px;
@@ -166,26 +200,49 @@
 
     /* RESPONSIVO */
     @@media (max-width: 992px) {
-        table thead { display: none; }
-        table, tbody, tr, td { display: block; width: 100%; box-sizing: border-box; }
-        tr { margin-bottom: 15px; border: 1px solid var(--border-color); border-radius: 10px; padding: 5px; }
-        
-        td { 
-            display: flex; 
-            flex-direction: column; 
-            border-bottom: 1px solid #f8f9fa; 
-            padding: 8px 12px; 
+        table thead {
+            display: none;
+        }
+
+        table,
+        tbody,
+        tr,
+        td {
+            display: block;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        tr {
+            margin-bottom: 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 5px;
+        }
+
+        td {
+            display: flex;
+            flex-direction: column;
+            border-bottom: 1px solid #f8f9fa;
+            padding: 8px 12px;
         }
 
         /* Acciones a la IZQUIERDA en móvil */
-        td:last-child { 
-            border-bottom: none; 
-            align-items: flex-start; 
+        td:last-child {
+            border-bottom: none;
+            align-items: flex-start;
             padding: 12px;
         }
-        
-        .action-menu { text-align: left; width: 100%; }
-        .dropdown-content { left: 0; right: auto; }
+
+        .action-menu {
+            text-align: left;
+            width: 100%;
+        }
+
+        .dropdown-content {
+            left: 0;
+            right: auto;
+        }
 
         td::before {
             content: attr(data-label);
@@ -203,12 +260,16 @@
         <div class="header-top-row">
             <h2>Inventario</h2>
             <div class="btn-actions-top">
-                <button class="btn-main btn-gray" onclick="location.href='@Url.Action("Administrador", "Home")'">Menú</button>
-                <button class="btn-main btn-gray" onclick="location.href='@Url.Action("Crear", "Administrador")'">➕ Marca/Modelo</button>
-                <button class="btn-main btn-red" onclick="location.href='@Url.Action("CrearTela", "Administrador")'">➕ Nueva Tela</button>
+                <button class="btn-main btn-gray"
+                    onclick="location.href='@Url.Action("Administrador", "Home")'">Menú</button>
+                <button class="btn-main btn-gray" onclick="location.href='@Url.Action("Crear", "Administrador")'">➕
+                    Marca/Modelo</button>
+                <button class="btn-main btn-red" onclick="location.href='@Url.Action("CrearTela", "Administrador")'">➕
+                    Nueva Tela</button>
             </div>
         </div>
-        <input type="text" id="txtBuscar" class="search-input" placeholder="🔍 Buscar por marca, modelo, catálogo, color..." onkeyup="filtrarTabla()">
+        <input type="text" id="txtBuscar" class="search-input"
+            placeholder="🔍 Buscar por marca, modelo, catálogo, color..." onkeyup="filtrarTabla()">
     </div>
 
     <div class="table-card">
@@ -285,7 +346,7 @@
                 <td data-label="Acciones">
                     <div class="action-menu pc-right">
                         <button class="dot-btn" onclick="toggleMenu(event, ${t.id})">⋮</button>
-                        <div id="dropdown-${t.id}" class="dropdown-content ${isLast ? 'dropdown-up' : ''}">
+                        <div id="dropdown-${t.id}" class="dropdown-content">
                             <button onclick="EditarTela(${t.id})">✏️ Editar</button>
                             <button onclick="eliminar(${t.id})" style="color: #d32f2f;">❌ Eliminar</button>
                         </div>
@@ -308,10 +369,34 @@
 
     function toggleMenu(event, id) {
         event.stopPropagation();
-        const el = document.getElementById('dropdown-' + id);
-        const wasShowing = el.classList.contains('show');
-        document.querySelectorAll('.dropdown-content').forEach(d => d.classList.remove('show'));
-        if (!wasShowing) el.classList.add('show');
+        const dropdown = document.getElementById('dropdown-' + id);
+        const button = event.currentTarget;
+
+        // Cerrar otros menús abiertos
+        document.querySelectorAll('.dropdown-content').forEach(d => {
+            if (d !== dropdown) d.classList.remove('show');
+        });
+
+        const wasShowing = dropdown.classList.contains('show');
+
+        if (!wasShowing) {
+            // Calcular posición
+            const rect = button.getBoundingClientRect();
+            const spaceBelow = window.innerHeight - rect.bottom;
+
+            // Si hay menos de 150px abajo, abrir hacia arriba
+            if (spaceBelow < 150) {
+                dropdown.classList.remove('dropdown-down');
+                dropdown.classList.add('dropdown-up');
+            } else {
+                dropdown.classList.remove('dropdown-up');
+                dropdown.classList.add('dropdown-down');
+            }
+
+            dropdown.classList.add('show');
+        } else {
+            dropdown.classList.remove('show');
+        }
     }
 
     window.onclick = () => {
