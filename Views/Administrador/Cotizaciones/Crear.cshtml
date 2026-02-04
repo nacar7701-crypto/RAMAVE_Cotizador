@@ -6,7 +6,7 @@
 }
 
 <style>
-    @@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    @@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
     :root {
         --ramave-red: #c62828;
@@ -20,10 +20,11 @@
         background-color: var(--bg-gray);
         font-family: 'Inter', sans-serif;
         color: var(--text-dark);
+        margin: 0;
     }
 
     .page-container {
-        padding: 2rem 1rem;
+        padding: 1rem;
         display: flex;
         justify-content: center;
     }
@@ -32,85 +33,51 @@
         background: white;
         width: 100%;
         max-width: 850px;
-        padding: 2.5rem;
+        padding: 2rem;
         border-radius: 15px;
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
         border-top: 5px solid var(--ramave-red);
     }
 
-    h2 {
-        text-align: center;
-        color: var(--ramave-red);
-        font-weight: 800;
-        margin-bottom: 1.5rem;
-        text-transform: uppercase;
-        letter-spacing: -0.5px;
-    }
-
+    /* Títulos Seccionales */
     .form-section-title {
-        font-size: 0.7rem;
+        font-size: 0.75rem;
         font-weight: 800;
         color: var(--ramave-red);
         text-transform: uppercase;
         letter-spacing: 1px;
         border-bottom: 2px solid #fceaea;
         padding-bottom: 5px;
-        margin: 20px 0 15px 0;
+        margin: 25px 0 15px 0;
         display: flex;
         align-items: center;
         gap: 8px;
     }
 
-    .form-group {
-        margin-bottom: 1rem;
-        position: relative;
+    /* Grid Responsivo para Inputs */
+    .grid-2-col {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
     }
 
-    label {
-        display: block;
-        font-size: 0.8rem;
-        font-weight: 700;
-        margin-bottom: 0.4rem;
-        color: #444;
+    .grid-3-col {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
     }
 
-    input, select {
-        width: 100%;
-        padding: 0.7rem 0.9rem;
-        border-radius: 8px;
-        border: 1px solid var(--border-color);
-        font-size: 0.9rem;
-        transition: 0.2s;
-        background-color: #fff;
-    }
-
-    .input-compact {
-        padding: 0.6rem 0.6rem;
-        font-size: 0.85rem;
-    }
-
-    .error-text {
-        color: var(--ramave-red);
-        font-size: 0.7rem;
-        font-weight: 600;
-        margin-top: 4px;
-        display: none;
-    }
-
-    .invalid {
-        border-color: var(--ramave-red) !important;
-        box-shadow: 0 0 0 2px rgba(198, 40, 40, 0.1);
-    }
-
+    /* Radio Cards Unificadas */
     .radio-group-visual {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
         gap: 12px;
     }
 
     .radio-card {
         position: relative;
         cursor: pointer;
+        display: flex;
     }
 
     .radio-card input {
@@ -121,37 +88,40 @@
     .radio-content {
         border: 2px solid #eee;
         border-radius: 12px;
-        padding: 10px;
+        padding: 15px 10px;
         text-align: center;
         transition: 0.3s;
         background: #fff;
-        height: 100%;
+        width: 100%;
         display: flex;
         flex-direction: column;
         align-items: center;
-        justify-content: center;
+        justify-content: space-between; /* Alinea texto abajo e imagen arriba */
+        min-height: 140px; /* Tamaño mínimo igual para todas */
     }
 
     .radio-card input:checked + .radio-content {
         border-color: var(--ramave-red);
         background-color: #fff5f5;
+        box-shadow: 0 4px 12px rgba(198, 40, 40, 0.1);
     }
 
+    /* Control de imágenes uniformes */
     .radio-content img {
-        width: 200%;
-        max-width: 150px;
-        height: 100px;
-        object-fit: contain;
-        margin-bottom: 8px;
+        width: 100%;
+        height: 80px; /* Altura fija para todas */
+        object-fit: contain; /* Evita que se deformen */
+        margin-bottom: 10px;
     }
 
     .radio-content span {
-        font-size: 0.65rem;
-        font-weight: 800;
+        font-size: 0.7rem;
+        font-weight: 700;
         text-transform: uppercase;
-        color: #666;
+        color: #444;
     }
 
+    /* Botones Responsivos */
     .buttons-container {
         display: grid;
         grid-template-columns: 1fr 1.5fr 1fr;
@@ -160,49 +130,52 @@
     }
 
     .btn {
-        padding: 0.9rem;
+        padding: 0.8rem;
         border-radius: 10px;
         border: none;
         font-weight: 700;
         cursor: pointer;
         text-align: center;
         text-decoration: none;
-        font-size: 0.85rem;
+        font-size: 0.8rem;
         transition: 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     .btn-add { background: #2d3436; color: white; }
     .btn-finish { background: var(--ramave-red); color: white; }
     .btn-back { background: #eee; color: #666; }
 
-    .input-group-custom { display: flex; }
-    .input-group-custom input { border-radius: 8px 0 0 8px; border-right: none; }
-    .input-group-text-custom {
-        background: #f1f3f5;
-        border: 1px solid var(--border-color);
-        border-radius: 0 8px 8px 0;
-        padding: 0 12px;
-        display: flex;
-        align-items: center;
-        font-size: 0.8rem;
-        font-weight: bold;
-        color: #777;
+    /* Estilos de Error e Inputs */
+    .invalid { border-color: var(--ramave-red) !important; }
+    .error-text { color: var(--ramave-red); font-size: 0.65rem; font-weight: 700; display: none; }
+
+    /* MEDIA QUERIES PARA MÓVIL */
+    @@media (max-width: 768px) {
+        .grid-2-col, .grid-3-col {
+            grid-template-columns: 1fr; /* Todo a una columna */
+            gap: 1rem;
+        }
+
+        .radio-group-visual {
+            grid-template-columns: repeat(2, 1fr); /* 2 tarjetas por fila */
+        }
+
+        .buttons-container {
+            grid-template-columns: 1fr; /* Botones uno sobre otro */
+        }
+
+        .card-form { padding: 1.2rem; }
+        
+        h2 { font-size: 1.4rem; }
     }
 
-    #sectionOnda { display: none; }
-    .presupuesto-info {
-        background: #fff5f5;
-        padding: 12px;
-        border-radius: 10px;
-        margin-bottom: 20px;
-        display: none;
-        border: 1px solid #f8d7da;
-    }
-
-    @@media (max-width: 600px) {
-        .card-form { padding: 1.5rem; }
-        .radio-group-visual { grid-template-columns: repeat(2, 1fr); }
-        .buttons-container { grid-template-columns: 1fr; }
+    @@media (max-width: 480px) {
+        .radio-group-visual {
+            grid-template-columns: 1fr; /* 1 tarjeta por fila en pantallas muy pequeñas */
+        }
     }
 </style>
 

@@ -20,7 +20,7 @@
         background-color: var(--bg-body);
         font-family: 'Inter', sans-serif;
         color: var(--text-main);
-        font-size: 0.85rem;
+        font-size: 0.75rem;
         margin: 0;
     }
 
@@ -65,11 +65,9 @@
         text-transform: uppercase;
     }
 
-    /* CLIENT DATA GRID */
     .client-data-grid {
         display: grid;
-        grid-template-columns: 1fr;
-        /* Móvil por defecto */
+        grid-template-columns: 1.5fr 1fr;
         gap: 10px;
         margin-top: 5px;
         padding: 8px;
@@ -78,48 +76,8 @@
         border-radius: 6px;
     }
 
-    /* Dentro de tu bloque <style> */
-
-    /* Evita que el texto largo rompa la tabla */
-    .inner-table td,
-    .inner-table th {
-        word-break: break-word;
-        /* Rompe palabras largas */
-        overflow-wrap: break-word;
-        hyphens: auto;
-        line-height: 1.2;
-    }
-
-    /* Asegura que las tablas internas no superen el ancho del contenedor */
-    .inner-table {
-        table-layout: auto;
-        /* Permite que las columnas se ajusten al contenido */
-        width: 100% !important;
-    }
-
-    /* Ajuste específico para móvil */
-    @@media (max-width: 992px) {
-        .inner-table th {
-            width: 40% !important;
-            /* Un poco menos de espacio a la etiqueta */
-            font-size: 0.65rem;
-        }
-
-        .inner-table td {
-            width: 60% !important;
-            /* Más espacio al valor */
-            font-size: 0.75rem;
-        }
-    }
-
-    @@media (min-width: 768px) {
-        .client-data-grid {
-            grid-template-columns: 1.5fr 1fr;
-        }
-    }
-
     .data-label {
-        font-size: 0.65rem;
+        font-size: 0.55rem;
         font-weight: 800;
         color: #777;
         text-transform: uppercase;
@@ -127,16 +85,16 @@
     }
 
     .data-value {
-        font-size: 0.9rem;
+        font-size: 0.8rem;
         font-weight: 700;
         color: #222;
     }
 
-    /* TOOLBAR */
+    /* UI WEB */
     .filter-toolbar {
         background: #f8f9fa;
         border: 1px solid var(--border-color);
-        padding: 15px;
+        padding: 10px;
         border-radius: 8px;
         margin-bottom: 15px;
     }
@@ -147,79 +105,66 @@
         align-items: center;
         margin-bottom: 15px;
         flex-wrap: wrap;
-        gap: 10px;
     }
 
-    /* TABLA PRINCIPAL Y RESPONSIVIDAD */
+    .header-top-row h2 {
+        margin: 0;
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--ramave-red);
+    }
+
+    .folio-badge {
+        background: #eee;
+        color: #555;
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-size: 0.8rem;
+    }
+
+    /* TABLA PRINCIPAL */
     .table-main {
         width: 100%;
         border-collapse: collapse;
+        table-layout: fixed;
         margin-bottom: 15px;
         border: 1px solid var(--border-color);
     }
 
-    /* Comportamiento Móvil */
-    /* Comportamiento Móvil Actualizado */
-    @@media (max-width: 992px) {
-
-        .table-main,
-        .table-main tbody,
-        .table-main tr,
-        .table-main td {
-            display: block;
-            width: 100% !important;
-            box-sizing: border-box;
-            /* Crucial para que el padding no sume al ancho */
-        }
-
-        .table-main td {
-            border: none;
-            border-bottom: 1px solid var(--border-color);
-            padding: 5px;
-            /* Reducimos padding lateral */
-        }
-
-        .budget-container {
-            padding: 8px;
-            /* Menos margen en el contenedor principal */
-        }
+    .col-base {
+        width: 30%;
     }
 
-    /* Anchos para Escritorio */
-    @@media (min-width: 993px) {
-        .table-main {
-            table-layout: fixed;
-        }
+    .col-herrajes {
+        width: 20%;
+    }
 
-        .col-base {
-            width: 30%;
-        }
+    .col-precios {
+        width: 15%;
+    }
 
-        .col-herrajes {
-            width: 20%;
-        }
-
-        .col-precios {
-            width: 15%;
-        }
-
-        .col-costos {
-            width: 35%;
-        }
+    .col-costos {
+        width: 35%;
     }
 
     .partida-title {
         background: var(--dark-bg);
         color: white;
-        padding: 8px 12px;
+        padding: 5px 12px;
         font-weight: 700;
-        font-size: 0.85rem;
+        font-size: 0.75rem;
+    }
+
+    .table-main td {
+        vertical-align: top;
+        border: 1px solid var(--border-color);
+        padding: 0;
     }
 
     .inner-table {
         width: 100%;
         border-collapse: collapse;
-        font-size: 0.75rem;
+        font-size: 0.68rem;
     }
 
     .inner-table th {
@@ -227,14 +172,15 @@
         color: #666;
         font-weight: 600;
         text-align: left;
-        padding: 6px;
+        padding: 3px 6px;
         border-bottom: 1px solid var(--border-color);
         width: 50%;
         text-transform: uppercase;
+        font-size: 0.58rem;
     }
 
     .inner-table td {
-        padding: 6px;
+        padding: 3px 6px;
         font-weight: 700;
         color: #222;
         border-bottom: 1px solid var(--border-color);
@@ -243,9 +189,9 @@
 
     .col-header {
         background: #f1f1f1;
-        padding: 6px;
+        padding: 4px;
         font-weight: 800;
-        font-size: 0.7rem;
+        font-size: 0.65rem;
         text-transform: uppercase;
         color: #444;
         text-align: center;
@@ -254,9 +200,9 @@
 
     .sub-section-header {
         background: #eee;
-        font-size: 0.65rem;
+        font-size: 0.6rem;
         font-weight: 900;
-        padding: 5px;
+        padding: 3px;
         text-align: center;
         border-bottom: 1px solid #ddd;
         text-transform: uppercase;
@@ -266,16 +212,15 @@
         background-color: #fcfcfc;
     }
 
-    .row-subtotal td,
-    .row-subtotal th {
+    .row-subtotal td {
         color: var(--ramave-red) !important;
-        font-size: 0.8rem !important;
+        font-size: 0.7rem !important;
     }
 
     .grand-total-section {
         background: var(--dark-bg);
         color: white;
-        padding: 20px;
+        padding: 12px;
         border-radius: 10px;
         margin-top: 15px;
     }
@@ -284,16 +229,16 @@
         display: none !important;
     }
 
-    /* Ajustes botones */
-    .btn-sm {
-        padding: 8px 12px;
-        font-size: 0.75rem;
-    }
-
     @@media print {
         @@page {
-            size: landscape;
             margin: 1cm;
+            size: landscape;
+        }
+
+        body {
+            background: white !important;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
         }
 
         .no-print {
@@ -304,13 +249,96 @@
             display: block !important;
         }
 
-        .table-main {
-            display: table !important;
-            table-layout: fixed !important;
+        .wrapper {
+            padding: 0 !important;
+        }
+
+        .budget-container {
+            border: none !important;
+            box-shadow: none !important;
+            padding: 0 !important;
+        }
+
+        .part-container {
+            break-inside: avoid;
+            page-break-inside: avoid;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .table-main tr,
+        .inner-table tr {
+            break-inside: avoid !important;
+            page-break-inside: avoid !important;
         }
 
         .table-main td {
-            display: table-cell !important;
+            break-inside: avoid !important;
+        }
+    }
+    /* AJUSTES EXCLUSIVOS PARA TELÉFONO */
+    @@media screen and (max-width: 600px) {
+        /* Evitamos que el contenedor tenga padding excesivo */
+        .wrapper { padding: 5px; }
+        .budget-container { padding: 10px; }
+
+        /* Transformamos la tabla principal en bloques verticales */
+        .table-main, .table-main tbody, .table-main tr, .table-main td {
+            display: block;
+            width: 100% !important;
+        }
+
+        .table-main td {
+            border: none;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 10px;
+        }
+
+        /* Ajustamos títulos para que no se corten */
+        .header-top-row h2 {
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .partida-title {
+            font-size: 0.7rem;
+            padding: 8px;
+        }
+
+        /* Ajustamos las tablas internas para que el texto sea legible */
+        .inner-table {
+            font-size: 0.75rem; /* Un poco más grande para leer en móvil */
+        }
+
+        .inner-table th {
+            font-size: 0.65rem;
+            width: 40%;
+        }
+
+        /* El toolbar de filtros lo hacemos scrolleable si es necesario o más compacto */
+        .filter-toolbar .col-md-3 {
+            border-end: none;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+        }
+
+        /* Los totales finales los ponemos uno debajo del otro */
+        .grand-total-section .col-md-4 {
+            margin-bottom: 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 10px;
+        }
+
+        .grand-total-section h3 {
+            font-size: 1.3rem;
+        }
+
+        /* Ajuste de botones superiores */
+        .header-top-row .d-flex {
+            width: 100%;
+            justify-content: space-between;
+            margin-top: 10px;
         }
     }
 </style>
