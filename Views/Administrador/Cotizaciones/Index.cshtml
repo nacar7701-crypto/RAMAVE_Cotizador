@@ -71,11 +71,35 @@
     }
 
     /* Tabla y Agrupación */
+    /* BUSCA ESTA CLASE Y CAMBIA hidden POR visible */
     .table-card {
         background: white;
         border-radius: 10px;
         box-shadow: 0 15px 15px rgba(0, 0, 0, 0.05);
-        overflow: hidden;
+        overflow: visible;
+        /* CAMBIADO: Antes estaba en hidden */
+    }
+
+    /* AJUSTE PARA EL MENÚ ACCIÓN */
+    .action-menu {
+        position: relative;
+        /* Mantiene el dropdown anclado al botón */
+        text-align: right;
+        /* Alinea a la derecha en desktop */
+    }
+
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        right: 0;
+        top: 100%;
+        background: white;
+        min-width: 160px;
+        z-index: 1050;
+        /* Aumentado para estar por encima de todo */
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        border-radius: 8px;
+        border: 1px solid var(--border-color);
     }
 
     table {
@@ -205,9 +229,10 @@
     }
 
     .folio-link {
-    text-decoration: none;
-    padding: 5px; /* Quita el subrayado del enlace */
-    display: inline-block;
+        text-decoration: none;
+        padding: 5px;
+        /* Quita el subrayado del enlace */
+        display: inline-block;
     }
 
     .folio-badge {
@@ -226,13 +251,15 @@
 
     .folio-badge:hover {
         background: var(--ramave-dark);
-        transform: scale(1.05); /* Se agranda un poquito al pasar el mouse */
+        transform: scale(1.05);
+        /* Se agranda un poquito al pasar el mouse */
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     }
 
     .group-header:hover {
-        background-color: #fce4e4 !important; /* Resalta toda la fila al pasar el mouse */
-    }    
+        background-color: #fce4e4 !important;
+        /* Resalta toda la fila al pasar el mouse */
+    }
 
     @@media (max-width: 992px) {
         table thead {
@@ -263,6 +290,21 @@
             font-size: 0.6rem;
             text-transform: uppercase;
             margin-bottom: 2px;
+        }
+
+        .action-menu {
+            text-align: center;
+            /* Centra el botón ⋮ en móvil */
+            margin-top: 5px;
+        }
+
+        .dropdown-content {
+            position: static;
+            /* En móvil, que empuje el contenido hacia abajo en lugar de flotar */
+            width: 100%;
+            box-shadow: none;
+            border: 1px solid #eee;
+            margin-top: 5px;
         }
     }
 </style>
@@ -380,8 +422,25 @@
         event.stopPropagation();
         const el = document.getElementById('dropdown-' + id);
         const wasShowing = el.classList.contains('show');
+
+        // Cerrar todos los demás
         document.querySelectorAll('.dropdown-content').forEach(d => d.classList.remove('show'));
-        if (!wasShowing) el.classList.add('show');
+
+        if (!wasShowing) {
+            el.classList.add('show');
+
+            // --- LÓGICA ANTICORTE ---
+            const rect = el.getBoundingClientRect();
+            const overflowBottom = (rect.bottom > window.innerHeight);
+
+            if (overflowBottom) {
+                el.style.top = "auto";
+                el.style.bottom = "100%"; // Se abre hacia arriba si no cabe abajo
+            } else {
+                el.style.top = "100%";
+                el.style.bottom = "auto";
+            }
+        }
     }
 
     window.onclick = () => document.querySelectorAll('.dropdown-content').forEach(d => d.classList.remove('show'));

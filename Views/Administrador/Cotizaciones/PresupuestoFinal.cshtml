@@ -229,6 +229,27 @@
         display: none !important;
     }
 
+    * {
+        box-sizing: border-box;
+        /* Crucial para que el padding no rompa el layout */
+    }
+
+    .col-base {
+        width: 30%;
+    }
+
+    .col-herrajes {
+        width: 15%;
+    }
+
+    .col-precios {
+        width: 15%;
+    }
+
+    .col-costos {
+        width: 40%;
+    }
+
     @@media print {
         @@page {
             margin: 1cm;
@@ -276,84 +297,97 @@
             break-inside: avoid !important;
         }
     }
-    /* AJUSTES EXCLUSIVOS PARA TELÉFONO - EVITAR DESBORDAMIENTO */
-    @@media screen and (max-width: 600px) {
-        .wrapper { padding: 5px; }
-        .budget-container { padding: 8px; }
 
-        /* Permitir que la tabla se ajuste al contenido y no se salga */
+    @@media screen and (max-width: 600px) {
+        .wrapper {
+            padding: 5px;
+        }
+
+        .budget-container {
+            padding: 8px;
+            overflow: hidden;
+        }
+
         .table-main {
             display: block;
             width: 100% !important;
-            table-layout: auto; /* Cambiamos de fixed a auto */
+            table-layout: auto;
             border: none;
         }
 
-        .table-main tbody, .table-main tr, .table-main td {
+        .table-main tbody,
+        .table-main tr,
+        .table-main td {
             display: block;
             width: 100% !important;
         }
 
         .table-main td {
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             border: 1px solid var(--border-color);
-            border-radius: 6px;
-            overflow: hidden; /* Corta cualquier texto que intente salir */
+            border-radius: 8px;
+            padding: 0 !important;
+            /* Limpiamos padding para que la inner-table mande */
+            overflow: hidden;
         }
 
-        /* Ajuste de tablas internas para que el texto no rompa el diseño */
+        /* Forzamos que las tablas internas no se estiren */
         .inner-table {
-            font-size: 0.7rem; 
-            width: 100%;
+            width: 100% !important;
+            table-layout: fixed;
+            /* Ayuda a controlar el ancho de las celdas */
         }
 
         .inner-table th {
-            width: 50%; /* Mitad para etiqueta */
+            width: 45% !important;
             font-size: 0.55rem;
-            word-break: break-word; /* Rompe palabras largas como nombres de tela */
-            padding: 5px;
+            word-wrap: break-word;
+            white-space: normal;
+            /* Permite que el texto salte de línea */
+            padding: 6px;
         }
 
         .inner-table td {
-            width: 50%; /* Mitad para valor */
+            width: 55% !important;
             font-size: 0.7rem;
-            padding: 5px;
-            word-break: break-all; /* Fuerza el quiebre de texto si es muy largo */
+            padding: 6px;
+            word-break: break-all;
+            /* Si el precio o texto es largo, se corta */
         }
 
-        /* Cabeceras de columna en móvil */
+        /* Corregimos el contenedor de secciones (Fábrica, Público, etc) */
+        .sec-fabrica,
+        .sec-publico,
+        .sec-distribuidor {
+            width: 100% !important;
+            margin: 0 !important;
+        }
+
+        /* Ajuste de cabeceras para que no se corten */
         .col-header {
-            font-size: 0.75rem;
-            padding: 8px;
-            background: var(--ramave-red);
-            color: white;
-        }
-
-        /* Ajuste de badge y título principal */
-        .header-top-row h2 {
-            font-size: 0.85rem;
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
-
-        .folio-badge {
-            width: fit-content;
-        }
-
-        /* Ocultar elementos que ocupan demasiado espacio horizontal */
-        .d-flex.gap-3.mt-1 {
-            flex-direction: column;
-            gap: 2px !important;
-        }
-
-        /* Ajuste de los totales inferiores */
-        .grand-total-section {
+            font-size: 0.7rem;
             padding: 10px;
+            background: #444;
+            color: white;
+            text-align: left;
         }
-        
-        .grand-total-section h3 {
-            font-size: 1.1rem;
+
+        /* Evitar que el texto de la cabecera (Cliente, etc) se salga */
+        .data-value {
+            font-size: 0.75rem;
+            display: block;
+            word-wrap: break-word;
+        }
+
+        .header-top-row h2 {
+            font-size: 0.9rem;
+        }
+
+        /* Los botones de impresión y regresar */
+        .header-top-row .d-flex {
+            width: 100%;
+            justify-content: space-between;
+            margin-top: 10px;
         }
     }
 </style>
