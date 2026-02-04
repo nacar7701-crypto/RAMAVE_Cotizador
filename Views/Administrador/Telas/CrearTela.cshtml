@@ -194,6 +194,27 @@
         align-items: flex-end;
         /* Alinea etiquetas y inputs */
     }
+
+    /* Agrega un margen interno a la fila para que no toque los bordes del card */
+    .form-section-card {
+        padding: 25px 35px !important;
+        /* Más espacio a los lados */
+    }
+
+    /* Contenedor opcional para centrar los inputs cortos si sobran mucho espacio */
+    .compact-group {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        /* Mantiene todo alineado a la izquierda pero con margen */
+    }
+
+    /* Ajuste para que los inputs cortos tengan un ancho consistente pero no gigante */
+    .input-short {
+        max-width: 150px;
+        /* Un poco más pequeño para que respire mejor */
+        width: 100%;
+    }
 </style>
 
 <div class="container-full">
