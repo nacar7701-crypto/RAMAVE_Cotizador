@@ -21,21 +21,21 @@ namespace RAMAVE_Cotizador.Controllers // <- QUITAR el ".Capacitacion" si lo tie
             if (!EsUsuarioAutorizado()) return RedirectToAction("Login", "Auth");
 
             // AL ESTAR EN SUBCARPETA, DEBES DAR LA RUTA COMPLETA DE LA VISTA
-            return View("~/Views/Capacitacion/Produccion.cshtml");
+            return View("~/Views/Capacitacion/Produccion/Produccion.cshtml");
         }
 
         [HttpGet("Cortinas")]
         public IActionResult Cortinas()
         {
             if (!EsUsuarioAutorizado()) return RedirectToAction("Login", "Auth");
-            return View("~/Views/Capacitacion/Cortinas.cshtml");
+            return View("~/Views/Capacitacion/Produccion/Cortinas.cshtml");
         }
 
         [HttpGet("Persianas")]
         public IActionResult Persianas()
         {
             if (!EsUsuarioAutorizado()) return RedirectToAction("Login", "Auth");
-            return View("~/Views/Capacitacion/Persianas.cshtml");
+            return View("~/Views/Capacitacion/Produccion/Persianas.cshtml");
         }
     }
 }
