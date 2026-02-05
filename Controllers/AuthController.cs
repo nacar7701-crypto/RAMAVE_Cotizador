@@ -38,26 +38,22 @@ namespace RAMAVE_Cotizador.Controllers
                 return View(model);
             }
 
+
             var rol = usuario.rol.Trim();
-            
-            // 1. Guardamos el ROL en la sesión (Para las vistas de C#)
+
+            // Guardar en sesión
             HttpContext.Session.SetString("UsuarioRol", rol);
-            
-            // 2. Guardamos el ID en la sesión (Fundamental para que el Cotizador lo use después)
-            HttpContext.Session.SetInt32("UsuarioId", usuario.id); 
-            
-            // Opcional: Guardar el nombre para mostrarlo en el Layout
+            HttpContext.Session.SetInt32("UsuarioId", usuario.id);
             HttpContext.Session.SetString("UsuarioNombre", usuario.nombre ?? "Usuario");
-
-            // --- ⬆️ FIN DEL CAMBIO ⬆️ ---
-
-            Console.WriteLine($"USUARIO LOGUEADO: ID={usuario.id}, ROL='{rol}'");
 
             return rol switch
             {
                 "Administrador" => RedirectToAction("Administrador", "Home"),
-                "Tienda" => RedirectToAction("Index", "Clientes"),
-                "Distribuidor" => RedirectToAction("Index", "Clientes"),
+                "Tienda" or "Distribuidor" => RedirectToAction("Index", "Clientes"),
+                "CapacitacionProduccion" => RedirectToAction("Produccion", "Capacitacion"),
+                "CapacitacionVentas" or
+                "CapacitacionInstalacion" => RedirectToAction("Index", "Home"),
+
                 _ => RedirectToAction("Login")
             };
         }
