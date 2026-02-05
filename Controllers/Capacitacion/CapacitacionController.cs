@@ -1,74 +1,41 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 
-namespace RAMAVE_Cotizador.Controllers
+namespace RAMAVE_Cotizador.Controllers // <- QUITAR el ".Capacitacion" si lo tiene
 {
+    [Route("Capacitacion")] // <- Esto define que la URL empieza con /Capacitacion
     public class CapacitacionController : Controller
     {
-        // Método para validar acceso (DRY - Don't Repeat Yourself)
         private bool EsUsuarioAutorizado()
         {
-            var rol = HttpContext.Session.GetString("UsuarioRol");
-            // Permitimos el acceso a los roles de capacitación y al administrador
+            var rol = HttpContext.Session.GetString("UsuarioRol")?.Trim();
             return rol == "CapacitacionProduccion" || 
                    rol == "CapacitacionVentas" || 
                    rol == "CapacitacionInstalacion" || 
                    rol == "Administrador";
         }
 
-        // GET: /Capacitacion/Produccion
+        [HttpGet("Produccion")] // <- Esto define que la URL es /Capacitacion/Produccion
         public IActionResult Produccion()
         {
-            if (!EsUsuarioAutorizado())
-            {
-                return RedirectToAction("Login", "Auth");
-            }
+            if (!EsUsuarioAutorizado()) return RedirectToAction("Login", "Auth");
 
-            return View();
+            // AL ESTAR EN SUBCARPETA, DEBES DAR LA RUTA COMPLETA DE LA VISTA
+            return View("~/Views/Capacitacion/Produccion.cshtml");
         }
 
-        // GET: /Capacitacion/Cortinas
-        // Esta es la vista que se abrirá al dar clic en la card de Cortinas
+        [HttpGet("Cortinas")]
         public IActionResult Cortinas()
         {
             if (!EsUsuarioAutorizado()) return RedirectToAction("Login", "Auth");
-            
-            // Aquí retornarás la vista con los manuales o videos de cortinas
-            return View(); 
+            return View("~/Views/Capacitacion/Cortinas.cshtml");
         }
 
-        // GET: /Capacitacion/Persianas
-        // Esta es la vista que se abrirá al dar clic en la card de Persianas
+        [HttpGet("Persianas")]
         public IActionResult Persianas()
         {
             if (!EsUsuarioAutorizado()) return RedirectToAction("Login", "Auth");
-
-            // Aquí retornarás la vista con los manuales o videos de persianas
-            return View();
-        }
-
-        // GET: /Capacitacion/Ventas
-        public IActionResult Ventas()
-        {
-            var rol = HttpContext.Session.GetString("UsuarioRol");
-            if (rol != "CapacitacionVentas" && rol != "Administrador")
-            {
-                return RedirectToAction("Login", "Auth");
-            }
-
-            return View();
-        }
-
-        // GET: /Capacitacion/Instalacion
-        public IActionResult Instalacion()
-        {
-            var rol = HttpContext.Session.GetString("UsuarioRol");
-            if (rol != "CapacitacionInstalacion" && rol != "Administrador")
-            {
-                return RedirectToAction("Login", "Auth");
-            }
-
-            return View();
+            return View("~/Views/Capacitacion/Persianas.cshtml");
         }
     }
 }

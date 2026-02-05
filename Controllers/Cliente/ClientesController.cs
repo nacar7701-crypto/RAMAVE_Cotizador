@@ -19,14 +19,29 @@ namespace RAMAVE_Cotizador.Controllers
         {
             if (string.IsNullOrEmpty(rol)) return RedirectToAction("Login", "Auth");
 
-            HttpContext.Session.SetString("UsuarioRol", rol);
+            // Guardamos en sesión
+            HttpContext.Session.SetString("UsuarioRol", rol.Trim());
             HttpContext.Session.SetInt32("UsuarioId", id);
             HttpContext.Session.SetString("UsuarioNombre", nombre);
 
-            if (rol.Trim() == "Administrador")
-                return RedirectToAction("Administrador", "Administrador");
+            var rolLimpio = rol.Trim();
 
-            return RedirectToAction("Index");
+            // 🔹 Lógica de redirección corregida
+            if (rolLimpio == "Administrador")
+            {
+                return RedirectToAction("Administrador", "Home"); // O "Administrador" dependiendo de tu Home
+            }
+
+            if (rolLimpio == "CapacitacionProduccion" ||
+                rolLimpio == "CapacitacionVentas" ||
+                rolLimpio == "CapacitacionInstalacion")
+            {
+                // Forzamos la ruta al nuevo controlador
+                return RedirectToAction("Produccion", "Capacitacion");
+            }
+
+            // Por defecto para Tienda y Distribuidor
+            return RedirectToAction("Index", "Clientes");
         }
 
         public IActionResult Index()

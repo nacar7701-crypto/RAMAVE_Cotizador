@@ -41,19 +41,21 @@ namespace RAMAVE_Cotizador.Controllers
 
             var rol = usuario.rol.Trim();
 
+            HttpContext.Session.Clear();
+
             // Guardar en sesión
             HttpContext.Session.SetString("UsuarioRol", rol);
             HttpContext.Session.SetInt32("UsuarioId", usuario.id);
             HttpContext.Session.SetString("UsuarioNombre", usuario.nombre ?? "Usuario");
+
 
             return rol switch
             {
                 "Administrador" => RedirectToAction("Administrador", "Home"),
                 "Tienda" or "Distribuidor" => RedirectToAction("Index", "Clientes"),
                 "CapacitacionProduccion" => RedirectToAction("Produccion", "Capacitacion"),
-                "CapacitacionVentas" or
-                "CapacitacionInstalacion" => RedirectToAction("Index", "Home"),
-
+                "CapacitacionVentas" => RedirectToAction("Ventas", "Capacitacion"),
+                "CapacitacionInstalacion" => RedirectToAction("Instalacion", "Capacitacion"),
                 _ => RedirectToAction("Login")
             };
         }
