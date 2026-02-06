@@ -1,0 +1,138 @@
+@{
+    Layout = null;
+    var tipo = Context.Request.Query["tipo"];
+    var procesoActual = Context.Request.Query["proceso"];
+
+    // Lógica para el siguiente proceso
+    string[] procesos = { "Corte de perfiles", "Corte de telas", "Costura", "Armado", "Acabado", "Empaque" };
+    int indiceActual = Array.IndexOf(procesos, procesoActual.ToString());
+    string proximoProceso = (indiceActual >= 0 && indiceActual < procesos.Length - 1) ? procesos[indiceActual + 1] : null;
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Capacitación: @procesoActual</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --ramave-red: #c62828;
+            --text-main: #1e293b;
+        }
+
+        body { 
+            margin: 0; 
+            background: #ffffff; /* Fondo blanco */
+            font-family: 'Inter', sans-serif; 
+            color: var(--text-main); 
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        header { 
+            padding: 15px 5%; 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            border-bottom: 1px solid #eee;
+        }
+
+        .video-main-container { 
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: #f9f9f9; /* Un gris muy tenue para resaltar el video */
+        }
+
+        .video-wrapper {
+            width: 100%;
+            max-width: 1100px; /* Video mucho más grande */
+            background: #000;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        video { 
+            width: 100%; 
+            display: block;
+            aspect-ratio: 16 / 9; /* Mantiene proporciones cinematográficas */
+        }
+
+        .controls-area {
+            padding: 30px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            background: white;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.2s;
+        }
+
+        .btn-secondary { background: #f1f5f9; color: var(--text-main); }
+        .btn-next { background: var(--ramave-red); color: white; border: none; cursor: pointer; }
+        .btn-next:hover { transform: scale(1.05); background: #a51d1d; }
+
+        .title-info { text-align: center; margin-bottom: 15px; }
+        .title-info h1 { margin: 0; font-size: 1.5rem; }
+        .title-info span { color: var(--ramave-red); font-weight: 600; text-transform: uppercase; font-size: 0.8rem; }
+    </style>
+</head>
+<body>
+    <header>
+        <img src="/images/logoramave.jpg" style="height:40px;" />
+        <a href="@Url.Action("Procesos", new { tipo = tipo })" style="text-decoration:none; color:#64748b;">
+            <i class="fas fa-times"></i> Cerrar
+        </a>
+    </header>
+
+    <div class="video-main-container">
+        <div class="title-info">
+            <span>@tipo</span>
+            <h1>@procesoActual</h1>
+        </div>
+
+        <div class="video-wrapper">
+            <video controls autoplay>
+                <source src="/videos/@tipo/@(procesoActual).mp4" type="video/mp4">
+                Tu navegador no soporta el video.
+            </video>
+        </div>
+    </div>
+
+    <div class="controls-area">
+        <a href="@Url.Action("Procesos", new { tipo = tipo })" class="btn btn-secondary">
+            <i class="fas fa-list"></i> Ver todos los procesos
+        </a>
+
+        @if (proximoProceso != null)
+        {
+            <a href="@Url.Action("VerVideo", new { tipo = tipo, proceso = proximoProceso })" class="btn btn-next">
+                Siguiente: @proximoProceso <i class="fas fa-arrow-right"></i>
+            </a>
+        }
+        else
+        {
+            <a href="@Url.Action("Persianas")" class="btn btn-next" style="background: #1e293b;">
+                Finalizar Capacitación <i class="fas fa-check-circle"></i>
+            </a>
+        }
+    </div>
+</body>
+</html>

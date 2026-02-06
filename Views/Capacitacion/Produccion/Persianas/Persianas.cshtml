@@ -5,6 +5,7 @@
 
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
@@ -22,8 +23,16 @@
             --transition: all 0.3s ease;
         }
 
-        * { box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { margin: 0; background: var(--bg-gray); color: var(--text-main); }
+        * {
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg-gray);
+            color: var(--text-main);
+        }
 
         header {
             background: white;
@@ -34,12 +43,26 @@
             position: sticky;
             top: 0;
             z-index: 1000;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
         }
 
-        .header-left { display: flex; align-items: center; gap: 15px; }
-        header img { height: 40px; }
-        header h1 { margin: 0; font-size: 1rem; color: var(--ramave-red); text-transform: uppercase; letter-spacing: 1px; }
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        header img {
+            height: 40px;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 1rem;
+            color: var(--ramave-red);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
 
         .btn-back {
             color: var(--text-muted);
@@ -51,11 +74,27 @@
             gap: 5px;
         }
 
-        .container { max-width: 1000px; margin: 0 auto; padding: 60px 20px; }
-        
-        .welcome-msg { margin-bottom: 50px; text-align: center; }
-        .welcome-msg h2 { font-size: 1.8rem; font-weight: 800; margin-bottom: 10px; }
-        .welcome-msg p { color: var(--text-muted); font-size: 1.1rem; }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+
+        .welcome-msg {
+            margin-bottom: 50px;
+            text-align: center;
+        }
+
+        .welcome-msg h2 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        .welcome-msg p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
 
         .grid {
             display: grid;
@@ -95,19 +134,27 @@
             margin-bottom: 20px;
         }
 
-        .card h3 { font-size: 1.3rem; margin: 0; font-weight: 700; }
-        .card span { 
-            margin-top: 8px; 
-            color: var(--text-muted); 
+        .card h3 {
+            font-size: 1.3rem;
+            margin: 0;
+            font-weight: 700;
+        }
+
+        .card span {
+            margin-top: 8px;
+            color: var(--text-muted);
             font-size: 0.9rem;
             font-weight: 500;
         }
 
         @@media (max-width: 600px) {
-            .grid { grid-template-columns: 1fr; }
+            .grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
+
 <body>
 
     <header>
@@ -127,29 +174,29 @@
         </div>
 
         <div class="grid">
-            <a href="#" class="card">
+            <a href="@Url.Action("Procesos", "Capacitacion", new { tipo = "Enrollable" })" class="card">
                 <div class="icon-circle"><i class="fas fa-scroll"></i></div>
                 <h3>Enrollable</h3>
                 <span>(Manual y motorizada)</span>
             </a>
 
-            <a href="#" class="card">
+            <a href="@Url.Action("Procesos", "Capacitacion", new { tipo = "Sheer" })" class="card">
                 <div class="icon-circle"><i class="fas fa-layer-group"></i></div>
                 <h3>Duo ó Sheer</h3>
                 <span>(Manual o motorizada)</span>
             </a>
 
-            <a href="#" class="card">
+            <a href="@Url.Action("Procesos", "Capacitacion", new { tipo = "Verticales" })" class="card">
                 <div class="icon-circle"><i class="fas fa-align-justify"></i></div>
                 <h3>Verticales</h3>
             </a>
 
-            <a href="#" class="card">
+            <a href="@Url.Action("Procesos", "Capacitacion", new { tipo = "Panel Japones" })" class="card">
                 <div class="icon-circle"><i class="fas fa-columns"></i></div>
                 <h3>Panel Japonés</h3>
             </a>
 
-            <a href="#" class="card">
+            <a href="@Url.Action("Procesos", "Capacitacion", new { tipo = "Toldos" })" class="card">
                 <div class="icon-circle"><i class="fas fa-umbrella"></i></div>
                 <h3>Toldos</h3>
                 <span>(Manual o motorizado)</span>
@@ -158,4 +205,5 @@
     </div>
 
 </body>
+
 </html>

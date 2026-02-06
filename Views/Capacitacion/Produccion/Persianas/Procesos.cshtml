@@ -1,0 +1,158 @@
+@{
+    Layout = null;
+    var tipoPersiana = Context.Request.Query["tipo"];
+    var nombreUsuario = Context.Session.GetString("UsuarioNombre") ?? "Colaborador";
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Procesos @tipoPersiana | RAMAVE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        :root {
+            --ramave-red: #c62828;
+            --bg-gray: #f8fafc;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * { box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { margin: 0; background: var(--bg-gray); color: var(--text-main); }
+
+        header {
+            background: white;
+            padding: 0.8rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        header img { height: 40px; }
+
+        .btn-back {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center; gap: 5px;
+        }
+
+        .container { max-width: 1100px; margin: 0 auto; padding: 60px 20px; }
+        
+        .welcome-msg { margin-bottom: 40px; text-align: center; }
+        .welcome-msg h2 { font-size: 2rem; font-weight: 800; margin-bottom: 5px; }
+        .welcome-msg span { color: var(--ramave-red); font-weight: 700; text-transform: uppercase; }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px 20px;
+            text-decoration: none;
+            color: inherit;
+            transition: var(--transition);
+            border: 1px solid #e2e8f0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--ramave-red);
+        }
+
+        .icon-circle {
+            width: 75px;
+            height: 75px;
+            background: #fef2f2;
+            color: var(--ramave-red);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            margin-bottom: 20px;
+            transition: var(--transition);
+        }
+
+        .card:hover .icon-circle {
+            background: var(--ramave-red);
+            color: white;
+        }
+
+        .card h3 { font-size: 1.2rem; margin: 0; font-weight: 700; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-left">
+            <img src="/images/logoramave.jpg" alt="Logo RAMAVE" />
+        </div>
+        <a href="javascript:history.back()" class="btn-back">
+            <i class="fas fa-chevron-left"></i> Volver a Persianas
+        </a>
+    </header>
+
+    <div class="container">
+        <div class="welcome-msg">
+            <span>Área de Producción</span>
+            <h2>Procesos para: @tipoPersiana</h2>
+            <p>Selecciona el paso que deseas aprender</p>
+        </div>
+
+        <div class="grid">
+            <a href="@Url.Action("VerVideo", new { tipo = tipoPersiana, proceso = "Corte de perfiles" })" class="card">
+                <div class="icon-circle"><i class="fas fa-ruler-combined"></i></div>
+                <h3>Corte de Perfiles</h3>
+            </a>
+
+            <a href="@Url.Action("VerVideo", new { tipo = tipoPersiana, proceso = "Corte de telas" })" class="card">
+                <div class="icon-circle"><i class="fas fa-scissors"></i></div>
+                <h3>Corte de Telas</h3>
+            </a>
+
+            <a href="@Url.Action("VerVideo", new { tipo = tipoPersiana, proceso = "Costura" })" class="card">
+                <div class="icon-circle"><i class="fas fa-needle"></i></div>
+                <h3>Costura</h3>
+            </a>
+
+            <a href="@Url.Action("VerVideo", new { tipo = tipoPersiana, proceso = "Armado" })" class="card">
+                <div class="icon-circle"><i class="fas fa-tools"></i></div>
+                <h3>Armado</h3>
+            </a>
+
+            <a href="@Url.Action("VerVideo", new { tipo = tipoPersiana, proceso = "Acabado" })" class="card">
+                <div class="icon-circle"><i class="fas fa-check-double"></i></div>
+                <h3>Acabado</h3>
+            </a>
+
+            <a href="@Url.Action("VerVideo", new { tipo = tipoPersiana, proceso = "Empaque" })" class="card">
+                <div class="icon-circle"><i class="fas fa-box"></i></div>
+                <h3>Empaque</h3>
+            </a>
+        </div>
+    </div>
+
+</body>
+</html>
