@@ -9,9 +9,9 @@ namespace RAMAVE_Cotizador.Controllers // <- QUITAR el ".Capacitacion" si lo tie
         private bool EsUsuarioAutorizado()
         {
             var rol = HttpContext.Session.GetString("UsuarioRol")?.Trim();
-            return rol == "CapacitacionProduccion" || 
-                   rol == "CapacitacionVentas" || 
-                   rol == "CapacitacionInstalacion" || 
+            return rol == "CapacitacionProduccion" ||
+                   rol == "CapacitacionVentas" ||
+                   rol == "CapacitacionInstalacion" ||
                    rol == "Administrador";
         }
 
@@ -28,14 +28,26 @@ namespace RAMAVE_Cotizador.Controllers // <- QUITAR el ".Capacitacion" si lo tie
         public IActionResult Cortinas()
         {
             if (!EsUsuarioAutorizado()) return RedirectToAction("Login", "Auth");
-            return View("~/Views/Capacitacion/Produccion/Cortinas.cshtml");
+            return View("~/Views/Capacitacion/Produccion/Cortinas/Cortinas.cshtml");
         }
 
         [HttpGet("Persianas")]
         public IActionResult Persianas()
         {
             if (!EsUsuarioAutorizado()) return RedirectToAction("Login", "Auth");
-            return View("~/Views/Capacitacion/Produccion/Persianas.cshtml");
+            return View("~/Views/Capacitacion/Produccion/Persianas/Persianas.cshtml");
+        }
+
+        // URL: /Capacitacion/CortinaDetalle/Ondulada
+        [HttpGet("CortinaDetalle/{tipo}")]
+        public IActionResult CortinaDetalle(string tipo)
+        {
+            if (!EsUsuarioAutorizado()) return RedirectToAction("Login", "Auth");
+
+            // Pasamos el nombre del tipo a la vista para el título
+            ViewBag.TipoCortina = tipo;
+
+            return View("~/Views/Capacitacion/Produccion/Cortinas/CortinaDetalle.cshtml");
         }
     }
 }

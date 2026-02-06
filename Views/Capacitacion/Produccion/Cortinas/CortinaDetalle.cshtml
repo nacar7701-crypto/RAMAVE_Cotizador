@@ -1,0 +1,128 @@
+@{
+    Layout = null;
+    string titulo = ViewBag.TipoCortina ?? "Detalle de Cortina";
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Capacitación @titulo | RAMAVE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ramave-red: #c62828;
+            --bg-gray: #f8fafc;
+            --text-main: #1e293b;
+        }
+
+        body { margin: 0; font-family: 'Inter', sans-serif; background: var(--bg-gray); color: var(--text-main); }
+        
+        header { 
+            background: white; padding: 1rem 5%; display: flex; 
+            justify-content: space-between; align-items: center;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .container { max-width: 1200px; margin: 40px auto; padding: 0 20px; }
+        
+        .video-layout {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 30px;
+        }
+
+        /* Reproductor Principal */
+        .main-video { background: #000; border-radius: 16px; overflow: hidden; aspect-ratio: 16/9; box-shadow: 0 10px 15px rgba(0,0,0,0.1); }
+        .main-video iframe { width: 100%; height: 100%; border: none; }
+
+        /* Lista de Reproducción */
+        .playlist { background: white; border-radius: 16px; padding: 20px; border: 1px solid #e2e8f0; max-height: 600px; overflow-y: auto; }
+        .playlist h4 { margin-top: 0; color: var(--ramave-red); border-bottom: 2px solid #f1f5f9; padding-bottom: 10px; }
+        
+        .playlist-item {
+            display: flex; gap: 12px; padding: 12px;
+            border-radius: 10px; cursor: pointer; transition: all 0.2s;
+            margin-bottom: 8px; border: 1px solid transparent;
+        }
+
+        .playlist-item:hover { background: #fff1f1; border-color: #fca5a5; }
+        .playlist-item.active { background: #fee2e2; border-color: var(--ramave-red); }
+
+        .thumb { width: 100px; height: 60px; background: #ddd; border-radius: 6px; flex-shrink: 0; position: relative; }
+        .thumb::after { content: '▶'; position: absolute; top:50%; left:50%; transform:translate(-50%, -50%); color: white; font-size: 12px; }
+        
+        .item-info b { font-size: 0.9rem; display: block; line-height: 1.2; }
+        .item-info span { font-size: 0.75rem; color: #64748b; }
+
+        .btn-back { text-decoration: none; color: var(--ramave-red); font-weight: 700; display: flex; align-items: center; gap: 5px; }
+
+        @@media (max-width: 992px) {
+            .video-layout { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="@Url.Action("Cortinas", "Capacitacion")" class="btn-back">← Volver</a>
+        <h2 style="margin:0; font-size: 1.2rem;">Capacitación: @titulo</h2>
+        <div style="width: 70px;"></div> </header>
+
+    <div class="container">
+        <div class="video-layout">
+            
+            <div class="video-content">
+                <div class="main-video">
+                    <iframe id="videoPlayer" src="https://www.youtube.com/embed/dQw4w9WgXcQ" allowfullscreen></iframe>
+                </div>
+                <h1 id="currentTitle" style="margin-top: 20px;">1. Introducción a la confección @titulo</h1>
+                <p id="currentDesc" style="color: #64748b;">En este video aprenderás los conceptos básicos y materiales necesarios.</p>
+            </div>
+
+            <div class="playlist">
+                <h4>Videos del curso</h4>
+                
+                <div class="playlist-item active" onclick="changeVideo('https://www.youtube.com/embed/dQw4w9WgXcQ', '1. Introducción', 'Conceptos básicos.')">
+                    <div class="thumb" style="background: #333;"></div>
+                    <div class="item-info">
+                        <b>1. Introducción</b>
+                        <span>05:20 min</span>
+                    </div>
+                </div>
+
+                <div class="playlist-item" onclick="changeVideo('https://www.youtube.com/embed/otra-url', '2. Corte de Tela', 'Técnicas de corte preciso.')">
+                    <div class="thumb" style="background: #444;"></div>
+                    <div class="item-info">
+                        <b>2. Corte de Tela</b>
+                        <span>12:45 min</span>
+                    </div>
+                </div>
+
+                <div class="playlist-item" onclick="changeVideo('https://www.youtube.com/embed/otra-url-3', '3. Armado Final', 'Pasos para el ensamblaje.')">
+                    <div class="thumb" style="background: #555;"></div>
+                    <div class="item-info">
+                        <b>3. Armado Final</b>
+                        <span>08:10 min</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function changeVideo(url, title, desc) {
+            document.getElementById('videoPlayer').src = url;
+            document.getElementById('currentTitle').innerText = title;
+            document.getElementById('currentDesc').innerText = desc;
+            
+            // Actualizar clase activa
+            document.querySelectorAll('.playlist-item').forEach(item => item.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+        }
+    </script>
+
+</body>
+</html>
