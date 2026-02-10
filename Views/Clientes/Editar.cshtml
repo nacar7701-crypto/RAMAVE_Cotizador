@@ -271,7 +271,7 @@
             </div>
 
             <div class="buttons-container">
-                <a asp-area="Administrador" asp-controller="Cotizaciones" asp-action="Index"
+                <a asp-area="Clientes" asp-controller="Clientes" asp-action="Historial"
                     class="btn btn-back">CANCELAR</a>
                 <button type="button" id="btnGuardar" onclick="enviarEdicion()" class="btn btn-save">GUARDAR Y
                     RECALCULAR</button>
@@ -438,7 +438,7 @@
             });
             const result = await response.json();
             if (response.ok) {
-                window.location.href = "/Administrador/Cotizaciones/PresupuestoFinal/" + (result.data?.presupuestoId || "@Model.PresupuestoId");
+                window.location.href = "/Clientes/PresupuestoFinal/" + (result.data?.presupuestoId || "@Model.PresupuestoId");
             } else {
                 alert("Error: " + (result.mensaje || "No se pudo actualizar"));
                 btn.disabled = false;

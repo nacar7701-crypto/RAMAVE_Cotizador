@@ -2,7 +2,7 @@
 @inject IHttpContextAccessor HttpContextAccessor
 @{
     ViewData["Title"] = "Presupuesto Maestro Detallado";
-    var usuarioRol = HttpContextAccessor.HttpContext.Session.GetString("UsuarioRol") ?? "Publico";
+    var usuarioRol = HttpContextAccessor.HttpContext.Session.GetString("UsuarioRol")?.Trim() ?? "Publico";
 }
 
 <style>

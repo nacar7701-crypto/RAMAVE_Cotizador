@@ -80,5 +80,22 @@ namespace RAMAVE_Cotizador.Controllers
             // Forzamos la ruta de la vista por si acaso
             return View("~/Views/Clientes/PresupuestoFinal.cshtml");
         }
+
+        [HttpGet]
+        public async Task<IActionResult> Editar(int id)
+        {
+            var usuarioId = HttpContext.Session.GetInt32("UsuarioId");
+            if (usuarioId == null) return RedirectToAction("Login", "Auth");
+
+            // Buscamos la cotización específica
+            var cotizacion = await _context.Cotizaciones
+                .FirstOrDefaultAsync(c => c.Id == id);
+
+            if (cotizacion == null) return NotFound();
+
+            // Aquí mandas a la vista donde tienes tu formulario de cotizador
+            // usualmente pasas el modelo para precargar los datos
+            return View(cotizacion); 
+        }
     }
 }
